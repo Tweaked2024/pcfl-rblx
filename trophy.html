@@ -5,131 +5,286 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NBL Player Trophy Room</title>
   <style>
-    /* Clean foundational styling for the trophy room layout */
+    /* Global & Reset Styles */
     body {
       font-family: system-ui, -apple-system, sans-serif;
-      background-color: #121212;
+      background-color: #0b0a08;
       color: #ffffff;
       margin: 0;
-      padding: 2rem;
+      padding: 0;
     }
+    
+    /* Fixed/Styled Header Navigation Bar */
+    header {
+      background-color: #ffffff;
+      color: #121212;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 2rem;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .logo-area a {
+      text-decoration: none;
+      color: #121212;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    nav {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .nav-item {
+      position: relative;
+    }
+    .nav-item a {
+      color: #444444;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+    .nav-item a:hover {
+      color: #000000;
+    }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      list-style: none;
+      padding: 0.5rem 0;
+      margin: 0;
+      border-radius: 4px;
+      min-width: 150px;
+      z-index: 100;
+    }
+    .dropdown-menu a {
+      padding: 0.5rem 1rem;
+      display: block;
+      font-weight: normal;
+    }
+    .nav-item:hover .dropdown-menu {
+      display: block;
+    }
+    .dropdown-mega {
+      min-width: 450px;
+      display: none;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      left: -150px;
+    }
+    .nav-item:hover .dropdown-mega {
+      display: flex;
+    }
+    .mega-col h4 {
+      margin: 0 0 0.5rem 0;
+      color: #121212;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 0.25rem;
+    }
+    .mega-col a {
+      display: block;
+      padding: 0.25rem 0;
+      font-size: 0.85rem;
+    }
+    .right-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .theme-toggle-btn {
+      background: #f0f0f0;
+      border: none;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .join-btn {
+      background-color: #e51c35;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    /* Main Container Layout */
     .container {
-      max-width: 1000px;
-      margin: 0 auto;
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
     }
     .at-back {
       display: inline-block;
       margin-bottom: 1.5rem;
       font-weight: bold;
-      color: #e51c35; /* Matches your master primary red accent theme */
+      color: #e51c35;
       text-decoration: none;
-      transition: text-decoration 0.2s;
     }
     .at-back:hover {
       text-decoration: underline;
     }
+
+    /* Premium Light-Mode Profile Card (Matches Image 2) */
     .trophy-header {
-      background: linear-gradient(135deg, #1f1f1f, #2d2d2d);
-      border: 1px solid #333;
-      padding: 2rem;
-      border-radius: 1rem;
+      background: linear-gradient(to bottom, #ffffff, #fcf8f5);
+      color: #1a1512;
+      padding: 2.5rem;
+      border-radius: 1.5rem;
       display: flex;
       align-items: center;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     .player-avatar {
-      width: 90px;
-      height: 90px;
+      width: 140px;
+      height: 140px;
       border-radius: 50%;
-      background-color: #444;
-      border: 3px solid #e51c35;
+      background: radial-gradient(circle, #ffe3d1 0%, #ffd0b3 100%);
+      border: 4px solid #ffffff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
     .player-avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-    .player-name {
-      font-size: 2rem;
-      font-weight: 800;
-      margin: 0 0 0.5rem 0;
+    .header-details {
+      flex-grow: 1;
     }
-    
-    /* Layout Organization for Shelves matching image_baba2a.jpg */
-    .shelf-section {
-      background-color: #1a1a1a;
-      border: 1px solid #2a2a2a;
+    .sub-badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #d97706;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    .player-name {
+      font-size: 2.75rem;
+      font-weight: 900;
+      margin: 0 0 1rem 0;
+      letter-spacing: -1px;
+    }
+    .quick-stats-row {
+      display: flex;
+      gap: 1rem;
+    }
+    .stat-box {
+      background: #ffffff;
+      border: 1px solid #e5e5e5;
       border-radius: 0.75rem;
-      padding: 1.5rem;
+      padding: 0.5rem 1.25rem;
+      text-align: center;
+      min-width: 80px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .stat-box strong {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+    .stat-box span {
+      font-size: 0.65rem;
+      color: #737373;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    /* Elegant Dark Showcase Boxes (Matches Image 2) */
+    .shelf-section {
+      background: linear-gradient(180deg, #161310 0%, #0f0d0b 100%);
+      border: 1px solid #2d241d;
+      border-radius: 1.25rem;
+      padding: 2rem;
       margin-bottom: 2rem;
     }
     .shelf-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #333;
-      padding-bottom: 0.75rem;
-      margin-bottom: 1.25rem;
+      border-bottom: 1px solid #362b22;
+      padding-bottom: 1rem;
+      margin-bottom: 2rem;
     }
     .shelf-title {
-      font-size: 1.25rem;
-      font-weight: bold;
+      font-size: 1.4rem;
+      font-weight: 800;
       margin: 0;
+      color: #f3f4f6;
     }
     .shelf-subtitle {
       font-size: 0.85rem;
-      color: #888;
+      color: #a3a3a3;
       margin: 0.25rem 0 0 0;
     }
     .shelf-count {
-      background-color: #2a2a2a;
-      padding: 0.25rem 0.75rem;
-      border-radius: 1rem;
-      font-size: 0.8rem;
+      background-color: #271e17;
+      border: 1px solid #4a3728;
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
       font-weight: bold;
-      color: #ccc;
+      color: #f59e0b;
     }
 
+    /* Metallic Styled Trophy Items Grid */
     .trophy-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 2rem;
     }
     .trophy-card {
-      background-color: #222222;
-      border: 1px solid #333;
-      border-radius: 0.5rem;
-      padding: 1.25rem 1rem;
       text-align: center;
-      transition: transform 0.2s, border-color 0.2s;
     }
-    .trophy-card:hover {
-      transform: translateY(-3px);
-      border-color: #e51c35;
+    .trophy-icon-wrapper {
+      background: linear-gradient(135deg, #231c16 0%, #17120e 100%);
+      border: 1px solid #443425;
+      border-radius: 0.5rem;
+      padding: 1.5rem 1rem;
+      margin-bottom: 0.75rem;
+      transition: transform 0.2s, border-color 0.2s;
+      box-shadow: inset 0 1px 3px rgba(255,255,255,0.05);
+    }
+    .trophy-card:hover .trophy-icon-wrapper {
+      transform: translateY(-5px);
+      border-color: #f59e0b;
     }
     .trophy-icon {
-      font-size: 2.5rem;
+      font-size: 3rem;
       margin-bottom: 0.5rem;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
     }
     .trophy-title {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       font-weight: bold;
+      color: #d1d5db;
       margin-bottom: 0.25rem;
     }
     .trophy-season {
-      font-size: 0.75rem;
-      color: #888;
+      font-size: 0.7rem;
+      color: #d97706;
+      background: #271c12;
+      display: inline-block;
+      padding: 0.1rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
     }
-    .loading-msg {
-      text-align: center;
-      font-size: 1.2rem;
-      color: #888;
-      margin-block: 4rem;
+    .empty-shelf-msg {
+      color: #737373;
+      font-style: italic;
+      font-size: 0.9rem;
     }
   </style>
 </head>
@@ -137,9 +292,8 @@
 
   <header>
     <div class="logo-area">
-        <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
+        <a href="index.html">
             <img src="e1abd0576f5f77741b1f5a27399462ff.webp" alt="NBL Logo" style="height: 45px; width: auto; display: block;">
-             
             <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px;">National Basketball League</span>
         </a>
     </div>
@@ -148,7 +302,6 @@
         <div class="nav-item"><a href="teams.html">Teams</a></div>
         <div class="nav-item"><a href="matchups.html">Matchups</a></div>
          
-        <!-- Scores Hover Dropdown -->
         <div class="nav-item">
             <a href="scores.html">Scores ▾</a>
             <ul class="dropdown-menu">
@@ -160,11 +313,9 @@
             </ul>
         </div>
          
-        <!-- Added Stats Mega Hover Dropdown Split Layout -->
         <div class="nav-item">
             <a href="stats.html">Stats ▾</a>
             <div class="dropdown-menu dropdown-mega">
-                <!-- Offense Column -->
                 <div class="mega-col">
                     <h4>Offense</h4>
                     <a href="stats.html?cat=passing">Quarterbacks</a>
@@ -173,14 +324,12 @@
                     <a href="stats.html?cat=tightends">Tight Ends</a>
                     <a href="stats.html?cat=center">Centers</a>
                 </div>
-                <!-- Defense Column -->
                 <div class="mega-col">
                     <h4>Defense</h4>
                     <a href="stats.html?cat=defensiveends">Defensive Ends</a>
                     <a href="stats.html?cat=linebackers">Linebackers</a>
                     <a href="stats.html?cat=secondary">Defensive Backs</a>
                 </div>
-                <!-- Special Teams Column -->
                 <div class="mega-col">
                     <h4>Special Teams</h4>
                     <a href="stats.html?cat=kicking">Kickers</a>
@@ -192,7 +341,6 @@
          
         <div class="nav-item"><a href="rulebook.html">Rulebook</a></div>
          
-        <!-- Legacy Hover Dropdown -->
         <div class="nav-item">
             <a href="legacy.html">Legacy ▾</a>
             <ul class="dropdown-menu">
@@ -204,38 +352,32 @@
     </nav>
      
     <div class="right-actions">
-        <!-- Functional Light/Dark circle button -->
         <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Mode">🌙</button>
         <a href="#" class="join-btn">Join Now</a>
     </div>
   </header>
   
   <div class="container">
-    <!-- Link connecting back to your legacy page using clean Vercel patterns -->
     <a href="/legacy" class="at-back">← Back to Legacy Leaderboard</a>
 
     <div id="trophy-room-content">
-      <div class="loading-msg">Loading trophy room details...</div>
+      <div style="text-align: center; font-size: 1.2rem; color: #888; margin-block: 4rem;">Loading trophy room details...</div>
     </div>
   </div>
 
   <script>
-    // 1. Parse URL Parameters (?id=221991455&u=FINLEY4K)
     const urlParams = new URLSearchParams(window.location.search);
     const playerId = urlParams.get('id');
     const username = urlParams.get('u') || 'Unknown Player';
-
     const contentDiv = document.getElementById('trophy-room-content');
 
     if (!playerId) {
-      contentDiv.innerHTML = `<div class="loading-msg" style="color: #e51c35;">No player ID provided in the URL.</div>`;
+      contentDiv.innerHTML = `<div style="text-align: center; font-size: 1.2rem; color: #e51c35; margin-block: 4rem;">No player ID provided in the URL.</div>`;
     } else {
-      // 2. Dynamically build out the player layout using the URL data
       loadTrophyRoom(playerId, username);
     }
 
     function loadTrophyRoom(id, name) {
-      // Generates an automated Roblox avatar image directly from their open thumbnails API endpoint
       const avatarUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${id}&size=150x150&format=Png&isCircular=true`;
 
       contentDiv.innerHTML = `
@@ -243,13 +385,19 @@
           <div class="player-avatar">
             <img id="headshot-img" src="" alt="${name}">
           </div>
-          <div>
+          <div class="header-details">
+            <span class="sub-badge">Trophy Room</span>
             <h1 class="player-name">${name}</h1>
-            <div style="color: #888;">ID: ${id}</div>
+            <div class="quick-stats-row">
+              <div class="stat-box"><strong>3</strong><span>Trophies</span></div>
+              <div class="stat-box"><strong>1</strong><span>Championship</span></div>
+              <div class="stat-box"><strong>1</strong><span>League MVP</span></div>
+              <div class="stat-box"><strong>1</strong><span>All-Pro</span></div>
+            </div>
           </div>
         </div>
 
-        <!-- Section 1: Allegiance Bowls Shelf -->
+        <!-- Allegiance Bowls -->
         <div class="shelf-section">
           <div class="shelf-header">
             <div>
@@ -260,14 +408,16 @@
           </div>
           <div class="trophy-grid">
             <div class="trophy-card">
-              <div class="trophy-icon">🏆</div>
+              <div class="trophy-icon-wrapper">
+                <div class="trophy-icon">🏆</div>
+              </div>
               <div class="trophy-title">AFL Champion</div>
               <div class="trophy-season">Season II</div>
             </div>
           </div>
         </div>
 
-        <!-- Section 2: Conference Championships Shelf -->
+        <!-- Conference Championships -->
         <div class="shelf-section">
           <div class="shelf-header">
             <div>
@@ -276,12 +426,10 @@
             </div>
             <span class="shelf-count">0 TROPHIES</span>
           </div>
-          <div class="trophy-grid" style="color:#666; font-style: italic; padding: 0.5rem;">
-            No conference items unlocked yet.
-          </div>
+          <div class="empty-shelf-msg">No conference items unlocked yet.</div>
         </div>
 
-        <!-- Section 3: Top Honors & Annual Awards Shelf -->
+        <!-- Top Honors & Seasonal Awards -->
         <div class="shelf-section">
           <div class="shelf-header">
             <div>
@@ -292,12 +440,16 @@
           </div>
           <div class="trophy-grid">
             <div class="trophy-card">
-              <div class="trophy-icon">⭐</div>
+              <div class="trophy-icon-wrapper">
+                <div class="trophy-icon">⭐</div>
+              </div>
               <div class="trophy-title">League MVP</div>
               <div class="trophy-season">Season II</div>
             </div>
             <div class="trophy-card">
-              <div class="trophy-icon">🏅</div>
+              <div class="trophy-icon-wrapper">
+                <div class="trophy-icon">🏅</div>
+              </div>
               <div class="trophy-title">All-Pro Selection</div>
               <div class="trophy-season">Season I</div>
             </div>
@@ -305,7 +457,6 @@
         </div>
       `;
 
-      // Async fetch to plug in the accurate Roblox profile graphic icon
       fetch(avatarUrl)
         .then(res => res.json())
         .then(data => {
@@ -314,7 +465,6 @@
           }
         })
         .catch(() => {
-          // Fallback image source if blocks or connection timeouts happen
           document.getElementById('headshot-img').src = "https://tr.rbxcdn.com/30day-avatar-headshot/150/150/AvatarHeadshot/Png/Regular/true/-1";
         });
     }
