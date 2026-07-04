@@ -3,126 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFL - Hall of Fame Legacy</title>
+    <title>AFL - Legacy Hall of Fame</title>
     <style>
-        :root { --gold: #d4af37; --bg-dark: #140f07; --border-gold: #45351f; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: #1c1710; color: #f3eae0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #110c06; color: #f3eae0; -webkit-font-smoothing: antialiased; }
         
-        header { background: #261f14; padding: 1rem 2rem; display: flex; justify-content: space-between; border-bottom: 2px solid var(--gold); }
-        header a { color: #bfa37a; text-decoration: none; margin-left: 1.5rem; font-weight: bold; }
-        header a.active { color: var(--gold); }
+        /* Dark Configured Navigation Bar Component */
+        header { background: #1c150d; border-bottom: 1px solid #2e2316; position: sticky; top: 0; z-index: 1000; }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 2rem; }
+        .logo-area { font-weight: 900; font-size: 1.25rem; letter-spacing: -0.05em; text-transform: uppercase; color: #d4af37; text-decoration: none; }
+        .main-nav { display: flex; gap: 1.75rem; }
+        .nav-item { text-decoration: none; color: #a29381; font-size: 0.85rem; font-weight: 700; text-transform: lowercase; }
+        .nav-item.active { color: #d4af37; }
 
-        main { max-width: 1300px; margin: 2rem auto; padding: 0 2rem; }
+        main { max-width: 1200px; margin: 2.5rem auto; padding: 0 2rem; }
+
+        /* Gold Point Metric Badges Module Bar from image_7637e7.png */
+        .metric-legend-container { background: #1c150d; border: 1px solid #42331f; border-radius: 8px; padding: 1rem 1.25rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-bottom: 2.5rem; }
+        .legend-lead { font-size: 0.75rem; font-weight: 900; color: #d4af37; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 0.75rem; }
+        .metric-chip { background: #2e2316; border: 1px solid #54432c; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; gap: 0.35rem; color: #f3eae0; }
+        .chip-score-gold { color: #f59e0b; background: rgba(245, 158, 11, 0.15); padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 800; }
+
+        /* 3-Column Profile Podium Layout Structure */
+        .podium-showcase-matrix { display: grid; grid-template-columns: 1fr 1.1fr 1fr; gap: 1.5rem; align-items: end; margin-bottom: 3.5rem; }
+        .podium-box-card { background: linear-gradient(180deg, #261f16 0%, #1c150d 100%); border: 1px solid #42331f; border-radius: 12px; padding: 2.25rem 1.25rem; text-align: center; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .podium-box-card.first-place-gold { border: 2px solid #d4af37; padding: 3.5rem 1.25rem; background: linear-gradient(180deg, #332717 0%, #1c150d 100%); }
         
-        .panel { background: radial-gradient(circle, #2d1f10, #140f07); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-gold); margin-bottom: 2rem; text-align: center; }
-        .trophy-btn { background: #261f14; border: 1px solid var(--gold); color: var(--gold); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 1rem; }
-        .trophy-btn:hover { background: var(--gold); color: black; }
+        .placement-ribbon-tag { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: #d4af37; color: #110c06; font-size: 0.7rem; font-weight: 900; padding: 0.2rem 0.75rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.02em; }
+        .podium-profile-avatar { width: 68px; height: 68px; border-radius: 50%; background: #42331f; margin: 0 auto 1.25rem; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 2px solid #54432c; font-size: 1.1rem; color: #d4af37; }
+        .podium-profile-username { font-weight: 800; font-size: 1.05rem; margin-bottom: 0.35rem; letter-spacing: -0.01em; }
+        .podium-score-output { color: #d4af37; font-size: 1.4rem; font-weight: 900; letter-spacing: -0.02em; }
 
-        .btn-group { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
-        .tab-btn { background: #261f14; border: 1px solid var(--border-gold); color: #bfa37a; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .tab-btn.active { background: var(--gold); color: black; }
-
-        .podium-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
-        .award-card { background: white; color: #000; border-radius: 10px; padding: 1.5rem; text-align: center; border: 2px solid var(--gold); }
-
-        /* Popups Modal Overlay */
-        .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 200; }
-        .modal.active { display: flex; }
-        .modal-card { background: #1c1710; border: 2px solid var(--gold); padding: 2rem; border-radius: 12px; width: 90%; max-width: 380px; text-align: center; }
-        .close-btn { background: none; border: none; color: white; font-size: 1.5rem; position: absolute; top: 10px; right: 15px; cursor: pointer; }
-        .pill { background: #bfa37a; color: black; padding: 0.4rem 1rem; border-radius: 20px; display: inline-block; margin-top: 1rem; font-weight: bold; }
+        /* Secondary Grid Row Tables Configuration */
+        .dark-rows-ledger { background: #1c150d; border: 1px solid #42331f; border-radius: 8px; overflow: hidden; }
+        .ledger-row-strip { display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 1.5rem; border-bottom: 1px solid #2e2316; font-size: 0.9rem; }
+        .ledger-row-strip:last-child { border-bottom: none; }
+        .ledger-identity-side { display: flex; align-items: center; gap: 1.25rem; }
+        .ledger-rank-idx { font-weight: 900; color: #a29381; width: 1rem; }
+        .ledger-username-string { font-weight: 700; color: #f3eae0; }
+        .ledger-score-bold { color: #d4af37; font-weight: 800; font-size: 0.95rem; }
     </style>
 </head>
 <body>
 
     <header>
-        <strong style="color:var(--gold);">👑 AFL LEGACY HOOF</strong>
-        <nav>
-            <a href="index.html">Standings</a>
-            <a href="teams.html">Teams</a>
-            <a href="scores.html">Scores</a>
-            <a href="stats.html">Stats</a>
-            <a href="rulebook.html">Rulebook</a>
-            <a href="legacy.html" class="active">Legacy</a>
-        </nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">AFL LEGACY</a>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-item">standings</a>
+                <a href="teams.html" class="nav-item">teams</a>
+                <a href="scores.html" class="nav-item">scores</a>
+                <a href="stats.html" class="nav-item">stats</a>
+                <a href="rulebook.html" class="nav-item">rulebook</a>
+                <a href="legacy.html" class="nav-item active">legacy</a>
+            </nav>
+        </div>
     </header>
 
     <main>
-        <div class="panel">
-            <h2>Career Milestones Logs</h2>
-            <p>Click below to open the official award tier pop-up metrics window.</p>
-            <button class="trophy-btn" onclick="openTrophy('Allegiance Bowl X Champion', 'Season 26 - FINLEY4K', '1,000 XP')">🏆 Inspect Trophy Matrix</button>
+        <div class="metric-legend-container">
+            <span class="legend-lead">How XP is Scored</span>
+            <div class="metric-chip">💍 Allegiance Bowl <span class="chip-score-gold">1,000</span></div>
+            <div class="metric-chip">🏆 Conf. Title <span class="chip-score-gold">400</span></div>
+            <div class="metric-chip">👑 MVP <span class="chip-score-gold">1,000</span></div>
         </div>
 
-        <h2 style="margin-bottom:1rem; color:var(--gold);">Award Tracker Engine Race</h2>
-        <div class="btn-group">
-            <button class="tab-btn active" onclick="switchRace('MVP', this)">MVP</button>
-            <button class="tab-btn" onclick="switchRace('OPOTY', this)">OPOTY</button>
-            <button class="tab-btn" onclick="switchRace('DPOTY', this)">DPOTY</button>
-            <button class="tab-btn" onclick="switchRace('QBOTY', this)">QBOTY</button>
-            <button class="tab-btn" onclick="switchRace('RBOTY', this)">RBOTY</button>
-            <button class="tab-btn" onclick="switchRace('WROTY', this)">WROTY</button>
+        <div class="podium-showcase-matrix">
+            <div class="podium-box-card">
+                <span class="placement-ribbon-tag">#2</span>
+                <div class="podium-profile-avatar">CO</div>
+                <div class="podium-profile-username">TheCoopDudeddd</div>
+                <div class="podium-score-output">19,850 <span style="font-size:0.75rem; color:#a29381; font-weight:500;">XP</span></div>
+            </div>
+            
+            <div class="podium-box-card first-place-gold">
+                <span class="placement-ribbon-tag" style="background:#f59e0b; font-weight:900;">👑 #1</span>
+                <div class="podium-profile-avatar" style="border-color:#d4af37; background:#54432c;">FI</div>
+                <div class="podium-profile-username">FINLEY4K</div>
+                <div class="podium-score-output">23,800 <span style="font-size:0.75rem; color:#a29381; font-weight:500;">XP</span></div>
+            </div>
+
+            <div class="podium-box-card">
+                <span class="placement-ribbon-tag">#3</span>
+                <div class="podium-profile-avatar">DI</div>
+                <div class="podium-profile-username">xDiminq</div>
+                <div class="podium-score-output">19,750 <span style="font-size:0.75rem; color:#a29381; font-weight:500;">XP</span></div>
+            </div>
         </div>
 
-        <div class="podium-row" id="raceBox"></div>
+        <div class="dark-rows-ledger">
+            <div class="ledger-row-strip">
+                <div class="ledger-identity-side">
+                    <span class="ledger-rank-idx">4</span>
+                    <span class="ledger-username-string">fakel1l</span>
+                </div>
+                <div class="ledger-score-bold">19,150 XP</div>
+            </div>
+            <div class="ledger-row-strip">
+                <div class="ledger-identity-side">
+                    <span class="ledger-rank-idx">5</span>
+                    <span class="ledger-username-string">Sinnables</span>
+                </div>
+                <div class="ledger-score-bold">18,800 XP</div>
+            </div>
+        </div>
     </main>
 
-    <div class="modal" id="trophyModal">
-        <div class="modal-card" style="position: relative;">
-            <button class="close-btn" onclick="closeTrophy()">×</button>
-            <div style="font-size:3rem; margin-bottom:1rem;">🏆</div>
-            <h3 id="m-title" style="color:var(--gold); text-transform:uppercase;">Trophy</h3>
-            <p id="m-desc" style="margin: 0.5rem 0;"></p>
-            <div class="pill" id="m-xp"></div>
-        </div>
-    </div>
-
-    <script>
-        const raceDb = {
-            MVP: [
-                { r: 1, name: 'niconeaccodyy', team: 'SEA', rtg: 93.0, desc: '2330 YDS | 25 TD' },
-                { r: 2, name: 'DimingSLC', team: 'WAS', rtg: 88.4, desc: '7131 YDS | 68 TD' }
-            ],
-            OPOTY: [
-                { r: 1, name: 'ChubbForce', team: 'CLE', rtg: 91.2, desc: '2150 YDS | 22 TD' }
-            ]
-        };
-
-        function switchRace(key, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-
-            const container = document.getElementById('raceBox');
-            container.innerHTML = '';
-
-            const list = raceDb[key] || [{ r: 1, name: 'Pending Updates', team: 'AFL', rtg: 0.0, desc: 'Data logs processing' }];
-            list.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'award-card';
-                div.innerHTML = `
-                    <div style="background:#0f172a; color:white; padding:0.25rem; font-size:0.8rem; border-radius:4px;">Rank #${p.r}</div>
-                    <h3 style="margin: 0.5rem 0;">${p.name}</h3>
-                    <p style="color:#64748b; font-weight:bold;">${p.team}</p>
-                    <div style="font-size:2rem; font-weight:900; color:#d97706; margin:0.5rem 0;">${p.rtg}</div>
-                    <p style="font-size:0.85rem; background:#f1f5f9; padding:0.4rem; border-radius:4px;">${p.desc}</p>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function openTrophy(title, desc, xp) {
-            document.getElementById('m-title').innerText = title;
-            document.getElementById('m-desc').innerText = desc;
-            document.getElementById('m-xp').innerText = "+" + xp + " Lifetime Allocation";
-            document.getElementById('trophyModal').classList.add('active');
-        }
-
-        function closeTrophy() {
-            document.getElementById('trophyModal').classList.remove('active');
-        }
-
-        switchRace('MVP');
-    </script>
 </body>
 </html>
