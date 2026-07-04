@@ -3,58 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFL - Team Directory</title>
+    <title>AFL - Teams Directory</title>
     <style>
-        :root { --primary-red: #e61e2b; --primary-dark: #11141a; --bg-light: #f8fafc; --bg-card: #ffffff; --border-color: #e2e8f0; --text-muted: #64748b; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background-color: var(--bg-light); }
-        header { background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
-        .nav-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; padding: 1rem 2rem; align-items: center; }
-        .logo { font-weight: 800; text-transform: uppercase; color: #000; text-decoration: none; }
-        .main-nav { display: flex; gap: 1.5rem; }
-        .nav-item { text-decoration: none; color: var(--text-muted); font-weight: 600; }
-        .nav-item:hover, .nav-item.active { color: var(--primary-red); }
-
-        main { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
-        h2 { margin-bottom: 1.5rem; text-transform: uppercase; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #fcfcfc; color: #111827; }
         
-        .teams-grid { display: grid; grid-template-columns: repeat(12, minmax(110px, 1fr)); gap: 1rem; overflow-x: auto; padding-bottom: 1rem; }
-        .team-card { background: white; border: 1px solid var(--border-color); border-top: 4px solid var(--primary-red); border-radius: 8px; padding: 1.5rem 0.5rem; text-align: center; cursor: pointer; text-decoration: none; color: inherit; display: block; }
-        .team-logo { width: 50px; height: 50px; background: #f1f5f9; border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-muted); }
-        .team-name { font-weight: 700; font-size: 0.9rem; }
+        header { background: #ffffff; border-bottom: 1px solid #efefef; position: sticky; top: 0; z-index: 1000; }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 2rem; }
+        .logo-area { font-weight: 900; font-size: 1.25rem; letter-spacing: -0.05em; text-transform: uppercase; color: #111827; text-decoration: none; }
+        .main-nav { display: flex; gap: 1.75rem; }
+        .nav-item { text-decoration: none; color: #4b5563; font-size: 0.85rem; font-weight: 700; text-transform: lowercase; position: relative; }
+        .nav-item.active { color: #e61e2b; }
+        .nav-item.active::after { content: ''; position: absolute; bottom: -19px; left: 0; right: 0; height: 2px; background: #e61e2b; }
+
+        main { max-width: 1200px; margin: 3rem auto; padding: 0 2rem; }
+        .directory-header { margin-bottom: 2rem; }
+        .directory-header h2 { font-size: 2.25rem; font-weight: 900; text-transform: lowercase; letter-spacing: -0.04em; margin-bottom: 0.35rem; }
+        .directory-header p { font-size: 0.9rem; color: #6b7280; }
+
+        /* Exact 6-Column Grid Layout Configuration */
+        .teams-hex-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; }
+        .franchise-matrix-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.75rem 1rem; text-align: center; text-decoration: none; color: inherit; display: block; transition: box-shadow 0.15s ease, transform 0.1s ease; border-top: 4px solid #cbd5e1; }
+        .franchise-matrix-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+        
+        /* Direct Color Key Codes for Top Accents */
+        .t-ari { border-top-color: #97233f; }
+        .t-atl { border-top-color: #a71930; }
+        .t-bal { border-top-color: #241773; }
+        .t-buf { border-top-color: #00338d; }
+        .t-car { border-top-color: #0085ca; }
+        .t-chi { border-top-color: #0b2265; }
+
+        .logo-placeholder-container { width: 64px; height: 64px; border-radius: 50%; background: #f9fafb; margin: 0 auto 1.25rem; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; border: 1px solid #f3f4f6; }
+        .label-city { font-size: 0.75rem; color: #9ca3af; display: block; font-weight: 500; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 0.1rem; }
+        .label-nickname { font-size: 1rem; font-weight: 800; color: #111827; letter-spacing: -0.02em; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="nav-container">
-            <a href="index.html" class="logo">★ American Football League</a>
+            <a href="index.html" class="logo-area">AFL ECOSYSTEM</a>
             <nav class="main-nav">
-                <a href="index.html" class="nav-item">Standings</a>
-                <a href="teams.html" class="nav-item active">Teams</a>
-                <a href="scores.html" class="nav-item">Scores</a>
-                <a href="stats.html" class="nav-item">Stats</a>
-                <a href="rulebook.html" class="nav-item">Rulebook</a>
-                <a href="legacy.html" class="nav-item">Legacy</a>
+                <a href="index.html" class="nav-item">standings</a>
+                <a href="teams.html" class="nav-item active">teams</a>
+                <a href="scores.html" class="nav-item">scores</a>
+                <a href="stats.html" class="nav-item">stats</a>
+                <a href="rulebook.html" class="nav-item">rulebook</a>
+                <a href="legacy.html" class="nav-item">legacy</a>
             </nav>
         </div>
     </header>
 
     <main>
-        <h2>League Franchise Directory (12 Main Grid Columns)</h2>
-        <div class="teams-grid">
-            <a href="team-detail.html?team=ARI" class="team-card"><div class="team-logo">ARI</div><div class="team-name">Cardinals</div></a>
-            <a href="team-detail.html?team=ATL" class="team-card"><div class="team-logo">ATL</div><div class="team-name">Falcons</div></a>
-            <a href="team-detail.html?team=BAL" class="team-card"><div class="team-logo">BAL</div><div class="team-name">Ravens</div></a>
-            <a href="team-detail.html?team=BUF" class="team-card"><div class="team-logo">BUF</div><div class="team-name">Bills</div></a>
-            <a href="team-detail.html?team=CAR" class="team-card"><div class="team-logo">CAR</div><div class="team-name">Panthers</div></a>
-            <a href="team-detail.html?team=CHI" class="team-card"><div class="team-logo">CHI</div><div class="team-name">Bears</div></a>
-            <a href="team-detail.html?team=CIN" class="team-card"><div class="team-logo">CIN</div><div class="team-name">Bengals</div></a>
-            <a href="team-detail.html?team=CLE" class="team-card"><div class="team-logo">CLE</div><div class="team-name">Browns</div></a>
-            <a href="team-detail.html?team=DAL" class="team-card"><div class="team-logo">DAL</div><div class="team-name">Cowboys</div></a>
-            <a href="team-detail.html?team=DEN" class="team-card"><div class="team-logo">DEN</div><div class="team-name">Broncos</div></a>
-            <a href="team-detail.html?team=DET" class="team-card"><div class="team-logo">DET</div><div class="team-name">Lions</div></a>
-            <a href="team-detail.html?team=GB" class="team-card"><div class="team-logo">GB</div><div class="team-name">Packers</div></a>
+        <div class="directory-header">
+            <h2>teams</h2>
+            <p>Select a team to view their schedule and player stats.</p>
+        </div>
+
+        <div class="teams-hex-grid">
+            <a href="#" class="franchise-matrix-card t-ari">
+                <div class="logo-placeholder-container" style="color: #97233f;">ARI</div>
+                <span class="label-city">Arizona</span><span class="label-nickname">Cardinals</span>
+            </a>
+            <a href="#" class="franchise-matrix-card t-atl">
+                <div class="logo-placeholder-container" style="color: #a71930;">ATL</div>
+                <span class="label-city">Atlanta</span><span class="label-nickname">Falcons</span>
+            </a>
+            <a href="#" class="franchise-matrix-card t-bal">
+                <div class="logo-placeholder-container" style="color: #241773;">BAL</div>
+                <span class="label-city">Baltimore</span><span class="label-nickname">Ravens</span>
+            </a>
+            <a href="#" class="franchise-matrix-card t-buf">
+                <div class="logo-placeholder-container" style="color: #00338d;">BUF</div>
+                <span class="label-city">Buffalo</span><span class="label-nickname">Bills</span>
+            </a>
+            <a href="#" class="franchise-matrix-card t-car">
+                <div class="logo-placeholder-container" style="color: #0085ca;">CAR</div>
+                <span class="label-city">Carolina</span><span class="label-nickname">Panthers</span>
+            </a>
+            <a href="#" class="franchise-matrix-card t-chi">
+                <div class="logo-placeholder-container" style="color: #0b2265;">CHI</div>
+                <span class="label-city">Chicago</span><span class="label-nickname">Bears</span>
+            </a>
         </div>
     </main>
 
