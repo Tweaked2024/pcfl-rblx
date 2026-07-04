@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AFL All-Time Stats & Legacy Leaderboard</title>
+
+  <Link rel="stylesheet" href="style.css">
+  
   <style>
     /* ============================================================
        AFL ALL-TIME STATS — page styles
@@ -12,6 +15,149 @@
        stats/stats.css and .player-* from player/player.css.
        ============================================================ */
 
+    /* ============================================================
+       NAVIGATION BAR & DROPDOWN STYLING
+       ============================================================ */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 24px;
+      background-color: #ffffff; /* Change to your theme background */
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-item {
+      position: relative; /* Keeps dropdowns anchored to the item */
+      padding: 10px 0;
+    }
+
+    .nav-item > a {
+      text-decoration: none;
+      color: #333333;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .nav-item > a:hover {
+      color: var(--color-primary-400, #e51c35);
+    }
+
+    /* ---------- Dropdowns (Hidden by default) ---------- */
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #ffffff;
+      min-width: 180px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 6px;
+      padding: 10px 0;
+      list-style: none;
+      margin: 0;
+      z-index: 100;
+    }
+
+    .dropdown-menu li a {
+      display: block;
+      padding: 8px 16px;
+      color: #333333;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .dropdown-menu li a:hover {
+      background-color: #f5f5f5;
+      color: var(--color-primary-400, #e51c35);
+    }
+
+    /* ---------- Mega Dropdown Layout ---------- */
+    .dropdown-mega {
+      display: none; 
+      flex-direction: row;
+      gap: 30px;
+      padding: 20px;
+      min-width: 450px;
+    }
+
+    .mega-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mega-col h4 {
+      margin: 0 0 5px 0;
+      font-size: 0.9rem;
+      color: #888888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mega-col a {
+      color: #333333;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .mega-col a:hover {
+      color: var(--color-primary-400, #e51c35);
+    }
+
+    /* ---------- Show Dropdowns on Hover ---------- */
+    .nav-item:hover .dropdown-menu {
+      display: block;
+    }
+    
+    .nav-item:hover .dropdown-mega {
+      display: flex; /* Mega dropdown uses flex layout side-by-side */
+    }
+
+    /* ---------- Right Actions Section ---------- */
+    .right-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .theme-toggle-btn {
+      background: none;
+      border: 1px solid #cccccc;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 5px;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .join-btn {
+      background-color: var(--color-primary-400, #e51c35);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      transition: opacity 0.2s;
+    }
+
+    .join-btn:hover {
+      opacity: 0.9;
+    }
+    
     /* ---------- hero / search ---------- */
     .at-hero {
       background:
