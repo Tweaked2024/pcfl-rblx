@@ -44,27 +44,73 @@
       border-radius: 50%;
       background-color: #444;
       border: 3px solid #e51c35;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .player-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .player-name {
       font-size: 2rem;
       font-weight: 800;
       margin: 0 0 0.5rem 0;
     }
+    
+    /* Layout Organization for Shelves matching image_baba2a.jpg */
+    .shelf-section {
+      background-color: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .shelf-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #333;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .shelf-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin: 0;
+    }
+    .shelf-subtitle {
+      font-size: 0.85rem;
+      color: #888;
+      margin: 0.25rem 0 0 0;
+    }
+    .shelf-count {
+      background-color: #2a2a2a;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #ccc;
+    }
+
     .trophy-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       gap: 1.5rem;
     }
     .trophy-card {
-      background-color: #1a1a1a;
-      border: 1px solid #2a2a2a;
+      background-color: #222222;
+      border: 1px solid #333;
       border-radius: 0.5rem;
-      padding: 1rem;
+      padding: 1.25rem 1rem;
       text-align: center;
-      transition: transform 0.2s;
+      transition: transform 0.2s, border-color 0.2s;
     }
     .trophy-card:hover {
       transform: translateY(-3px);
+      border-color: #e51c35;
     }
     .trophy-icon {
       font-size: 2.5rem;
@@ -73,6 +119,11 @@
     .trophy-title {
       font-size: 0.9rem;
       font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+    .trophy-season {
+      font-size: 0.75rem;
+      color: #888;
     }
     .loading-msg {
       text-align: center;
@@ -85,83 +136,83 @@
 <body>
 
   <header>
-        <div class="logo-area">
-            <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
-                <img src="e1abd0576f5f77741b1f5a27399462ff.webp" alt="NBL Logo" style="height: 45px; width: auto; display: block;">
-                 
-                <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px;">National Basketball League</span>
-            </a>
+    <div class="logo-area">
+        <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
+            <img src="e1abd0576f5f77741b1f5a27399462ff.webp" alt="NBL Logo" style="height: 45px; width: auto; display: block;">
+             
+            <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px;">National Basketball League</span>
+        </a>
+    </div>
+    <nav>
+        <div class="nav-item"><a href="#">Standings</a></div>
+        <div class="nav-item"><a href="teams.html">Teams</a></div>
+        <div class="nav-item"><a href="matchups.html">Matchups</a></div>
+         
+        <!-- Scores Hover Dropdown -->
+        <div class="nav-item">
+            <a href="scores.html">Scores ▾</a>
+            <ul class="dropdown-menu">
+                <li><a href="scores.html?series=1">Series I</a></li>
+                <li><a href="scores.html?series=2">Series II</a></li>
+                <li><a href="scores.html?series=3">Series III</a></li>
+                <li><a href="scores.html?series=4">Series IV</a></li>
+                <li><a href="scores.html?series=5">Series V</a></li>
+            </ul>
         </div>
-        <nav>
-            <div class="nav-item"><a href="#">Standings</a></div>
-            <div class="nav-item"><a href="teams.html">Teams</a></div>
-            <div class="nav-item"><a href="matchups.html">Matchups</a></div>
-             
-            <!-- Scores Hover Dropdown -->
-            <div class="nav-item">
-                <a href="scores.html">Scores ▾</a>
-                <ul class="dropdown-menu">
-                    <li><a href="scores.html?series=1">Series I</a></li>
-                    <li><a href="scores.html?series=2">Series II</a></li>
-                    <li><a href="scores.html?series=3">Series III</a></li>
-                    <li><a href="scores.html?series=4">Series IV</a></li>
-                    <li><a href="scores.html?series=5">Series V</a></li>
-                </ul>
-            </div>
-             
-            <!-- Added Stats Mega Hover Dropdown Split Layout -->
-            <div class="nav-item">
-                <a href="stats.html">Stats ▾</a>
-                <div class="dropdown-menu dropdown-mega">
-                    <!-- Offense Column -->
-                    <div class="mega-col">
-                        <h4>Offense</h4>
-                        <a href="stats.html?cat=passing">Quarterbacks</a>
-                        <a href="stats.html?cat=rushing">Running Backs</a>
-                        <a href="stats.html?cat=receiving">Wide Receivers</a>
-                        <a href="stats.html?cat=tightends">Tight Ends</a>
-                        <a href="stats.html?cat=center">Centers</a>
-                    </div>
-                    <!-- Defense Column -->
-                    <div class="mega-col">
-                        <h4>Defense</h4>
-                        <a href="stats.html?cat=defensiveends">Defensive Ends</a>
-                        <a href="stats.html?cat=linebackers">Linebackers</a>
-                        <a href="stats.html?cat=secondary">Defensive Backs</a>
-                    </div>
-                    <!-- Special Teams Column -->
-                    <div class="mega-col">
-                        <h4>Special Teams</h4>
-                        <a href="stats.html?cat=kicking">Kickers</a>
-                        <h4 style="margin-top: 15px;">Record Book</h4>
-                        <a href="#">All-Time Stats</a>
-                    </div>
+         
+        <!-- Added Stats Mega Hover Dropdown Split Layout -->
+        <div class="nav-item">
+            <a href="stats.html">Stats ▾</a>
+            <div class="dropdown-menu dropdown-mega">
+                <!-- Offense Column -->
+                <div class="mega-col">
+                    <h4>Offense</h4>
+                    <a href="stats.html?cat=passing">Quarterbacks</a>
+                    <a href="stats.html?cat=rushing">Running Backs</a>
+                    <a href="stats.html?cat=receiving">Wide Receivers</a>
+                    <a href="stats.html?cat=tightends">Tight Ends</a>
+                    <a href="stats.html?cat=center">Centers</a>
+                </div>
+                <!-- Defense Column -->
+                <div class="mega-col">
+                    <h4>Defense</h4>
+                    <a href="stats.html?cat=defensiveends">Defensive Ends</a>
+                    <a href="stats.html?cat=linebackers">Linebackers</a>
+                    <a href="stats.html?cat=secondary">Defensive Backs</a>
+                </div>
+                <!-- Special Teams Column -->
+                <div class="mega-col">
+                    <h4>Special Teams</h4>
+                    <a href="stats.html?cat=kicking">Kickers</a>
+                    <h4 style="margin-top: 15px;">Record Book</h4>
+                    <a href="#">All-Time Stats</a>
                 </div>
             </div>
-             
-            <div class="nav-item"><a href="rulebook.html">Rulebook</a></div>
-             
-            <!-- Legacy Hover Dropdown -->
-            <div class="nav-item">
-                <a href="legacy.html">Legacy ▾</a>
-                <ul class="dropdown-menu">
-                    <li><a href="legacy.html#legacy-section">Legacy</a></li>
-                    <li><a href="legacy.html#champions-awards">Champions & Awards</a></li>
-                    <li><a href="legacy.html#award-tracker">Award Tracker</a></li>
-                </ul>
-            </div>
-        </nav>
-         
-        <div class="right-actions">
-            <!-- Functional Light/Dark circle button -->
-            <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Mode">🌙</button>
-            <a href="#" class="join-btn">Join Now</a>
         </div>
-    </header>
+         
+        <div class="nav-item"><a href="rulebook.html">Rulebook</a></div>
+         
+        <!-- Legacy Hover Dropdown -->
+        <div class="nav-item">
+            <a href="legacy.html">Legacy ▾</a>
+            <ul class="dropdown-menu">
+                <li><a href="legacy.html#legacy-section">Legacy</a></li>
+                <li><a href="legacy.html#champions-awards">Champions & Awards</a></li>
+                <li><a href="legacy.html#award-tracker">Award Tracker</a></li>
+            </ul>
+        </div>
+    </nav>
+     
+    <div class="right-actions">
+        <!-- Functional Light/Dark circle button -->
+        <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Mode">🌙</button>
+        <a href="#" class="join-btn">Join Now</a>
+    </div>
+  </header>
   
   <div class="container">
-    <!-- Link connecting back to your legacy page -->
-    <a href="../legacy.html" class="at-back">← Back to Legacy Leaderboard</a>
+    <!-- Link connecting back to your legacy page using clean Vercel patterns -->
+    <a href="/legacy" class="at-back">← Back to Legacy Leaderboard</a>
 
     <div id="trophy-room-content">
       <div class="loading-msg">Loading trophy room details...</div>
@@ -184,34 +235,88 @@
     }
 
     function loadTrophyRoom(id, name) {
-      // In a live environment, you would use 'id' to fetch data from your spreadsheet backend or API module
-      // For now, this cleanly injects the target player data directly into your interface structures
+      // Generates an automated Roblox avatar image directly from their open thumbnails API endpoint
+      const avatarUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${id}&size=150x150&format=Png&isCircular=true`;
+
       contentDiv.innerHTML = `
         <div class="trophy-header">
-          <div class="player-avatar"></div>
+          <div class="player-avatar">
+            <img id="headshot-img" src="" alt="${name}">
+          </div>
           <div>
             <h1 class="player-name">${name}</h1>
             <div style="color: #888;">ID: ${id}</div>
           </div>
         </div>
 
-        <h2 style="border-bottom: 2px solid #e51c35; padding-bottom: 0.5rem; margin-bottom: 1.5rem;">Trophy Collection</h2>
-        
-        <div class="trophy-grid">
-          <div class="trophy-card">
-            <div class="trophy-icon">🏆</div>
-            <div class="trophy-title">All-Time Champion</div>
+        <!-- Section 1: Allegiance Bowls Shelf -->
+        <div class="shelf-section">
+          <div class="shelf-header">
+            <div>
+              <h2 class="shelf-title">Allegiance Bowls</h2>
+              <p class="shelf-subtitle">Every championship captured on the grand stage.</p>
+            </div>
+            <span class="shelf-count">1 TROPHY</span>
           </div>
-          <div class="trophy-card">
-            <div class="trophy-icon">⭐</div>
-            <div class="trophy-title">League MVP</div>
+          <div class="trophy-grid">
+            <div class="trophy-card">
+              <div class="trophy-icon">🏆</div>
+              <div class="trophy-title">AFL Champion</div>
+              <div class="trophy-season">Season II</div>
+            </div>
           </div>
-          <div class="trophy-card">
-            <div class="trophy-icon">🏅</div>
-            <div class="trophy-title">All-Pro Selection</div>
+        </div>
+
+        <!-- Section 2: Conference Championships Shelf -->
+        <div class="shelf-section">
+          <div class="shelf-header">
+            <div>
+              <h2 class="shelf-title">Conference Championships</h2>
+              <p class="shelf-subtitle">Title appearances earned through playoff bracket dominance.</p>
+            </div>
+            <span class="shelf-count">0 TROPHIES</span>
+          </div>
+          <div class="trophy-grid" style="color:#666; font-style: italic; padding: 0.5rem;">
+            No conference items unlocked yet.
+          </div>
+        </div>
+
+        <!-- Section 3: Top Honors & Annual Awards Shelf -->
+        <div class="shelf-section">
+          <div class="shelf-header">
+            <div>
+              <h2 class="shelf-title">Top Honors & Seasonal Awards</h2>
+              <p class="shelf-subtitle">Individual performance metrics and league voting selections.</p>
+            </div>
+            <span class="shelf-count">2 TROPHIES</span>
+          </div>
+          <div class="trophy-grid">
+            <div class="trophy-card">
+              <div class="trophy-icon">⭐</div>
+              <div class="trophy-title">League MVP</div>
+              <div class="trophy-season">Season II</div>
+            </div>
+            <div class="trophy-card">
+              <div class="trophy-icon">🏅</div>
+              <div class="trophy-title">All-Pro Selection</div>
+              <div class="trophy-season">Season I</div>
+            </div>
           </div>
         </div>
       `;
+
+      // Async fetch to plug in the accurate Roblox profile graphic icon
+      fetch(avatarUrl)
+        .then(res => res.json())
+        .then(data => {
+          if(data && data.data && data.data[0]) {
+            document.getElementById('headshot-img').src = data.data[0].imageUrl;
+          }
+        })
+        .catch(() => {
+          // Fallback image source if blocks or connection timeouts happen
+          document.getElementById('headshot-img').src = "https://tr.rbxcdn.com/30day-avatar-headshot/150/150/AvatarHeadshot/Png/Regular/true/-1";
+        });
     }
   </script>
 </body>
