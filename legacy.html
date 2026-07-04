@@ -3,518 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NBL - Hall of Fame Leaderboard</title>
+    <title>Leaderboard Layout Fix</title>
     <style>
         :root {
-            --bg-color: #0b0e14;
-            --main-dark-bg: #150f0b;
-            --row-bg: #221812;
-            --row-border: #322319;
-            --gold-accent: #f1c40f;
-            --text-white: #ffffff;
-            --text-muted: #a89282;
+            --bg-color: #0d0f12;
+            --card-bg: #14181f;
+            --row-bg: #1a202c;
+            --border-color: #2d3748;
+            --gold-accent: #f6ad55;
+            --text-main: #ffffff;
+            --text-muted: #a0aec0;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
         }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-white);
-            padding: 20px;
+            color: var(--text-main);
+            padding: 40px;
         }
 
-        /* Leaderboard Main Container Card matching image_ae8744.png */
-        .leaderboard-container {
-            background-color: var(--main-dark-bg);
-            border-radius: 24px;
-            padding: 30px;
-            max-width: 1300px;
+        /* Fixed Split-Screen Container Layout */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 30px;
+            max-width: 1400px;
             margin: 0 auto;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-
-        /* Legend Top Strip */
-        .xp-legend-strip {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            background-color: #0c0806;
-            padding: 15px 20px;
-            border-radius: 30px;
-            margin-bottom: 35px;
-            align-items: center;
-        }
-        .legend-title {
-            font-weight: 800;
-            font-size: 0.85rem;
-            color: var(--gold-accent);
-            text-transform: uppercase;
-            margin-right: 10px;
-        }
-        .badge-pill {
-            background: #1c130e;
-            border: 1px solid #322319;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-        .badge-pill span {
-            color: var(--gold-accent);
-            background-color: #2c1e16;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 4px;
-        }
-
-        /* Top 3 Podium Construction */
-        .podium-section {
-            display: grid;
-            grid-template-columns: 1fr 1.1fr 1fr;
-            gap: 20px;
-            align-items: end;
-            margin-bottom: 40px;
-        }
-        .podium-card {
-            background: linear-gradient(to bottom, #7f8c8d20, #221812);
-            border: 1px solid var(--row-border);
-            border-radius: 16px;
-            padding: 30px 20px;
-            text-align: center;
-            position: relative;
-        }
-        .podium-card.first {
-            background: linear-gradient(to bottom, #95a5a630, #2d2017);
-            border-bottom: 4px solid var(--gold-accent);
-        }
-        .podium-rank {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #322319;
-            padding: 2px 14px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: var(--text-muted);
-        }
-        .podium-card.first .podium-rank {
-            background: var(--gold-accent);
-            color: #000;
-        }
-        .podium-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #443327;
-            margin: 0 auto 15px auto;
-            border: 2px solid var(--row-border);
-        }
-        .podium-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 6px;
-        }
-        .podium-xp {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: var(--gold-accent);
-        }
-        .podium-sub {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 5px;
-        }
-
-        /* Main Workspace Split Grid Layout */
-        .leaderboard-workspace {
-            display: grid;
-            grid-template-columns: 1fr 340px;
-            gap: 25px;
             align-items: start;
         }
 
-        /* List Controls Header Row */
-        .list-header-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .count-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        .search-bar {
-            background: #0c0806;
-            border: 1px solid var(--row-border);
-            padding: 8px 16px;
-            border-radius: 8px;
-            color: #fff;
-            width: 240px;
-        }
-
-        /* Row Feed Blocks Stack */
-        .player-list-stack {
+        /* Left Hand Main Leaderboard Stack */
+        .leaderboard-list-side {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
+
         .player-row {
             background-color: var(--row-bg);
-            border: 1px solid var(--row-border);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 14px 20px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
-            transition: border-color 0.15s;
+            transition: transform 0.1s, border-color 0.15s;
         }
+
         .player-row:hover {
             border-color: var(--gold-accent);
+            transform: translateX(2px);
         }
+
         .row-left {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
-        .row-placement {
+
+        .row-rank {
             font-weight: 800;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: var(--gold-accent);
-            width: 20px;
+            width: 30px;
         }
-        .row-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: #3a2a1f;
-        }
-        .row-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
+
         .row-name {
             font-weight: 700;
-            font-size: 1rem;
-        }
-        .row-badges {
-            display: flex;
-            gap: 6px;
-        }
-        .mini-badge {
-            background-color: #150f0b;
-            font-size: 0.75rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: #e0d4cc;
+            font-size: 1.1rem;
         }
 
         .row-right {
             display: flex;
             align-items: center;
-            gap: 25px;
-        }
-        .progress-track {
-            width: 140px;
-            height: 6px;
-            background: #110c09;
-            border-radius: 3px;
-        }
-        .progress-bar {
-            height: 100%;
-            background: var(--gold-accent);
-            border-radius: 3px;
-        }
-        .row-xp-display {
-            font-weight: 800;
-            font-size: 1.05rem;
-            width: 90px;
-            text-align: right;
+            gap: 20px;
         }
 
-        /* Locked Side-by-Side Static Breakdown Panel Card Structure */
-        .static-breakdown-panel {
-            background-color: #110c09;
-            border: 1px solid var(--row-border);
-            border-radius: 16px;
-            padding: 24px;
-        }
-        .panel-heading-name {
-            font-size: 1.2rem;
+        .row-xp-value {
             font-weight: 800;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--row-border);
-            padding-bottom: 10px;
-            text-transform: uppercase;
-        }
-        .panel-stat-line {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            margin-bottom: 12px;
-            color: #dcd0c7;
-        }
-        .panel-stat-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .panel-stat-val {
-            font-weight: 700;
+            font-size: 1.1rem;
             color: #fff;
         }
-        .panel-footer {
-            border-top: 1px solid var(--row-border);
-            margin-top: 20px;
+
+        /* Right Hand Stationary Breakdown Card (Exactly like images) */
+        .breakdown-card-static {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .card-header-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-color);
+            text-transform: uppercase;
+        }
+
+        .stat-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
+        }
+
+        .stat-label-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+        }
+
+        .stat-value-box {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* Highlighted Total Block at Bottom */
+        .card-total-footer {
+            margin-top: 24px;
             padding-top: 20px;
+            border-top: 2px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .total-xp-lbl {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--text-muted);
+
+        .total-label-text {
+            font-weight: 800;
+            font-size: 0.85rem;
             text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
         }
-        .total-xp-pill {
-            background-color: var(--gold-accent);
-            color: #000;
-            padding: 6px 14px;
+
+        .total-highlight-pill {
+            background-color: #ecc94b;
+            color: #1a202c;
+            padding: 8px 18px;
             border-radius: 8px;
             font-weight: 900;
-            font-size: 1rem;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(236, 201, 75, 0.2);
         }
     </style>
 </head>
 <body>
 
-    <!-- Header / Navbar -->
-    <header>
-        <div class="logo-area">
-            <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
-                <img src="e1abd0576f5f77741b1f5a27399462ff.webp" alt="NBL Logo" style="height: 45px; width: auto; display: block;">
-                
-                <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px;">National Basketball League</span>
-            </a>
-        </div>
-        <nav>
-            <div class="nav-item"><a href="#">Standings</a></div>
-            <div class="nav-item"><a href="teams.html">Teams</a></div>
-            <div class="nav-item"><a href="matchups.html">Matchups</a></div>
-            
-            <!-- Scores Hover Dropdown Connected to Switcher Functions -->
-            <div class="nav-item">
-                <a href="scores.html">Scores ▾</a>
-                <ul class="dropdown-menu">
-                    <li><a href="javascript:void(0);" onclick="switchSeries('series-1')">Series I</a></li>
-                    <li><a href="javascript:void(0);" onclick="switchSeries('series-2')">Series II</a></li>
-                    <li><a href="javascript:void(0);" onclick="switchSeries('series-3')">Series III</a></li>
-                    <li><a href="javascript:void(0);" onclick="switchSeries('series-4')">Series IV</a></li>
-                    <li><a href="javascript:void(0);" onclick="switchSeries('series-5')">Series V</a></li>
-                </ul>
-            </div>
-            
-            <!-- Added Stats Mega Hover Dropdown Split Layout -->
-            <div class="nav-item">
-                <a href="stats.html">Stats ▾</a>
-                <div class="dropdown-menu dropdown-mega">
-                    <!-- Offense Column -->
-                    <div class="mega-col">
-                        <h4>Offense</h4>
-                        <a href="stats.html?cat=passing">Quarterbacks</a>
-                        <a href="stats.html?cat=rushing">Running Backs</a>
-                        <a href="stats.html?cat=receiving">Wide Receivers</a>
-                        <a href="stats.html?cat=tightends">Tight Ends</a>
-                        <a href="stats.html?cat=center">Centers</a>
-                    </div>
-                    <!-- Defense Column -->
-                    <div class="mega-col">
-                        <h4>Defense</h4>
-                        <a href="stats.html?cat=defensiveends">Defensive Ends</a>
-                        <a href="stats.html?cat=linebackers">Linebackers</a>
-                        <a href="stats.html?cat=secondary">Defensive Backs</a>
-                    </div>
-                    <!-- Special Teams Column -->
-                    <div class="mega-col">
-                        <h4>Special Teams</h4>
-                        <a href="stats.html?cat=kicking">Kickers</a>
-                        <h4 style="margin-top: 15px;">Record Book</h4>
-                        <a href="#">All-Time Stats</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="nav-item"><a href="#">Rulebook</a></div>
-            
-            <!-- Legacy Hover Dropdown -->
-            <div class="nav-item">
-                <a href="#">Legacy ▾</a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Hall of Fame</a></li>
-                    <li><a href="#">Archives</a></li>
-                </ul>
-            </div>
-        </nav>
+    <div class="workspace-grid">
         
-        <div class="right-actions">
-            <!-- Functional Light/Dark circle button -->
-            <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Mode">🌙</button>
-            <a href="#" class="join-btn">Join Now</a>
-        </div>
-    </header>
-
-    <div class="leaderboard-container">
-        <!-- System Map Legend Guidelines -->
-        <div class="xp-legend-strip">
-            <div class="legend-title">How XP is Scored</div>
-            <div class="badge-pill">💍 Allegiance Bowl <span>1,000</span></div>
-            <div class="badge-pill">🏆 Conf. Title <span>400</span></div>
-            <div class="badge-pill">👑 MVP <span>1,000</span></div>
-            <div class="badge-pill">🔥 OPOTY / DPOTY <span>750</span></div>
-            <div class="badge-pill">🎖️ Positional POTY <span>500</span></div>
-            <div class="badge-pill">⭐ 1st All-Pro <span>300</span></div>
-            <div class="badge-pill">🌟 Star Bowl <span>150</span></div>
-            <div class="badge-pill">👑 League Crown <span>300</span></div>
-            <div class="badge-pill">🏅 Achievement Badge <span>100–1,000</span></div>
-        </div>
-
-        <!-- Shaded Header Top Podium Elements Grid -->
-        <div class="podium-section">
-            <div class="podium-card">
-                <div class="podium-rank">#2</div>
-                <div class="podium-avatar"></div>
-                <div class="podium-name">TheCoopDudeddd</div>
-                <div class="podium-xp">19,850 <span style="font-size:0.75rem;color:var(--gold-accent);">XP</span></div>
-                <div class="podium-sub">1x 💍 · 1x MVP</div>
-            </div>
-            <div class="podium-card first">
-                <div class="podium-rank">👑 #1</div>
-                <div class="podium-avatar"></div>
-                <div class="podium-name">FINLEY4K</div>
-                <div class="podium-xp">23,800 <span style="font-size:0.75rem;color:var(--gold-accent);">XP</span></div>
-                <div class="podium-sub">6x 💍 · 2x MVP</div>
-            </div>
-            <div class="podium-card">
-                <div class="podium-rank">#3</div>
-                <div class="podium-avatar"></div>
-                <div class="podium-name">xDiminq</div>
-                <div class="podium-xp">19,750 <span style="font-size:0.75rem;color:var(--gold-accent);">XP</span></div>
-                <div class="podium-sub">2x 👑 · 2x MVP</div>
-            </div>
-        </div>
-
-        <!-- Structural Split Layout Workstation Area -->
-        <div class="leaderboard-workspace">
+        <div class="leaderboard-list-side">
             
-            <div class="left-list-side">
-                <div class="list-header-bar">
-                    <div class="count-label"><strong>1,132</strong> ranked players</div>
-                    <input type="text" class="search-bar" placeholder="Filter players...">
+            <div class="player-row" 
+                 data-id="221991455" 
+                 data-username="FINLEY4K" 
+                 data-bowls="9,000" 
+                 data-conf="2,400" 
+                 data-mvp="2,750" 
+                 data-opoty="500" 
+                 data-allpro="1,400" 
+                 data-star="1,800" 
+                 data-crowns="2,400" 
+                 data-badges="3,550" 
+                 data-xp="23,800">
+                <div class="row-left">
+                    <div class="row-rank">1</div>
+                    <div class="row-name">FINLEY4K</div>
                 </div>
-
-                <div class="player-list-stack" id="leaderboardStackList">
-                    <!-- Row 1: FINLEY4K -->
-                    <div class="player-row" data-id="221991455" data-username="FINLEY4K" data-bowls="9,000" data-conf="2,400" data-mvp="2,750" data-opoty="500" data-allpro="1,400" data-star="1,800" data-crowns="2,400" data-badges="3,550" data-xp="23,800">
-                        <div class="row-left">
-                            <div class="row-placement">1</div>
-                            <div class="row-avatar"></div>
-                            <div class="row-meta">
-                                <div class="row-name">FINLEY4K</div>
-                                <div class="row-badges">
-                                    <span class="mini-icon-badge">💍 6x</span>
-                                    <span class="mini-icon-badge">👑 2x</span>
-                                    <span class="mini-icon-badge">🏆 6x</span>
-                                    <span class="mini-icon-badge">⭐ 5x</span>
-                                    <span class="mini-icon-badge">🌟 12x</span>
-                                    <span class="mini-icon-badge">👑 8x</span>
-                                    <span class="mini-icon-badge">🏅 11x</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row-right">
-                            <div class="progress-track"><div class="progress-bar" style="width: 100%"></div></div>
-                            <div class="row-xp-display">23,800 XP</div>
-                        </div>
-                    </div>
-
-                    <!-- Row 2: TheCoopDudeddd -->
-                    <div class="player-row" data-id="87654321" data-username="TheCoopDudeddd" data-bowls="1,000" data-conf="400" data-mvp="1,000" data-opoty="5,250" data-allpro="6,600" data-star="2,250" data-crowns="1,200" data-badges="2,150" data-xp="19,850">
-                        <div class="row-left">
-                            <div class="row-placement">2</div>
-                            <div class="row-avatar"></div>
-                            <div class="row-meta">
-                                <div class="row-name">TheCoopDudeddd</div>
-                                <div class="row-badges">
-                                    <span class="mini-icon-badge">💍 1x</span>
-                                    <span class="mini-icon-badge">👑 1x</span>
-                                    <span class="mini-icon-badge">🏆 1x</span>
-                                    <span class="mini-icon-badge">⭐ 7x</span>
-                                    <span class="mini-icon-badge">🌟 22x</span>
-                                    <span class="mini-icon-badge">👑 15x</span>
-                                    <span class="mini-icon-badge">🏅 7x</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row-right">
-                            <div class="progress-track"><div class="progress-bar" style="width: 84%"></div></div>
-                            <div class="row-xp-display">19,850 XP</div>
-                        </div>
-                    </div>
+                <div class="row-right">
+                    <div class="row-xp-value">23,800 XP</div>
                 </div>
             </div>
 
-            <!-- Statically Fixed Breakdown View Box (Stays Put by XP Column) -->
-            <div class="static-breakdown-panel" id="fixedBreakdownPanel">
-                <div class="panel-heading-name" id="panelPlayerName">FINLEY4K</div>
-                <div class="panel-stat-line">
-                    <div class="panel-stat-label">💍 Allegiance Bowls</div>
-                    <div class="panel-stat-val" id="lblBowls">9,000</div>
+            <div class="player-row" 
+                 data-id="87654321" 
+                 data-username="TheCoopDudeddd" 
+                 data-bowls="1,000" 
+                 data-conf="400" 
+                 data-mvp="1,000" 
+                 data-opoty="5,250" 
+                 data-allpro="6,600" 
+                 data-star="2,250" 
+                 data-crowns="1,200" 
+                 data-badges="2,150" 
+                 data-xp="19,850">
+                <div class="row-left">
+                    <div class="row-rank">2</div>
+                    <div class="row-name">TheCoopDudeddd</div>
                 </div>
-                <div class="panel-stat-line">
-                    <div class="panel-stat-label">🏆 Conference Championships</div>
-                    <div class="panel-stat-val" id="lblConf">2,400</div>
-                </div>
-                <div class="panel-stat-line">
-                    <div class="panel-stat-label">👑 Top Honors</div>
-                    <div class="panel-stat-val" id="lblMvp">2,750</div>
-                </div>
-                <div class="panel-stat-line">
-                    <div class="panel-stat-label">🔥 Annual Awards</div>
-                    <div class="panel-stat-val" id="lblOpoty">500</div>
-                </div>
-                <div class="panel-stat-line">
-                    <div class="panel-stat-label">⭐ All-Pro Selections</div>
-                    <div class="panel-stat-val" id="lblAllPro">1,400</div>
-                </div>
-                <div class="panel-stat-line">
-                    <div class="panel-stat-label">🌟 Star Bowl Selections</div>
-                    <div class="panel-stat-val" id="lblStar">1,800</div>
-                </div>
-                <div class="panel-stat-line">
-                    <div class="panel-stat-label">👑 League-Leader Crowns</div>
-                    <div class="panel-stat-val" id="lblCrowns">2,400</div>
-                </div>
-                <div class="panel-stat-line">
-                    <div class="panel-stat-label">🏅 Achievement Badges</div>
-                    <div class="panel-stat-val" id="lblBadges">3,550</div>
-                </div>
-                <div class="panel-footer">
-                    <div class="total-xp-lbl">Total Legacy XP</div>
-                    <div class="total-xp-pill" id="lblTotalXp">23,800</div>
+                <div class="row-right">
+                    <div class="row-xp-value">19,850 XP</div>
                 </div>
             </div>
 
         </div>
+
+        <div class="breakdown-card-static">
+            <div class="card-header-title" id="panelTargetUser">FINLEY4K</div>
+            
+            <div class="stat-item-row">
+                <div class="stat-label-box">💍 Allegiance Bowls</div>
+                <div class="stat-value-box" id="valBowls">9,000</div>
+            </div>
+            <div class="stat-item-row">
+                <div class="stat-label-box">🏆 Conference Titles</div>
+                <div class="stat-value-box" id="valConf">2,400</div>
+            </div>
+            <div class="stat-item-row">
+                <div class="stat-label-box">👑 Top Honors / MVPs</div>
+                <div class="stat-value-box" id="valMvp">2,750</div>
+            </div>
+            <div class="stat-item-row">
+                <div class="stat-label-box">🔥 Yearly Awards</div>
+                <div class="stat-value-box" id="valOpoty">500</div>
+            </div>
+            <div class="stat-item-row">
+                <div class="stat-label-box">⭐ All-Pro Appearances</div>
+                <div class="stat-value-box" id="valAllPro">1,400</div>
+            </div>
+            <div class="stat-item-row">
+                <div class="stat-label-box">🌟 Star Bowl Honors</div>
+                <div class="stat-value-box" id="valStar">1,800</div>
+            </div>
+            <div class="stat-item-row">
+                <div class="stat-label-box">👑 Stat Category Crowns</div>
+                <div class="stat-value-box" id="valCrowns">2,400</div>
+            </div>
+            <div class="stat-item-row">
+                <div class="stat-label-box">🏅 Achievement Badges</div>
+                <div class="stat-value-box" id="valBadges">3,550</div>
+            </div>
+
+            <div class="card-total-footer">
+                <div class="total-label-text">Total Legacy XP</div>
+                <div class="total-highlight-pill" id="valTotalXp">23,800</div>
+            </div>
+        </div>
+
     </div>
 
     <script src="legacy.js"></script>
