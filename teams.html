@@ -3,91 +3,968 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFL - Teams Directory</title>
+    <title>National Basketball League - Teams</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #fcfcfc; color: #111827; }
+        /* CSS Variables matching your exact sitewide theme settings */
+        :root {
+            --bg-color: #fcfcfc;
+            --card-bg: #ffffff;
+            --text-color: #111111;
+            --text-light: #777777;
+            --border-color: #e0e0e0;
+            --nav-bg: #ffffff;
+            --accent-red: #e61e2b;
+            --footer-bg: #161a22;
+            --footer-text: #8a94a6;
+            
+            /* Stats Table Variables */
+            --table-header-bg: #8c2630;
+            --table-row-hover: #fafafa;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0b0e14;
+            --card-bg: #161b22;
+            --text-color: #f0f6fc;
+            --text-light: #8b949e;
+            --border-color: #30363d;
+            --nav-bg: #161b22;
+            
+            --table-header-bg: #701c25;
+            --table-row-hover: #1c212a;
+        }
+
+        /* Base Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- NAVIGATION BAR STYLES --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 4%;
+            background: var(--nav-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            z-index: 1000;
+        }
+        .logo-area a {
+            text-decoration: none;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-area span {
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -0.5px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .nav-item {
+            position: relative;
+        }
+        .nav-item > a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 0.92rem;
+            padding: 8px 14px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .nav-item > a:hover {
+            background-color: rgba(0,0,0,0.04);
+        }
+        [data-theme="dark"] .nav-item > a:hover {
+            background-color: rgba(255,255,255,0.04);
+        }
+
+        /* Dropdowns & Mega Dropdown Menus */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--card-bg);
+            min-width: 160px;
+            box-shadow: 0px 8px 24px rgba(0,0,0,0.12);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            list-style: none;
+            padding: 6px 0;
+            margin-top: 5px;
+        }
+        .dropdown-menu a {
+            color: var(--text-color);
+            padding: 9px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+        .dropdown-menu a:hover {
+            background-color: rgba(0,0,0,0.04);
+        }
+        .nav-item:hover .dropdown-menu {
+            display: block;
+        }
+
+        /* Mega Menu Configuration */
+        .nav-item:hover .dropdown-mega {
+            display: flex !important;
+        }
+        .dropdown-mega {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--card-bg);
+            min-width: 560px;
+            box-shadow: 0px 8px 24px rgba(0,0,0,0.12);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            gap: 32px;
+            list-style: none;
+            margin-top: 5px;
+        }
+        .mega-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .mega-col h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            letter-spacing: 0.8px;
+        }
+        .mega-col a {
+            color: var(--text-color);
+            padding: 6px 0;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .mega-col a:hover {
+            color: var(--accent-red);
+        }
+
+        /* Right Actions */
+        .right-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .theme-toggle-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            font-size: 1.15rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+        .join-btn {
+            background-color: var(--accent-red);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.92rem;
+            letter-spacing: -0.2px;
+        }
+
+        /* --- CONTENT BODY STYLE --- */
+        .page-header-section {
+            width: 90%;
+            max-width: 1200px;
+            margin: 45px auto 10px auto;
+        }
+        .subtitle-tag {
+            color: #3b82f6;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .page-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 10px;
+        }
+        .page-description {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto 60px auto;
+        }
+        .team-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px 20px;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+        }
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: var(--accent-color, var(--accent-red));
+        }
+        .logo-box {
+            width: 110px;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+        .logo-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .team-name {
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 6px;
+        }
+        .team-record {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        /* --- TEAM VIEW STYLES --- */
+        .profile-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto 60px auto;
+        }
+        .back-btn {
+            color: var(--accent-red);
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            text-transform: lowercase;
+        }
+        .team-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 40px;
+            border-radius: 16px;
+            color: white;
+            margin-bottom: 40px;
+        }
+        .banner-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .banner-logo {
+            height: 85px;
+            width: auto;
+            object-fit: contain;
+        }
+        .banner-city {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .banner-name {
+            font-size: 3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+        .banner-right {
+            text-align: right;
+        }
+        .banner-record {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        .badge-row {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+        .banner-badge {
+            background: rgba(255,255,255,0.15);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-header {
+            font-size: 1.5rem;
+            font-weight: 800;
+            border-bottom: 3px solid #8c2630;
+            padding-bottom: 6px;
+            margin: 40px 0 20px 0;
+        }
         
-        header { background: #ffffff; border-bottom: 1px solid #efefef; position: sticky; top: 0; z-index: 1000; }
-        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 2rem; }
-        .logo-area { font-weight: 900; font-size: 1.25rem; letter-spacing: -0.05em; text-transform: uppercase; color: #111827; text-decoration: none; }
-        .main-nav { display: flex; gap: 1.75rem; }
-        .nav-item { text-decoration: none; color: #4b5563; font-size: 0.85rem; font-weight: 700; text-transform: lowercase; position: relative; }
-        .nav-item.active { color: #e61e2b; }
-        .nav-item.active::after { content: ''; position: absolute; bottom: -19px; left: 0; right: 0; height: 2px; background: #e61e2b; }
+        /* Schedule List View Layout */
+        .schedule-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .schedule-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 14px 24px;
+            border-radius: 8px;
+        }
+        .sched-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .sched-wk {
+            color: var(--text-light);
+            min-width: 45px;
+        }
+        .sched-type {
+            color: var(--text-light);
+            opacity: 0.6;
+            font-weight: 500;
+        }
+        .sched-opp {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+        }
+        .sched-opp img {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+        }
+        .sched-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .outcome-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+        .outcome-w { background-color: #10b981; }
+        .outcome-l { background-color: #a3a3a3; }
 
-        main { max-width: 1200px; margin: 3rem auto; padding: 0 2rem; }
-        .directory-header { margin-bottom: 2rem; }
-        .directory-header h2 { font-size: 2.25rem; font-weight: 900; text-transform: lowercase; letter-spacing: -0.04em; margin-bottom: 0.35rem; }
-        .directory-header p { font-size: 0.9rem; color: #6b7280; }
+        /* Stats Table Styles */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            background: var(--card-bg);
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+        .stats-table th {
+            background-color: var(--table-header-bg);
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            padding: 12px 16px;
+            letter-spacing: 0.5px;
+        }
+        .stats-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+        .stats-table tbody tr:hover {
+            background-color: var(--table-row-hover);
+        }
+        .player-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+        .player-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            object-fit: cover;
+        }
 
-        /* Exact 6-Column Grid Layout Configuration */
-        .teams-hex-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; }
-        .franchise-matrix-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.75rem 1rem; text-align: center; text-decoration: none; color: inherit; display: block; transition: box-shadow 0.15s ease, transform 0.1s ease; border-top: 4px solid #cbd5e1; }
-        .franchise-matrix-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
-        
-        /* Direct Color Key Codes for Top Accents */
-        .t-ari { border-top-color: #97233f; }
-        .t-atl { border-top-color: #a71930; }
-        .t-bal { border-top-color: #241773; }
-        .t-buf { border-top-color: #00338d; }
-        .t-car { border-top-color: #0085ca; }
-        .t-chi { border-top-color: #0b2265; }
+        /* --- FOOTER STYLES --- */
+        footer {
+            background-color: #11141a;
+            color: #8e99a8;
+            padding: 60px 8% 50px 8%;
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-top: 1px solid #1f242e;
+        }
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .footer-socials {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .footer-socials a {
+            color: #8e99a8;
+            font-size: 1.3rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-socials a:hover {
+            color: #ffffff;
+        }
+        .footer-logo img {
+            height: 55px;
+            width: auto;
+            display: block;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+        }
+        .footer-links-container {
+            display: flex;
+            gap: 100px;
+        }
+        .footer-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .footer-column a {
+            color: #8e99a8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            text-transform: lowercase;
+        }
+        .footer-column a:hover {
+            color: #ffffff;
+        }
 
-        .logo-placeholder-container { width: 64px; height: 64px; border-radius: 50%; background: #f9fafb; margin: 0 auto 1.25rem; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; border: 1px solid #f3f4f6; }
-        .label-city { font-size: 0.75rem; color: #9ca3af; display: block; font-weight: 500; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 0.1rem; }
-        .label-nickname { font-size: 1rem; font-weight: 800; color: #111827; letter-spacing: -0.02em; }
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            nav { flex-wrap: wrap; justify-content: center; }
+            footer { flex-direction: column; gap: 40px; align-items: center; text-align: center; }
+            .footer-links-container { gap: 50px; }
+            .team-banner { flex-direction: column; text-align: center; gap: 20px; }
+            .banner-left { flex-direction: column; gap: 12px; }
+            .banner-right { text-align: center; }
+            .badge-row { justify-content: center; }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="nav-container">
-            <a href="index.html" class="logo-area">AFL ECOSYSTEM</a>
-            <nav class="main-nav">
-                <a href="index.html" class="nav-item">standings</a>
-                <a href="teams.html" class="nav-item active">teams</a>
-                <a href="scores.html" class="nav-item">scores</a>
-                <a href="stats.html" class="nav-item">stats</a>
-                <a href="rulebook.html" class="nav-item">rulebook</a>
-                <a href="legacy.html" class="nav-item">legacy</a>
-            </nav>
+        <div class="logo-area">
+            <a href="/">
+                <img src="e1abd0576f5f77741b1f5a27399462ff.webp" alt="NBL Logo" style="height: 40px; width: auto;">
+                <span>National Basketball League</span>
+            </a>
+        </div>
+        <nav>
+            <div class="nav-item"><a href="#">Standings</a></div>
+            <div class="nav-item"><a href="/teams">Teams</a></div>
+            <div class="nav-item"><a href="matchups.html">Matchups</a></div>
+            <div class="nav-item">
+                <a href="/scores">Scores ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="/scores?series=1">Series I</a></li>
+                    <li><a href="/scores?series=2">Series II</a></li>
+                    <li><a href="/scores?series=3">Series III</a></li>
+                    <li><a href="/scores?series=4">Series IV</a></li>
+                    <li><a href="/scores?series=5">Series V</a></li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <a href="/stats">Stats ▾</a>
+                <div class="dropdown-menu dropdown-mega">
+                    <div class="mega-col">
+                        <h4>Offense</h4>
+                        <a href="/stats?cat=passing">Quarterbacks</a>
+                        <a href="/stats?cat=rushing">Running Backs</a>
+                        <a href="/stats?cat=receiving">Wide Receivers</a>
+                    </div>
+                    <div class="mega-col">
+                        <h4>Defense</h4>
+                        <a href="/stats?cat=defensiveends">Defensive Ends</a>
+                        <a href="/stats?cat=linebackers">Linebackers</a>
+                    </div>
+                    <div class="mega-col">
+                        <h4>Special Teams</h4>
+                        <a href="/stats?cat=kicking">Kickers</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item"><a href="#">Rulebook</a></div>
+            <div class="nav-item">
+                <a href="#">Legacy ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">History</a></li>
+                    <li><a href="#">Hall of Fame</a></li>
+                    <li><a href="#">Past Seasons</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="right-actions">
+            <button class="theme-toggle-btn" id="themeToggleBtn">🌙</button>
+            <a href="#" class="join-btn">Join Now</a>
         </div>
     </header>
 
-    <main>
-        <div class="directory-header">
-            <h2>teams</h2>
-            <p>Select a team to view their schedule and player stats.</p>
+    <div class="page-header-section" id="pageHeader">
+        <span class="subtitle-tag">League</span>
+        <h2 class="page-title">NBL - Teams</h2>
+        <p class="page-description">Every franchise in the league. Pick a team for schedule, roster, and player profiles.</p>
+    </div>
+
+    <div class="teams-grid" id="teamsGridContainer"></div>
+
+    <div class="profile-container" id="teamProfileView" style="display: none;">
+        <a href="/teams" class="back-btn" id="closeProfileBtn">← back to teams</a>
+        
+        <div class="team-banner" id="teamBanner">
+            <div class="banner-left">
+                <img id="bannerLogo" src="" alt="" class="banner-logo">
+                <div>
+                    <span id="bannerCity" class="banner-city"></span>
+                    <h1 id="bannerName" class="banner-name"></h1>
+                </div>
+            </div>
+            <div class="banner-right">
+                <div id="bannerRecord" class="banner-record"></div>
+                <div class="badge-row">
+                    <span class="banner-badge" id="badgeConf">CONF NFC</span>
+                    <span class="banner-badge" id="badgeSeed">SEED 4</span>
+                    <span class="banner-badge">TP 17</span>
+                    <span class="banner-badge">PD 25</span>
+                    <span class="banner-badge">SOS 0.62</span>
+                </div>
+            </div>
         </div>
 
-        <div class="teams-hex-grid">
-            <a href="#" class="franchise-matrix-card t-ari">
-                <div class="logo-placeholder-container" style="color: #97233f;">ARI</div>
-                <span class="label-city">Arizona</span><span class="label-nickname">Cardinals</span>
-            </a>
-            <a href="#" class="franchise-matrix-card t-atl">
-                <div class="logo-placeholder-container" style="color: #a71930;">ATL</div>
-                <span class="label-city">Atlanta</span><span class="label-nickname">Falcons</span>
-            </a>
-            <a href="#" class="franchise-matrix-card t-bal">
-                <div class="logo-placeholder-container" style="color: #241773;">BAL</div>
-                <span class="label-city">Baltimore</span><span class="label-nickname">Ravens</span>
-            </a>
-            <a href="#" class="franchise-matrix-card t-buf">
-                <div class="logo-placeholder-container" style="color: #00338d;">BUF</div>
-                <span class="label-city">Buffalo</span><span class="label-nickname">Bills</span>
-            </a>
-            <a href="#" class="franchise-matrix-card t-car">
-                <div class="logo-placeholder-container" style="color: #0085ca;">CAR</div>
-                <span class="label-city">Carolina</span><span class="label-nickname">Panthers</span>
-            </a>
-            <a href="#" class="franchise-matrix-card t-chi">
-                <div class="logo-placeholder-container" style="color: #0b2265;">CHI</div>
-                <span class="label-city">Chicago</span><span class="label-nickname">Bears</span>
-            </a>
-        </div>
-    </main>
+        <h3 class="section-header">Schedule</h3>
+        <div class="schedule-list" id="scheduleContainer"></div>
 
+        <h3 class="section-header">Passing</h3>
+        <div class="table-responsive">
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Rk</th>
+                        <th>Player</th>
+                        <th>Pts</th>
+                        <th>Yds</th>
+                        <th>C %</th>
+                        <th>TD</th>
+                        <th>INT</th>
+                        <th>SCK</th>
+                        <th>3rd</th>
+                        <th>4th</th>
+                        <th>Snap</th>
+                    </tr>
+                </thead>
+                <tbody id="passingTableBody"></tbody>
+            </table>
+        </div>
+
+        <h3 class="section-header">Rushing</h3>
+        <div class="table-responsive">
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Rk</th>
+                        <th>Player</th>
+                        <th>Pts</th>
+                        <th>Yds</th>
+                        <th>Y/Att</th>
+                        <th>Att</th>
+                        <th>TD</th>
+                        <th>Fum</th>
+                        <th>1st</th>
+                        <th>3rd</th>
+                        <th>4th</th>
+                        <th>20</th>
+                        <th>Snap</th>
+                    </tr>
+                </thead>
+                <tbody id="rushingTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-left">
+            <div class="footer-socials">
+                <a href="#" aria-label="Discord">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.578-.406.833a12.256 12.256 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032a.054.054 0 0 0 .022.035a13.271 13.271 0 0 0 3.984 2.016.054.054 0 0 0 .058-.019c.308-.42.582-.865.818-1.34a.05.05 0 0 0-.028-.069a8.726 8.726 0 0 1-1.253-.59a.054.054 0 0 1-.006-.09c.085-.063.17-.129.252-.196a.054.054 0 0 1 .056-.008c2.58 1.184 5.374 1.184 7.914 0a.054.054 0 0 1 .056.008c.082.067.166.133.252.196a.054.054 0 0 1-.006.09 8.2 8.2 0 0 1-1.253.59.05.05 0 0 0-.028.069c.237.475.511.92.817 1.34a.054.054 0 0 0 .058.02 13.281 13.281 0 0 0 3.984-2.016.056.056 0 0 0 .023-.035c.321-3.462-.239-6.474-1.649-9.107a.042.042 0 0 0-.021-.019zm-7.348 7.37c-.785 0-1.432-.718-1.432-1.604c0-.885.637-1.604 1.432-1.604c.795 0 1.44.724 1.432 1.604c0 .886-.637 1.604-1.432 1.604zm4.08 0c-.785 0-1.432-.718-1.432-1.604c0-.885.637-1.604 1.432-1.604c.795 0 1.44.724 1.432 1.604c0 .886-.637 1.604-1.432 1.604z"/>
+                    </svg>
+                </a>
+                <a href="#" aria-label="Twitter">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.055-4.425 5.055H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+                    </svg>
+                </a>
+            </div>
+            <div class="footer-logo">
+                <img src="e1abd0576f5f77741b1f5a27399462ff.webp" alt="NBL Branded Logo Footer">
+            </div>
+        </div>
+
+        <div class="footer-links-container">
+            <div class="footer-column">
+                <a href="/">home</a>
+                <a href="#">standings</a>
+                <a href="/stats">stats</a>
+                <a href="/scores">scores</a>
+            </div>
+            <div class="footer-column">
+                <a href="#">rulebook</a>
+                <a href="#">legacy</a>
+                <a href="#">documentation</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Centralized Database containing game stats & schedules for each team
+        const teamsData = [
+            { 
+                name: "California", 
+                record: "9 - 1", 
+                logo: "california.webp", 
+                color: "#003262", 
+                slug: "california",
+                conf: "BIG10",
+                seed: "1",
+                tp: "827",
+                pd: "+263",
+                sos: "0.43",
+                schedule: [
+                    { week: "WK 1", type: "@", oppLogo: "illinois.webp", oppName: "ILLINOIS", score: "49 - 8", win: true },
+                    { week: "WK 2", type: "vs", oppLogo: "oklahoma.webp", oppName: "OKLAHOMA", score: "64 - 22", win: true },
+                    { week: "WK 3", type: "vs", oppLogo: "canada.webp", oppName: "CANADA", score: "97 - 69", win: true },
+                    { week: "WK 4", type: "vs", oppLogo: "carolina.webp", oppName: "CAROLINA", score: "53 - 12", win: true },
+                    { week: "WK 5", type: "@ ", oppLogo: "illinois.webp", oppName: "ILLINOIS", score: "124 - 97", win: true },
+                    { week: "WK 6", type: "vs", oppLogo: "michigan.webp", oppName: "MICHIGAN", score: "122 - 81", win: true },
+                    { week: "WK 7", type: "@", oppLogo: "canada.webp", oppName: "CANADA", score: "123 - 109", win: true },
+                    { week: "WK 8", type: "vs", oppLogo: "florida.webp", oppName: "FLORIDA", score: "90 - 84", win: true },
+                    { week: "WK 9", type: "vs", oppLogo: "illinois.webp", oppName: "ILLINOIS", score: "40 - 0", win: true },
+                    { week: "WK 10", type: "@", oppLogo: "oklahoma.webp", oppName: "OKLAHOMA", score: "112 - 95", win: false }   
+                ],
+                passing: [
+                    { rk: 15, name: "TheLordPred", avatar: "avatar1.png", pts: 255.6, yds: 3939, pct: "50.19%", td: 37, int: 25, sck: 39, c3rd: 13, c4th: 7, snap: 262 },
+                    { rk: 26, name: "dougdougsahurr", avatar: "avatar2.png", pts: 143.8, yds: 1196, pct: "60.54%", td: 30, int: 12, sck: 6, c3rd: 11, c4th: 3, snap: 171 }
+                ],
+                rushing: [
+                    { rk: 32, name: "blues", avatar: "avatar3.png", pts: 46.4, yds: 44, yatt: 4.0, att: 11, td: 7, fum: 0, c1st: 8, c3rd: 0, c4th: 0, c20: 0, snap: 11 }
+                ]
+            },
+            { 
+                name: "Canada Franchise", 
+                record: "6-4", 
+                logo: "canada.webp", 
+                color: "#D80621", 
+                slug: "canada",
+                conf: "INT",
+                seed: "3",
+                tp: "410",
+                pd: "+12",
+                sos: "0.51",
+                schedule: [
+                    { week: "WK 1", type: "vs", oppLogo: "canada.webp", oppName: "TEXANS", score: "24 - 14", win: true }
+                ],
+                passing: [], rushing: []
+            },
+            { name: "Carolina", record: "0–0", logo: "carolina.webp", color: "#4B9CD3", slug: "north-carolina", conf: "ACC", seed: "8", tp: "0", pd: "0", sos: "0.00", schedule: [], passing: [], rushing: [] },
+            { name: "Florida", record: "6-4", logo: "florida.webp", color: "#005f73", slug: "florida", conf: "SEC", seed: "5", tp: "520", pd: "+45", sos: "0.55", schedule: [], passing: [], rushing: [] },
+            { name: "Illinois", record: "3-7", logo: "illinois.webp", color: "#FF5F05", slug: "illinois", conf: "BIG10", seed: "12", tp: "310", pd: "-110", sos: "0.48", schedule: [], passing: [], rushing: [] },
+            { name: "Michigan", record: "6-4", logo: "michigan.webp", color: "#FFCB05", slug: "michigan", conf: "BIG10", seed: "6", tp: "490", pd: "+30", sos: "0.52", schedule: [], passing: [], rushing: [] },
+            { name: "Oklahoma", record: "6-4", logo: "oklahoma.webp", color: "#841617", slug: "oklahoma", conf: "SEC", seed: "4", tp: "580", pd: "+65", sos: "0.58", schedule: [], passing: [], rushing: [] },
+            { name: "Texas", record: "4-6", logo: "texas.webp", color: "#BF5700", slug: "texas", conf: "SEC", seed: "9", tp: "390", pd: "-20", sos: "0.50", schedule: [], passing: [], rushing: [] }
+        ];
+
+        // --- THEME ENGINE ---
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                themeToggleBtn.textContent = '🌙';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggleBtn.textContent = '☀️';
+            }
+        });
+
+        // --- GRID LOADING CONFIG ---
+        function loadTeamsGrid() {
+            const container = document.getElementById('teamsGridContainer');
+            container.innerHTML = '';
+            
+            teamsData.forEach(team => {
+                const card = document.createElement('div');
+                card.className = 'team-card';
+                card.style.setProperty('--accent-color', team.color);
+                card.innerHTML = `
+                    <div class="logo-box">
+                        <img src="${team.logo}" alt="${team.name} Logo">
+                    </div>
+                    <h3 class="team-name">${team.name}</h3>
+                    <span class="team-record">${team.record}</span>
+                `;
+                
+                card.addEventListener('click', () => {
+                    // Update URL display without reloading page when user clicks a card manually
+                    window.history.pushState({}, '', `/teams/${team.slug}`);
+                    showTeamProfile(team);
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        // --- PROFILE VIEW INTERACTION ---
+        function showTeamProfile(team) {
+            document.getElementById('teamsGridContainer').style.display = 'none';
+            document.getElementById('pageHeader').style.display = 'none';
+            document.getElementById('teamProfileView').style.display = 'block';
+
+            document.getElementById('teamBanner').style.backgroundColor = team.color;
+            document.getElementById('bannerLogo').src = team.logo;
+            
+            const nameParts = team.name.split(' ');
+            const lastName = nameParts.pop();
+            const cityPref = nameParts.join(' ');
+            
+            document.getElementById('bannerCity').textContent = cityPref || "NATIONAL";
+            document.getElementById('bannerName').textContent = lastName;
+            document.getElementById('bannerRecord').textContent = team.record;
+
+            // Badges Configuration Fallbacks
+            document.getElementById('badgeConf').textContent = `CONF ${team.conf || 'NBL'}`;
+            document.getElementById('badgeSeed').textContent = `SEED ${team.seed || '-'}`;
+
+            // Populate Schedules
+            const schedContainer = document.getElementById('scheduleContainer');
+            schedContainer.innerHTML = '';
+            if (!team.schedule || team.schedule.length === 0) {
+                schedContainer.innerHTML = '<div class="schedule-row">No games listed for this season.</div>';
+            } else {
+                team.schedule.forEach(game => {
+                    schedContainer.innerHTML += `
+                        <div class="schedule-row">
+                            <div class="sched-left">
+                                <span class="sched-wk">${game.week}</span>
+                                <span class="sched-type">${game.type}</span>
+                                <div class="sched-opp">
+                                    <img src="${game.oppLogo}" alt="${game.oppName} Logo">
+                                    <span>${game.oppName}</span>
+                                </div>
+                            </div>
+                            <div class="sched-right">
+                                <span>${game.score}</span>
+                                <span class="outcome-badge ${game.win ? 'outcome-w' : 'outcome-l'}">${game.win ? 'W' : 'L'}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Populate Passing Stats
+            const passingBody = document.getElementById('passingTableBody');
+            passingBody.innerHTML = '';
+            if (team.passing && team.passing.length > 0) {
+                team.passing.forEach(p => {
+                    passingBody.innerHTML += `
+                        <tr>
+                            <td>${p.rk}</td>
+                            <td>
+                                <div class="player-cell">
+                                    <img src="${p.avatar}" alt="" class="player-avatar">
+                                    <span>${p.name}</span>
+                                </div>
+                            </td>
+                            <td>${p.pts}</td>
+                            <td>${p.yds}</td>
+                            <td>${p.pct}</td>
+                            <td>${p.td}</td>
+                            <td>${p.int}</td>
+                            <td>${p.sck}</td>
+                            <td>${p.c3rd}</td>
+                            <td>${p.c4th}</td>
+                            <td>${p.snap}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                passingBody.innerHTML = `<tr><td colspan="11" style="text-align:center;">No player passing statistics.</td></tr>`;
+            }
+
+            // Populate Rushing Stats
+            const rushingBody = document.getElementById('rushingTableBody');
+            rushingBody.innerHTML = '';
+            if (team.rushing && team.rushing.length > 0) {
+                team.rushing.forEach(r => {
+                    rushingBody.innerHTML += `
+                        <tr>
+                            <td>${r.rk}</td>
+                            <td>
+                                <div class="player-cell">
+                                    <img src="${r.avatar}" alt="" class="player-avatar">
+                                    <span>${r.name}</span>
+                                </div>
+                            </td>
+                            <td>${r.pts}</td>
+                            <td>${r.yds}</td>
+                            <td>${r.yatt.toFixed(1)}</td>
+                            <td>${r.att}</td>
+                            <td>${r.td}</td>
+                            <td>${r.fum}</td>
+                            <td>${r.c1st}</td>
+                            <td>${r.c3rd}</td>
+                            <td>${r.c4th}</td>
+                            <td>${r.c20}</td>
+                            <td>${r.snap}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                rushingBody.innerHTML = `<tr><td colspan="13" style="text-align:center;">No player rushing statistics.</td></tr>`;
+            }
+        }
+
+        // --- CHECK ON LOAD ENGINE ---
+        function checkUrlRoute() {
+            // Check for Vercel rewritten dynamic query param (?team=something)
+            const params = new URLSearchParams(window.location.search);
+            const teamQuery = params.get('team');
+
+            if (teamQuery) {
+                const foundTeam = teamsData.find(t => t.slug === teamQuery);
+                if (foundTeam) {
+                    showTeamProfile(foundTeam);
+                    return;
+                }
+            }
+            
+            // Layout default fallback: if no query, make sure grid is showing
+            document.getElementById('teamsGridContainer').style.display = 'grid';
+            document.getElementById('pageHeader').style.display = 'block';
+            document.getElementById('teamProfileView').style.display = 'none';
+        }
+
+        // Run functions when DOM Content completes loading
+        window.addEventListener('DOMContentLoaded', () => {
+            loadTeamsGrid();
+            checkUrlRoute();
+        });
+    </script>
 </body>
 </html>
