@@ -3,103 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFL - Statistics Hub</title>
+    <title>AFL - Statistics Leaders</title>
     <style>
-        :root { --primary-red: #e61e2b; --border-color: #e2e8f0; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: #f8fafc; }
-        header { background: white; border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; display: flex; justify-content: space-between; }
-        .main-nav a { text-decoration: none; color: #64748b; margin-left: 1.5rem; font-weight: 600; }
-        .main-nav a.active { color: var(--primary-red); }
-
-        main { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
-        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #fcfcfc; color: #111827; }
         
-        select { padding: 0.6rem 1rem; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 6px; background: white; font-weight: 600; }
-        input { padding: 0.6rem 1rem; border: 1px solid var(--border-color); border-radius: 6px; width: 280px; }
+        header { background: #ffffff; border-bottom: 1px solid #efefef; position: sticky; top: 0; z-index: 1000; }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 2rem; }
+        .logo-area { font-weight: 900; font-size: 1.25rem; letter-spacing: -0.05em; text-transform: uppercase; color: #111827; text-decoration: none; }
+        .main-nav { display: flex; gap: 1.75rem; }
+        .nav-item { text-decoration: none; color: #4b5563; font-size: 0.85rem; font-weight: 700; text-transform: lowercase; }
+        .nav-item.active { color: #e61e2b; }
 
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
-        th { background: var(--primary-red); color: white; padding: 1rem; text-align: left; font-size: 0.8rem; text-transform: uppercase; }
-        td { padding: 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; }
+        main { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+        
+        /* Positioning Context For Mega Menu Dropdown Selection Box */
+        .interactive-trigger-housing { position: relative; display: inline-block; margin-bottom: 1.5rem; }
+        .picker-dropdown-btn { background: #ffffff; border: 1px solid #d1d5db; border-radius: 6px; padding: 0.65rem 1.25rem; font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; color: #111827; }
+        .picker-dropdown-btn:hover { background: #f9fafb; }
+
+        /* Exact 3-Column Width Mega Panel Alignment Layout from image_763520.png */
+        .mega-matrix-panel { position: absolute; top: 115%; left: 0; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 12px 30px rgba(0,0,0,0.09); padding: 1.5rem; display: grid; grid-template-columns: repeat(3, 210px); gap: 2rem; z-index: 999; }
+        
+        .panel-column h5 { font-size: 0.7rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.8rem; border-bottom: 1px solid #f3f4f6; padding-bottom: 0.3rem; font-weight: 800; }
+        .panel-selection-link { display: block; text-decoration: none; color: #374151; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.65rem; transition: color 0.1s; }
+        .panel-selection-link:hover { color: #e61e2b; }
+        .panel-selection-link.current-active { color: #e61e2b; font-weight: 800; }
+
+        /* Statistical Grid Logs Table */
+        .stats-data-sheet { width: 100%; border-collapse: collapse; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.01); }
+        .stats-data-sheet th { background: #f9fafb; padding: 0.85rem 1.25rem; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #6b7280; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        .stats-data-sheet td { padding: 0.95rem 1.25rem; border-bottom: 1px solid #f3f4f6; font-size: 0.85rem; color: #374151; }
+        .stats-data-sheet tr:last-child td { border-bottom: none; }
+        .player-name-cell { font-weight: 700; color: #e61e2b; text-decoration: none; }
+        .player-name-cell:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
     <header>
-        <strong>★ AFL</strong>
-        <nav class="main-nav">
-            <a href="index.html">Standings</a>
-            <a href="teams.html">Teams</a>
-            <a href="scores.html">Scores</a>
-            <a href="stats.html" class="active">Stats</a>
-            <a href="rulebook.html">Rulebook</a>
-            <a href="legacy.html">Legacy</a>
-        </nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">AFL ECOSYSTEM</a>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-item">standings</a>
+                <a href="teams.html" class="nav-item">teams</a>
+                <a href="scores.html" class="nav-item">scores</a>
+                <a href="stats.html" class="nav-item active">stats</a>
+                <a href="rulebook.html" class="nav-item">rulebook</a>
+                <a href="legacy.html" class="nav-item">legacy</a>
+            </nav>
+        </div>
     </header>
 
     <main>
-        <div class="controls">
-            <select id="catSelect" onchange="loadStats()">
-                <option value="Passing">Passing</option>
-                <option value="Rushing">Rushing</option>
-                <option value="Receiving">Receiving</option>
-                <option value="Tight Ends">Tight Ends</option>
-                <option value="Center">Center</option>
-                <option value="Defensive Ends">Defensive Ends</option>
-                <option value="Linebackers">Linebackers</option>
-                <option value="Secondary">Secondary</option>
-                <option value="Kicking">Kicking</option>
-            </select>
-            <input type="text" id="searchBox" placeholder="Search players..." oninput="loadStats()">
+        <div class="interactive-trigger-housing">
+            <button class="picker-dropdown-btn" onclick="const panel = document.getElementById('megaMatrix'); panel.style.display = panel.style.display === 'none' ? 'grid' : 'none';">
+                Quarterbacks <span style="font-size: 0.65rem; color: #6b7280;">▼</span>
+            </button>
+            
+            <div class="mega-matrix-panel" id="megaMatrix" style="display: none;">
+                <div class="panel-column">
+                    <h5>OFFENSE</h5>
+                    <a href="#" class="panel-selection-link current-active">Quarterbacks</a>
+                    <a href="#" class="panel-selection-link">Running Backs</a>
+                    <a href="#" class="panel-selection-link">Wide Receivers</a>
+                    <a href="#" class="panel-selection-link">Tight Ends</a>
+                    <a href="#" class="panel-selection-link">Centers</a>
+                </div>
+                <div class="panel-column">
+                    <h5>DEFENSE</h5>
+                    <a href="#" class="panel-selection-link">Defensive Ends</a>
+                    <a href="#" class="panel-selection-link">Linebackers</a>
+                    <a href="#" class="panel-selection-link">Defensive Backs</a>
+                </div>
+                <div class="panel-column">
+                    <h5>SPECIAL TEAMS</h5>
+                    <a href="#" class="panel-selection-link">Kickers</a>
+                    <h5 style="margin-top: 1.25rem;">RECORD BOOK</h5>
+                    <a href="#" class="panel-selection-link" style="color:#1e3a8a;">All-Time Stats</a>
+                </div>
+            </div>
         </div>
 
-        <table>
+        <table class="stats-data-sheet">
             <thead>
                 <tr>
-                    <th>Rank</th>
-                    <th>Team</th>
-                    <th>Player</th>
-                    <th>Points</th>
-                    <th>Yards</th>
-                    <th>TDs</th>
+                    <th style="width: 10%;">Rank</th>
+                    <th style="width: 40%;">Player</th>
+                    <th style="width: 15%;">Team</th>
+                    <th style="width: 15%;">Yards</th>
+                    <th style="width: 10%;">TD</th>
+                    <th style="width: 10%;">INT</th>
                 </tr>
             </thead>
-            <tbody id="tableBody"></tbody>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td><a href="#" class="player-name-cell">niceonecodyy</a></td>
+                    <td style="font-weight: 600;">SEA</td>
+                    <td>2930</td>
+                    <td style="font-weight: 700;">35</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><a href="#" class="player-name-cell">DimingSLC</a></td>
+                    <td style="font-weight: 600;">WAS</td>
+                    <td>7131</td>
+                    <td style="font-weight: 700;">68</td>
+                    <td>24</td>
+                </tr>
+            </tbody>
         </table>
     </main>
 
-    <script>
-        const statsDb = {
-            Passing: [
-                { rank: 1, team: 'WAS', player: 'DimingSLC', pts: 509.2, yds: 7131, td: 68 },
-                { rank: 2, team: 'IND', player: 'IrxnIV', pts: 426.6, yds: 6014, td: 65 }
-            ],
-            Rushing: [
-                { rank: 1, team: 'CLE', player: 'ChubbForce', pts: 310.5, yds: 2150, td: 22 }
-            ]
-        };
-
-        function loadStats() {
-            const cat = document.getElementById('catSelect').value;
-            const query = document.getElementById('searchBox').value.toLowerCase();
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-
-            let list = statsDb[cat] || [
-                { rank: 1, team: 'GEN', player: 'Sample Athlete', pts: 120.0, yds: 850, td: 8 }
-            ];
-
-            if(query) {
-                list = list.filter(p => p.player.toLowerCase().includes(query) || p.team.toLowerCase().includes(query));
-            }
-
-            list.forEach(p => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>#${p.rank}</td><td><strong>${p.team}</strong></td><td style="color:var(--primary-red); font-weight:bold;">${p.player}</td><td>${p.pts}</td><td>${p.yds}</td><td>${p.td}</td>`;
-                tbody.appendChild(tr);
-            });
-        }
-        loadStats();
-    </script>
 </body>
 </html>
