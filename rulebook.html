@@ -5,51 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AFL - Rulebook</title>
     <style>
-        :root { --primary-red: #e61e2b; --border-color: #e2e8f0; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: #f8fafc; line-height: 1.6; }
-        header { background: white; border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; display: flex; justify-content: space-between; }
-        .main-nav a { text-decoration: none; color: #64748b; margin-left: 1.5rem; font-weight: 600; }
-        .main-nav a.active { color: var(--primary-red); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #ffffff; color: #1f2937; line-height: 1.65; -webkit-font-smoothing: antialiased; }
         
-        main { max-width: 1000px; margin: 3rem auto; background: white; padding: 2.5rem; border-radius: 12px; border: 1px solid var(--border-color); }
-        h1 { margin-bottom: 1.5rem; border-bottom: 2px solid var(--primary-red); padding-bottom: 0.5rem; }
-        h2 { margin-top: 2rem; margin-bottom: 1rem; }
-        blockquote { background: #ffe4e6; border-left: 5px solid var(--primary-red); padding: 1.5rem; border-radius: 4px; margin: 1.5rem 0; }
-        ul { margin-left: 2rem; }
+        header { background: #ffffff; border-bottom: 1px solid #efefef; position: sticky; top: 0; z-index: 1000; }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 2rem; }
+        .logo-area { font-weight: 900; font-size: 1.25rem; letter-spacing: -0.05em; text-transform: uppercase; color: #111827; text-decoration: none; }
+        .main-nav { display: flex; gap: 1.75rem; }
+        .nav-item { text-decoration: none; color: #4b5563; font-size: 0.85rem; font-weight: 700; text-transform: lowercase; }
+        .nav-item.active { color: #e61e2b; }
+
+        .document-matrix-split { max-width: 1100px; margin: 3rem auto; padding: 0 2rem; display: grid; grid-template-columns: 3fr 1fr; gap: 3.5rem; }
+        
+        .context-tag { color: #e61e2b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.25rem; }
+        .article-main-title { font-size: 2.5rem; font-weight: 900; text-transform: uppercase; margin-bottom: 1.5rem; letter-spacing: -0.04em; color: #111827; line-height: 1.1; }
+        
+        /* Author Row Component */
+        .metadata-author-strip { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 2.25rem; }
+        .author-photo-circle { width: 38px; height: 38px; border-radius: 50%; background: #e5e7eb; display: block; }
+        .author-text-stack h6 { font-size: 0.85rem; font-weight: 700; color: #111827; }
+        .author-text-stack span { font-size: 0.75rem; color: #9ca3af; display: block; }
+
+        .doc-section-subtitle { font-size: 1.5rem; font-weight: 900; margin-top: 2rem; margin-bottom: 0.85rem; color: #111827; letter-spacing: -0.02em; }
+        .doc-paragraph-text { font-size: 0.95rem; color: #374151; margin-bottom: 1.25rem; }
+
+        /* Exact Rulebook Settings Callout Box Configuration from image_76353f.png */
+        .pink-configuration-panel { background: #ffe4e6; border-left: 4px solid #f43f5e; padding: 1.5rem; border-radius: 0 8px 8px 0; margin: 2rem 0; }
+        .pink-configuration-panel h4 { font-size: 1rem; font-weight: 900; margin-bottom: 0.75rem; text-transform: uppercase; color: #111827; letter-spacing: -0.01em; }
+        .config-rules-listing { list-style: none; }
+        .config-rules-listing li { font-size: 0.9rem; margin-bottom: 0.5rem; color: #27272a; display: flex; align-items: center; gap: 0.4rem; }
+        .config-rules-listing strong { font-weight: 800; color: #000000; }
+
+        /* Sticky Sidebar Jump Rail Components */
+        .sticky-index-rail { position: sticky; top: 110px; }
+        .index-rail-heading { font-size: 0.75rem; color: #e61e2b; font-weight: 800; text-transform: uppercase; margin-bottom: 0.85rem; letter-spacing: 0.05em; }
+        .index-links-group { list-style: none; border-left: 2px solid #f3f4f6; padding-left: 0.85rem; }
+        .index-links-group li { margin-bottom: 0.65rem; }
+        .rail-anchor-link { text-decoration: none; color: #6b7280; font-size: 0.8rem; font-weight: 700; transition: color 0.1s; }
+        .rail-anchor-link:hover { color: #e61e2b; }
     </style>
 </head>
 <body>
 
     <header>
-        <strong>★ AFL</strong>
-        <nav class="main-nav">
-            <a href="index.html">Standings</a>
-            <a href="teams.html">Teams</a>
-            <a href="scores.html">Scores</a>
-            <a href="stats.html">Stats</a>
-            <a href="rulebook.html" class="active">Rulebook</a>
-            <a href="legacy.html">Legacy</a>
-        </nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">AFL ECOSYSTEM</a>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-item">standings</a>
+                <a href="teams.html" class="nav-item">teams</a>
+                <a href="scores.html" class="nav-item">scores</a>
+                <a href="stats.html" class="nav-item">stats</a>
+                <a href="rulebook.html" class="nav-item active">rulebook</a>
+                <a href="legacy.html" class="nav-item">legacy</a>
+            </nav>
+        </div>
     </header>
 
-    <main>
-        <h1>AFL Official Rules & Server Configuration</h1>
-        <h2>Section 1: Host Parameters Matrix</h2>
-        <p>All administrative heads must adjust the server presets before kickoff simulation cycles begin:</p>
-        <blockquote>
-            <ul>
-                <li><strong>Public Visibility:</strong> OFF</li>
-                <li><strong>Fumbling Baseline:</strong> 1</li>
-                <li><strong>Play Clock Timer:</strong> 20 Seconds</li>
-                <li><strong>Quarter Intervals:</strong> 4 Minutes</li>
-                <li><strong>Pass Breakups:</strong> Disabled</li>
-            </ul>
-        </blockquote>
+    <div class="document-matrix-split">
+        <article>
+            <span class="context-tag">League Operations</span>
+            <h1 class="article-main-title">AFL Rulebook: 2026 Edition</h1>
+            
+            <div class="metadata-author-strip">
+                <div class="author-photo-circle" style="background: #f472b6;"></div>
+                <div class="author-text-stack">
+                    <h6>ashley</h6>
+                    <span>March 25th, 2026</span>
+                </div>
+            </div>
 
-        <h2>Section 2: Challenges</h2>
-        <p>Coaches are provided 2 formal video challenge requests per contest window.</p>
-    </main>
+            <h3 class="doc-section-subtitle">Game setup</h3>
+            <p class="doc-paragraph-text">Before any game, it's important to know how to set up an official AFL server. This ensures that the gameplay is played fairly & for a smooth experience.</p>
+
+            <div class="pink-configuration-panel">
+                <h4>Server settings</h4>
+                <ul class="config-rules-listing">
+                    <li>• turn <strong>off</strong> public listing</li>
+                    <li>• set <strong>fumbling chances</strong> to 1</li>
+                    <li>• set <strong>play clock size</strong> to 20</li>
+                    <li>• set <strong>quarter length</strong> to 4</li>
+                    <li>• turn <strong>off</strong> pass break up</li>
+                </ul>
+            </div>
+        </article>
+
+        <aside>
+            <div class="sticky-index-rail">
+                <h4 class="index-rail-heading">Contents</h4>
+                <ul class="index-links-group">
+                    <li><a href="#" class="rail-anchor-link">Game setup</a></li>
+                    <li><a href="#" class="rail-anchor-link">Start of Game</a></li>
+                    <li><a href="#" class="rail-anchor-link">Challenges</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
 
 </body>
 </html>
