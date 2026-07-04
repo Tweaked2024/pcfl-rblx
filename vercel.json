@@ -5,6 +5,10 @@
     {
       "source": "/teams/:team",
       "destination": "/teams.html?team=:team"
+    },
+    {
+      "source": "/alltime/trophy/",
+      "destination": "/alltime/trophy.html"
     }
   ]
 }
