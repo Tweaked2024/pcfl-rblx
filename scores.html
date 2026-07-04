@@ -379,7 +379,7 @@
         <div class="logo-area">
             <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
                 <img src="e1abd0576f5f77741b1f5a27399462ff.webp" alt="NBL Logo" style="height: 45px; width: auto; display: block;">
-                
+                 
                 <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px;">National Basketball League</span>
             </a>
         </div>
@@ -387,19 +387,19 @@
             <div class="nav-item"><a href="#">Standings</a></div>
             <div class="nav-item"><a href="teams.html">Teams</a></div>
             <div class="nav-item"><a href="matchups.html">Matchups</a></div>
-            
-            <!-- Scores Hover Dropdown Connected to Switcher Functions -->
+             
+            <!-- Scores Hover Dropdown -->
             <div class="nav-item">
                 <a href="scores.html">Scores ▾</a>
                 <ul class="dropdown-menu">
-                    <li><a href="javascript:void(0);" onclick="switchSeries('series-1')">Series I</a></li>
-                    <li><a href="javascript:void(0);" onclick="switchSeries('series-2')">Series II</a></li>
-                    <li><a href="javascript:void(0);" onclick="switchSeries('series-3')">Series III</a></li>
-                    <li><a href="javascript:void(0);" onclick="switchSeries('series-4')">Series IV</a></li>
-                    <li><a href="javascript:void(0);" onclick="switchSeries('series-5')">Series V</a></li>
+                    <li><a href="scores.html?series=1">Series I</a></li>
+                    <li><a href="scores.html?series=2">Series II</a></li>
+                    <li><a href="scores.html?series=3">Series III</a></li>
+                    <li><a href="scores.html?series=4">Series IV</a></li>
+                    <li><a href="scores.html?series=5">Series V</a></li>
                 </ul>
             </div>
-            
+             
             <!-- Added Stats Mega Hover Dropdown Split Layout -->
             <div class="nav-item">
                 <a href="stats.html">Stats ▾</a>
@@ -429,19 +429,20 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="nav-item"><a href="#">Rulebook</a></div>
-            
+             
+            <div class="nav-item"><a href="rulebook.html">Rulebook</a></div>
+             
             <!-- Legacy Hover Dropdown -->
             <div class="nav-item">
-                <a href="#">Legacy ▾</a>
+                <a href="legacy.html">Legacy ▾</a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Hall of Fame</a></li>
-                    <li><a href="#">Archives</a></li>
+                    <li><a href="legacy.html#legacy-section">Legacy</a></li>
+                    <li><a href="legacy.html#champions-awards">Champions & Awards</a></li>
+                    <li><a href="legacy.html#award-tracker">Award Tracker</a></li>
                 </ul>
             </div>
         </nav>
-        
+         
         <div class="right-actions">
             <!-- Functional Light/Dark circle button -->
             <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Mode">🌙</button>
