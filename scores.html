@@ -3,83 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFL - Score Center</title>
+    <title>AFL - Scoreboards</title>
     <style>
-        :root { --primary-red: #e61e2b; --border-color: #e2e8f0; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: #f8fafc; }
-        header { background: white; border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; display: flex; justify-content: space-between; }
-        .main-nav a { text-decoration: none; color: #64748b; margin-left: 1.5rem; font-weight: 600; }
-        .main-nav a.active { color: var(--primary-red); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #fcfcfc; color: #111827; }
         
-        main { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
-        .btn-group { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
-        .series-btn { background: #e2e8f0; border: none; padding: 0.6rem 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; }
-        .series-btn.active { background: var(--primary-red); color: white; }
+        header { background: #ffffff; border-bottom: 1px solid #efefef; position: sticky; top: 0; z-index: 1000; }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 2rem; }
+        .logo-area { font-weight: 900; font-size: 1.25rem; letter-spacing: -0.05em; text-transform: uppercase; color: #111827; text-decoration: none; }
+        .main-nav { display: flex; gap: 1.75rem; }
+        .nav-item { text-decoration: none; color: #4b5563; font-size: 0.85rem; font-weight: 700; text-transform: lowercase; }
+        .nav-item.active { color: #e61e2b; }
 
-        .score-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; }
-        .match-card { background: white; border: 1px solid var(--border-color); border-radius: 10px; padding: 1.5rem; }
-        .match-header { font-weight: bold; color: var(--primary-red); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 0.75rem; }
-        .score-line { display: flex; justify-content: space-between; margin: 0.4rem 0; font-weight: 600; }
+        main { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+        
+        /* Compact Segment Timeline Switcher Row */
+        .timeline-switcher-row { display: flex; gap: 0.4rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .segment-btn { background: #f3f4f6; border: none; color: #4b5563; font-size: 0.75rem; font-weight: 700; padding: 0.55rem 1rem; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
+        .segment-btn.selected { background: #e61e2b; color: #ffffff; }
+
+        /* Multi Column Split Layout Grid */
+        .timeline-columns-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .column-board { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1.25rem; }
+        .column-board-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.25rem; padding-bottom: 0.6rem; border-bottom: 2px solid #f3f4f6; }
+        .column-board-header h3 { font-size: 1.15rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; }
+        .badge-final-tag { background: #fee2e2; color: #ef4444; font-size: 0.65rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.02em; }
+
+        /* Specific Horizontal Log Bars Row Format */
+        .scoreboard-card-strip { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem; border: 1px solid #f3f4f6; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.85rem; background: #ffffff; }
+        .strip-team-block { display: flex; align-items: center; gap: 0.5rem; width: 42%; font-weight: 700; letter-spacing: -0.01em; }
+        .strip-team-block.host-side { justify-content: flex-end; text-align: right; }
+        .strip-helmet-indicator { width: 18px; height: 18px; border-radius: 3px; background: #cbd5e1; display: inline-block; }
+        .strip-numerical-scores { width: 16%; text-align: center; font-weight: 900; font-size: 0.95rem; color: #111827; background: #f9fafb; padding: 0.2rem 0; border-radius: 4px; }
     </style>
 </head>
 <body>
 
     <header>
-        <strong style="text-transform:uppercase;">★ AFL</strong>
-        <nav class="main-nav">
-            <a href="index.html">Standings</a>
-            <a href="teams.html">Teams</a>
-            <a href="scores.html" class="active">Scores</a>
-            <a href="stats.html">Stats</a>
-            <a href="rulebook.html">Rulebook</a>
-            <a href="legacy.html">Legacy</a>
-        </nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">AFL ECOSYSTEM</a>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-item">standings</a>
+                <a href="teams.html" class="nav-item">teams</a>
+                <a href="scores.html" class="nav-item active">scores</a>
+                <a href="stats.html" class="nav-item">stats</a>
+                <a href="rulebook.html" class="nav-item">rulebook</a>
+                <a href="legacy.html" class="nav-item">legacy</a>
+            </nav>
+        </div>
     </header>
 
     <main>
-        <div class="btn-group">
-            <button class="series-btn active" onclick="loadSeries(1, this)">Series I</button>
-            <button class="series-btn" onclick="loadSeries(2, this)">Series II</button>
-            <button class="series-btn" onclick="loadSeries(3, this)">Series III</button>
-            <button class="series-btn" onclick="loadSeries(4, this)">Series IV</button>
-            <button class="series-btn" onclick="loadSeries(5, this)">Series V</button>
+        <div class="timeline-switcher-row">
+            <button class="segment-btn selected">Series I</button>
+            <button class="segment-btn">Series II</button>
+            <button class="segment-btn">Series III</button>
+            <button class="segment-btn">Series IV</button>
+            <button class="segment-btn">Series V</button>
+            <button class="segment-btn">Series VI</button>
         </div>
 
-        <h2 id="series-label" style="margin-bottom: 1.5rem; text-transform: uppercase;">Series I Schedule Logs</h2>
-        <div class="score-container" id="scores-box"></div>
+        <div class="timeline-columns-split">
+            <div class="column-board">
+                <div class="column-board-header">
+                    <h3>Week 1</h3> <span class="badge-final-tag">FINAL</span>
+                </div>
+                <div class="scoreboard-card-strip">
+                    <div class="strip-team-block"><span class="strip-helmet-indicator" style="background:#ff5a00;"></span> STEELERS</div>
+                    <div class="strip-numerical-scores">29 - 35</div>
+                    <div class="strip-team-block host-side">BROWNS <span class="strip-helmet-indicator" style="background:#3e2723;"></span></div>
+                </div>
+                <div class="scoreboard-card-strip">
+                    <div class="strip-team-block"><span class="strip-helmet-indicator" style="background:#008e97;"></span> DOLPHINS</div>
+                    <div class="strip-numerical-scores">21 - 0</div>
+                    <div class="strip-team-block host-side">TITANS <span class="strip-helmet-indicator" style="background:#4682b4;"></span></div>
+                </div>
+            </div>
+
+            <div class="column-board">
+                <div class="column-board-header">
+                    <h3>Week 2</h3> <span class="badge-final-tag">FINAL</span>
+                </div>
+                <div class="scoreboard-card-strip">
+                    <div class="strip-team-block"><span class="strip-helmet-indicator" style="background:#3e2723;"></span> BROWNS</div>
+                    <div class="strip-numerical-scores">42 - 38</div>
+                    <div class="strip-team-block host-side">COMMANDERS <span class="strip-helmet-indicator" style="background:#7c141c;"></span></div>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <script>
-        const matchesData = {
-            1: [{ wk: 'Week 1', h: 'CLE', hs: 35, a: 'PIT', as: 29 }, { wk: 'Week 1', h: 'MIA', hs: 21, a: 'TEN', as: 0 }],
-            2: [{ wk: 'Week 2', h: 'BAL', hs: 24, a: 'KC', as: 20 }],
-            3: [{ wk: 'Week 3', h: 'DAL', hs: 31, a: 'PHI', as: 28 }],
-            4: [{ wk: 'Week 4', h: 'SF', hs: 42, a: 'SEA', as: 38 }],
-            5: [{ wk: 'Week 5', h: 'NE', hs: 10, a: 'BUF', as: 31 }]
-        };
-
-        function loadSeries(num, btn) {
-            document.querySelectorAll('.series-btn').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-            
-            document.getElementById('series-label').innerText = `Series ${num} Schedule Logs`;
-            const container = document.getElementById('scores-box');
-            container.innerHTML = '';
-
-            const list = matchesData[num] || [];
-            list.forEach(m => {
-                const card = document.createElement('div');
-                card.className = 'match-card';
-                card.innerHTML = `
-                    <div class="match-header">${m.wk} - FINAL</div>
-                    <div class="score-line"><span>${m.h}</span><span>${m.hs}</span></div>
-                    <div class="score-line"><span>${m.a}</span><span>${m.as}</span></div>
-                `;
-                container.appendChild(card);
-            });
-        }
-        loadSeries(1);
-    </script>
 </body>
 </html>
