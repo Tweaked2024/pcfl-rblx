@@ -3,115 +3,586 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFL - Home</title>
+    <title>National Basketball League Dashboard</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #fcfcfc; color: #111827; -webkit-font-smoothing: antialiased; }
-        
-        /* Sticky Main Navigation */
-        header { background: #ffffff; border-bottom: 1px solid #efefef; position: sticky; top: 0; z-index: 1000; }
-        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 2rem; }
-        .logo-area { font-weight: 900; font-size: 1.25rem; letter-spacing: -0.05em; text-transform: uppercase; color: #111827; text-decoration: none; }
-        .main-nav { display: flex; gap: 1.75rem; }
-        .nav-item { text-decoration: none; color: #4b5563; font-size: 0.85rem; font-weight: 700; text-transform: lowercase; letter-spacing: -0.01em; position: relative; }
-        .nav-item:hover { color: #111827; }
-        .nav-item.active { color: #e61e2b; }
-        .nav-item.active::after { content: ''; position: absolute; bottom: -19px; left: 0; right: 0; height: 2px; background: #e61e2b; }
-        .btn-join { background: #e61e2b; color: #ffffff; padding: 0.55rem 1.25rem; border-radius: 6px; font-weight: 700; font-size: 0.85rem; text-decoration: none; border: none; cursor: pointer; transition: background 0.1s; }
-        .btn-join:hover { background: #cc1a25; }
+        /* CSS Variables for Dynamic Theme Switching */
+        :root {
+            --bg-color: #fcfcfc;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-light: #777777;
+            --border-color: #e0e0e0;
+            --nav-bg: #ffffff;
+            --accent-red: #e61e2b;
+            --filter-bg: #fdfdfd;
+        }
 
-        main { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
-        
-        /* Hero Banner Component */
-        .hero-banner { width: 100%; height: auto; border-radius: 8px; margin-bottom: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: block; }
-        
-        /* Playoff Alert Box */
-        .promo-alert { background: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px; padding: 1.25rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .promo-details h4 { font-size: 0.95rem; font-weight: 800; color: #991b1b; text-transform: uppercase; letter-spacing: -0.01em; margin-bottom: 0.15rem; }
-        .promo-details p { font-size: 0.85rem; color: #4b5563; }
-        .promo-action-btn { background: #e61e2b; color: white; border: none; padding: 0.6rem 1.2rem; font-size: 0.75rem; font-weight: 700; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: background 0.1s; }
-        .promo-action-btn:hover { background: #cc1a25; }
+        [data-theme="dark"] {
+            --bg-color: #0b0e14;
+            --card-bg: #161b22;
+            --text-color: #f0f6fc;
+            --text-light: #8b949e;
+            --border-color: #30363d;
+            --nav-bg: #161b22;
+            --filter-bg: #21262d;
+        }
 
-        /* Two Column Panel Grid Layout */
-        .dashboard-layout { display: grid; grid-template-columns: 7fr 5fr; gap: 1.5rem; }
-        .content-panel { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-        .panel-heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #f3f4f6; padding-bottom: 0.6rem; }
-        .panel-title-text { font-size: 1.1rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; color: #111827; }
-        
-        /* Match Cards */
-        .match-row-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border: 1px solid #f3f4f6; border-radius: 6px; margin-bottom: 0.6rem; font-size: 0.85rem; background: #ffffff; }
-        .team-identity-block { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; width: 42%; letter-spacing: -0.02em; }
-        .team-identity-block.away-team { justify-content: flex-end; text-align: right; }
-        .team-helmet-swatch { width: 22px; height: 22px; border-radius: 4px; background: #e5e7eb; display: inline-block; }
-        .match-score-center { font-weight: 900; font-size: 1rem; color: #111827; text-align: center; width: 16%; background: #f9fafb; padding: 0.25rem 0.5rem; border-radius: 4px; }
+        /* Base Styling & Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
 
-        /* Standings Module Rows */
-        .mini-table-row { display: grid; grid-template-columns: 2rem 4fr 2fr; padding: 0.6rem 0.5rem; font-size: 0.85rem; border-bottom: 1px solid #f3f4f6; align-items: center; }
-        .mini-table-row.table-header { font-weight: 800; color: #9ca3af; text-transform: uppercase; font-size: 0.7rem; border-bottom: 2px solid #e5e7eb; }
-        .mini-table-row:last-child { border-bottom: none; }
-        .team-name-bold { font-weight: 700; letter-spacing: -0.02em; }
+        /* Top Navigation Bar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: var(--nav-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            z-index: 1000;
+        }
+        .logo-area {
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+
+        /* Hover Navigation Menu with Dropdowns */
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        .nav-item {
+            position: relative;
+            display: inline-block;
+            margin: 0 15px;
+        }
+        .nav-item > a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--card-bg);
+            min-width: 150px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            list-style: none;
+            padding: 5px 0;
+        }
+        .dropdown-menu a {
+            color: var(--text-color);
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .dropdown-menu a:hover {
+            background-color: var(--bg-color);
+        }
+        .nav-item:hover .dropdown-menu {
+            display: block;
+        }
+
+        /* Added Custom Mega Dropdown CSS Styles for Multi-Column Display */
+        .nav-item:hover .dropdown-mega {
+            display: flex !important;
+        }
+        .dropdown-mega {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--card-bg);
+            min-width: 550px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            gap: 30px;
+            list-style: none;
+        }
+        .mega-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .mega-col h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        .mega-col a {
+            color: var(--text-color);
+            padding: 6px 0;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .mega-col a:hover {
+            color: var(--accent-red);
+        }
+
+        /* Right Header Elements (Toggle + Button) */
+        .right-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Circular Light/Dark Mode Button */
+        .theme-toggle-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .theme-toggle-btn:hover {
+            background-color: var(--bg-color);
+        }
+
+        .join-btn {
+            background-color: var(--accent-red);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Large Hero Banner Placement */
+        .hero-banner {
+            width: 90%;
+            max-width: 1200px;
+            height: 250px;
+            margin: 20px auto;
+            background: linear-gradient(135deg, #0073e6, #002f6c);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        /* Main Workspace / Grid Section */
+        .dashboard-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto 50px auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        /* Widget Card Formatting */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 20px;
+        }
+        .card-header-group {
+            border-bottom: 2px solid var(--accent-red);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .card-title-main {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .live-tag {
+            background: #fdf2e9;
+            color: #b45309;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Select Field Dropdowns inside Cards */
+        .card-filters {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .card-filters select {
+            background-color: var(--filter-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 6px 30px 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23e61e2b' d='M0 0l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+
+        /* Data Rows formatting */
+        .row-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 5px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+        .row-item:last-child { border: none; }
+         
+        .match-score {
+            font-weight: bold;
+            background: var(--bg-color);
+            padding: 4px 10px;
+            border-radius: 4px;
+            min-width: 70px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Footer Call to Action Block */
+        .cta-section {
+            background-color: var(--accent-red);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 50px;
+        }
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        .cta-btn {
+            background: white;
+            color: var(--accent-red);
+            padding: 10px 25px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        /* Dark Base Footer */
+        footer {
+            background-color: #1a1e24;
+            color: #8a94a6;
+            padding: 40px 5%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+        }
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* Responsive stack for smaller screens */
+        @media (max-width: 768px) {
+            .dashboard-container { grid-template-columns: 1fr; }
+            header, footer { flex-direction: column; text-align: center; gap: 15px; }
+        }
     </style>
 </head>
 <body>
 
+    <!-- Header / Navbar -->
     <header>
-        <div class="nav-container">
-            <a href="index.html" class="logo-area">AFL ECOSYSTEM</a>
-            <nav class="main-nav">
-                <a href="index.html" class="nav-item active">standings</a>
-                <a href="teams.html" class="nav-item">teams</a>
-                <a href="scores.html" class="nav-item">scores</a>
-                <a href="stats.html" class="nav-item">stats</a>
-                <a href="rulebook.html" class="nav-item">rulebook</a>
-                <a href="legacy.html" class="nav-item">legacy</a>
-            </nav>
-            <a href="#" class="btn-join">join now</a>
+        <div class="logo-area">
+            <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
+                <img src="e1abd0576f5f77741b1f5a27399462ff.webp" alt="NBL Logo" style="height: 45px; width: auto; display: block;">
+                 
+                <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px;">National Basketball League</span>
+            </a>
+        </div>
+        <nav>
+            <div class="nav-item"><a href="#">Standings</a></div>
+            <div class="nav-item"><a href="teams.html">Teams</a></div>
+            <div class="nav-item"><a href="matchups.html">Matchups</a></div>
+             
+            <!-- Scores Hover Dropdown -->
+            <div class="nav-item">
+                <a href="scores.html">Scores ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="scores.html?series=1">Series I</a></li>
+                    <li><a href="scores.html?series=2">Series II</a></li>
+                    <li><a href="scores.html?series=3">Series III</a></li>
+                    <li><a href="scores.html?series=4">Series IV</a></li>
+                    <li><a href="scores.html?series=5">Series V</a></li>
+                </ul>
+            </div>
+             
+            <!-- Added Stats Mega Hover Dropdown Split Layout -->
+            <div class="nav-item">
+                <a href="stats.html">Stats ▾</a>
+                <div class="dropdown-menu dropdown-mega">
+                    <!-- Offense Column -->
+                    <div class="mega-col">
+                        <h4>Offense</h4>
+                        <a href="stats.html?cat=passing">Quarterbacks</a>
+                        <a href="stats.html?cat=rushing">Running Backs</a>
+                        <a href="stats.html?cat=receiving">Wide Receivers</a>
+                        <a href="stats.html?cat=tightends">Tight Ends</a>
+                        <a href="stats.html?cat=center">Centers</a>
+                    </div>
+                    <!-- Defense Column -->
+                    <div class="mega-col">
+                        <h4>Defense</h4>
+                        <a href="stats.html?cat=defensiveends">Defensive Ends</a>
+                        <a href="stats.html?cat=linebackers">Linebackers</a>
+                        <a href="stats.html?cat=secondary">Defensive Backs</a>
+                    </div>
+                    <!-- Special Teams Column -->
+                    <div class="mega-col">
+                        <h4>Special Teams</h4>
+                        <a href="stats.html?cat=kicking">Kickers</a>
+                        <h4 style="margin-top: 15px;">Record Book</h4>
+                        <a href="#">All-Time Stats</a>
+                    </div>
+                </div>
+            </div>
+             
+            <div class="nav-item"><a href="#">Rulebook</a></div>
+             
+            <!-- Legacy Hover Dropdown -->
+            <div class="nav-item">
+                <a href="#">Legacy ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Hall of Fame</a></li>
+                    <li><a href="#">Archives</a></li>
+                </ul>
+            </div>
+        </nav>
+         
+        <div class="right-actions">
+            <!-- Functional Light/Dark circle button -->
+            <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Mode">🌙</button>
+            <a href="#" class="join-btn">Join Now</a>
         </div>
     </header>
 
-    <main>
-        <img src="https://placehold.co/1200x320/0f172a/ffffff?text=AFL+OFFICIAL+SEASON+BANNER" class="hero-banner" alt="League Media Banner">
-        
-        <div class="promo-alert">
-            <div class="promo-details">
-                <h4>Playoff Predictor</h4>
-                <p>Make your AB19 bracket! Pick every game from wild card weekend to the Allegiance Bowl champion.</p>
+    <!-- Placeholder for your Character Banner Graphic -->
+    <div class="hero-banner">
+        [ Place Your image_5cbafd.png Avatar Banner Here ]
+    </div>
+
+    <!-- Main Content Panels -->
+    <div class="dashboard-container">
+         
+        <!-- Left Column: Matchups and Highlights -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+             
+            <!-- Award Watch -->
+            <div class="card">
+                <div class="card-header-group">
+                    <div class="card-title">
+                        <div class="card-title-main">Award Watch <span class="live-tag">Live Race</span></div>
+                    </div>
+                    <div class="card-filters">
+                        <select>
+                            <option>MVP - Most Valuable Player</option>
+                            <option>Defensive Player of the Year</option>
+                        </select>
+                        <select>
+                            <option>Full Tracker →</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row-item"><span>1. username123</span> <strong>95.0 OVR</strong></div>
+                <div class="row-item"><span>2. PlayerName</span> <strong>92.5 OVR</strong></div>
+                <div class="row-item"><span>3. GridironPro</span> <strong>91.0 OVR</strong></div>
             </div>
-            <button class="promo-action-btn">Fill out your bracket</button>
+
+            <!-- Matchups Layout Structure -->
+            <div class="card">
+                <div class="card-header-group">
+                    <div class="card-title">
+                        <div class="card-title-main">Matchups <span class="live-tag" style="background:#fee2e2; color:#991b1b;">Week 8</span></div>
+                    </div>
+                    <div class="card-filters">
+                        <select><option>Week 8</option><option>Week 9</option></select>
+                        <select><option>All Scores →</option></select>
+                    </div>
+                </div>
+                 
+                <div class="row-item">
+                    <span>COMMANDERS</span>
+                    <div class="match-score">42 - 40</div>
+                    <span>PANTHERS</span>
+                </div>
+                <div class="row-item">
+                    <span>BILLS</span>
+                    <div class="match-score">21 - 24</div>
+                    <span>SAINTS</span>
+                </div>
+                <div class="row-item">
+                    <span>STEELERS</span>
+                    <div class="match-score">42 - 21</div>
+                    <span>CHIEFS</span>
+                </div>
+                <div class="row-item">
+                    <span>LIONS</span>
+                    <div class="match-score">60 - 20</div>
+                    <span>DOLPHINS</span>
+                </div>
+                <div class="row-item">
+                    <span>DOLPHINS</span>
+                    <div class="match-score">VS</div>
+                    <span>CHARGERS</span>
+                </div>
+            </div>
         </div>
 
-        <div class="dashboard-layout">
-            <div class="content-panel">
-                <div class="panel-heading">
-                    <span class="panel-title-text">Matchups</span>
-                </div>
-                <div>
-                    <div class="match-row-item">
-                        <div class="team-identity-block"><span class="team-helmet-swatch" style="background:#818cf8;"></span> COMMANDERS</div>
-                        <div class="match-score-center">42 - 40</div>
-                        <div class="team-identity-block away-team">PANTHERS <span class="team-helmet-swatch" style="background:#38bdf8;"></span></div>
-                    </div>
-                    <div class="match-row-item">
-                        <div class="team-identity-block"><span class="team-helmet-swatch" style="background:#c084fc;"></span> BILLS</div>
-                        <div class="match-score-center">21 - 24</div>
-                        <div class="team-identity-block away-team">SAINTS <span class="team-helmet-swatch" style="background:#f472b6;"></span></div>
+        <!-- Right Column: Sidebar Stats & Standings -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+             
+            <!-- Stat Leaders -->
+            <div class="card">
+                <div class="card-header-group">
+                    <div class="card-title">Stat Leaders</div>
+                    <div class="card-filters">
+                        <select><option>Passing Yards</option><option>Rushing Yards</option></select>
                     </div>
                 </div>
+                <div class="row-item"><span>1. Quarterback1</span> <strong>2,120 Yds</strong></div>
+                <div class="row-item"><span>2. User2</span> <strong>1,980 Yds</strong></div>
+                <div class="row-item"><span>3. User3</span> <strong>1,850 Yds</strong></div>
             </div>
 
-            <div class="content-panel">
-                <div class="panel-heading">
-                    <span class="panel-title-text">Standings</span>
+            <!-- Standings Table -->
+            <div class="card">
+                <div class="card-header-group">
+                    <div class="card-title">Standings</div>
+                    <div class="card-filters">
+                        <select id="conferenceSelect">
+                            <option value="Big 10">Big 10</option>
+                            <option value="SEC">SEC</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="mini-table-row table-header">
-                    <div>#</div><div>Team</div><div>W-L</div>
+                <div id="standingsContainer">
+                    <!-- Javascript populates data rows smoothly here -->
                 </div>
-                <div class="mini-table-row"><div>1</div><div class="team-name-bold">BROWNS</div><div>10-3</div></div>
-                <div class="mini-table-row"><div>2</div><div class="team-name-bold">BILLS</div><div>8-5</div></div>
-                <div class="mini-table-row"><div>3</div><div class="team-name-bold">DOLPHINS</div><div>7-6</div></div>
             </div>
         </div>
-    </main>
 
+    </div>
+
+    <!-- Red Call to Action Section -->
+    <div class="cta-section">
+        <h2>come join in on the fun.</h2>
+        <a href="#" class="cta-btn">Get Started!</a>
+    </div>
+
+    <!-- Dark Footer -->
+    <footer>
+        <div>
+            <h3>AMERICAN FOOTBALL LEAGUE</h3>
+            <p style="margin-top: 10px;">© 2026 Roblox Football Operations.</p>
+        </div>
+        <div>
+            <a href="#">Terms of Service</a>
+            <a href="#">League Rules</a>
+            <a href="#">Discord Server</a>
+        </div>
+    </footer>
+
+    <!-- Script Section for Theme and Standings Control Logic -->
+    <script>
+        // --- 1. Theme Control Logic ---
+        const toggleBtn = document.getElementById('themeToggleBtn');
+     
+        toggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                toggleBtn.textContent = '🌙'; 
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                toggleBtn.textContent = '☀️'; 
+            }
+        });
+
+        // --- 2. Dynamic Standings Controller Logic ---
+        const standingsData = [
+            { name: "California", record: "9 - 1", conf: "Big 10" },
+            { name: "Canada", record: "6 - 4", conf: "Big 10" },
+            { name: "Texas", record: "4 - 6", conf: "Big 10" },
+            { name: "Illinois", record: "3 - 7", conf: "Big 10" },
+            { name: "Florida", record: "6 - 4", conf: "SEC" },
+            { name: "Michigan", record: "6 - 4", conf: "SEC" },
+            { name: "Oklahoma", record: "6 - 4", conf: "SEC" },
+            { name: "Carolina", record: "0 - 10", conf: "SEC" }
+        ];
+
+        function renderStandings(selectedConf) {
+            const container = document.getElementById('standingsContainer');
+            container.innerHTML = ''; 
+
+            const filteredTeams = standingsData.filter(team => team.conf === selectedConf);
+
+            filteredTeams.forEach((team, index) => {
+                const row = document.createElement('div');
+                row.className = 'row-item';
+                row.innerHTML = `<span>${index + 1}. ${team.name}</span> <strong>${team.record}</strong>`;
+                container.appendChild(row);
+            });
+        }
+
+        document.getElementById('conferenceSelect').addEventListener('change', (e) => {
+            renderStandings(e.target.value);
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderStandings('Big 10');
+        });
+    </script>
 </body>
 </html>
