@@ -2085,8 +2085,8 @@
 
       function playerHref(p) {
         return p.nameOnly
-          ? '/alltime/trophy/?u=' + encodeURIComponent(p.name)
-          : '/alltime/trophy/?id=' + encodeURIComponent(p.id) + '&u=' + encodeURIComponent(p.name);
+          ? '/trophy/?u=' + encodeURIComponent(p.name)
+          : '/trophy/?id=' + encodeURIComponent(p.id) + '&u=' + encodeURIComponent(p.name);
       }
       function initial(name) { var c = (name || '?').trim().charAt(0); return c ? c.toUpperCase() : '?'; }
 
