@@ -3,111 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFL - Legacy Hall of Fame</title>
+    <title>AFL Legacy & Awards Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #110c06; color: #f3eae0; -webkit-font-smoothing: antialiased; }
-        
-        /* Dark Configured Navigation Bar Component */
-        header { background: #1c150d; border-bottom: 1px solid #2e2316; position: sticky; top: 0; z-index: 1000; }
-        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 2rem; }
-        .logo-area { font-weight: 900; font-size: 1.25rem; letter-spacing: -0.05em; text-transform: uppercase; color: #d4af37; text-decoration: none; }
-        .main-nav { display: flex; gap: 1.75rem; }
-        .nav-item { text-decoration: none; color: #a29381; font-size: 0.85rem; font-weight: 700; text-transform: lowercase; }
-        .nav-item.active { color: #d4af37; }
-
-        main { max-width: 1200px; margin: 2.5rem auto; padding: 0 2rem; }
-
-        /* Gold Point Metric Badges Module Bar from image_7637e7.png */
-        .metric-legend-container { background: #1c150d; border: 1px solid #42331f; border-radius: 8px; padding: 1rem 1.25rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-bottom: 2.5rem; }
-        .legend-lead { font-size: 0.75rem; font-weight: 900; color: #d4af37; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 0.75rem; }
-        .metric-chip { background: #2e2316; border: 1px solid #54432c; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; gap: 0.35rem; color: #f3eae0; }
-        .chip-score-gold { color: #f59e0b; background: rgba(245, 158, 11, 0.15); padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 800; }
-
-        /* 3-Column Profile Podium Layout Structure */
-        .podium-showcase-matrix { display: grid; grid-template-columns: 1fr 1.1fr 1fr; gap: 1.5rem; align-items: end; margin-bottom: 3.5rem; }
-        .podium-box-card { background: linear-gradient(180deg, #261f16 0%, #1c150d 100%); border: 1px solid #42331f; border-radius: 12px; padding: 2.25rem 1.25rem; text-align: center; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-        .podium-box-card.first-place-gold { border: 2px solid #d4af37; padding: 3.5rem 1.25rem; background: linear-gradient(180deg, #332717 0%, #1c150d 100%); }
-        
-        .placement-ribbon-tag { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: #d4af37; color: #110c06; font-size: 0.7rem; font-weight: 900; padding: 0.2rem 0.75rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.02em; }
-        .podium-profile-avatar { width: 68px; height: 68px; border-radius: 50%; background: #42331f; margin: 0 auto 1.25rem; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 2px solid #54432c; font-size: 1.1rem; color: #d4af37; }
-        .podium-profile-username { font-weight: 800; font-size: 1.05rem; margin-bottom: 0.35rem; letter-spacing: -0.01em; }
-        .podium-score-output { color: #d4af37; font-size: 1.4rem; font-weight: 900; letter-spacing: -0.02em; }
-
-        /* Secondary Grid Row Tables Configuration */
-        .dark-rows-ledger { background: #1c150d; border: 1px solid #42331f; border-radius: 8px; overflow: hidden; }
-        .ledger-row-strip { display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 1.5rem; border-bottom: 1px solid #2e2316; font-size: 0.9rem; }
-        .ledger-row-strip:last-child { border-bottom: none; }
-        .ledger-identity-side { display: flex; align-items: center; gap: 1.25rem; }
-        .ledger-rank-idx { font-weight: 900; color: #a29381; width: 1rem; }
-        .ledger-username-string { font-weight: 700; color: #f3eae0; }
-        .ledger-score-bold { color: #d4af37; font-weight: 800; font-size: 0.95rem; }
+        body {
+            background-color: #120c06;
+            color: #f7ebd4;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .legacy-bg-dark { background-color: #1c140c; }
+        .legacy-bg-card { background-color: #261c12; }
+        .legacy-border { border-color: #3d2d1e; }
+        .text-gold { color: #f2bd6c; }
+        .bg-gold { background-color: #f2bd6c; }
     </style>
 </head>
-<body>
+<body class="p-6">
 
-    <header>
-        <div class="nav-container">
-            <a href="index.html" class="logo-area">AFL LEGACY</a>
-            <nav class="main-nav">
-                <a href="index.html" class="nav-item">standings</a>
-                <a href="teams.html" class="nav-item">teams</a>
-                <a href="scores.html" class="nav-item">scores</a>
-                <a href="stats.html" class="nav-item">stats</a>
-                <a href="rulebook.html" class="nav-item">rulebook</a>
-                <a href="legacy.html" class="nav-item active">legacy</a>
-            </nav>
-        </div>
-    </header>
+    <div class="max-w-6xl mx-auto mb-8 border-b legacy-border flex gap-4 text-sm font-semibold">
+        <button onclick="switchTab('leaderboard')" class="tab-btn pb-2 border-b-2 border-transparent text-gold border-current" id="tab-leaderboard">Legacy Leaderboard</button>
+        <button onclick="switchTab('champions')" class="tab-btn pb-2 border-b-2 border-transparent text-stone-400 hover:text-stone-200" id="tab-champions">Champions & Awards</button>
+        <button onclick="switchTab('tracker')" class="tab-btn pb-2 border-b-2 border-transparent text-stone-400 hover:text-stone-200" id="tab-tracker">Award Tracker</button>
+    </div>
 
-    <main>
-        <div class="metric-legend-container">
-            <span class="legend-lead">How XP is Scored</span>
-            <div class="metric-chip">💍 Allegiance Bowl <span class="chip-score-gold">1,000</span></div>
-            <div class="metric-chip">🏆 Conf. Title <span class="chip-score-gold">400</span></div>
-            <div class="metric-chip">👑 MVP <span class="chip-score-gold">1,000</span></div>
+    <div id="view-leaderboard" class="view-section max-w-6xl mx-auto space-y-6">
+        
+        <div class="legacy-bg-card p-4 rounded-xl flex flex-wrap gap-3 items-center text-xs font-bold border legacy-border">
+            <span class="text-gold tracking-wider uppercase mr-2">How XP Is Scored:</span>
+            <span class="bg-black/40 px-2 py-1 rounded flex items-center gap-1">💍 Allegiance Bowl <span class="text-gold">1,000</span></span>
+            <span class="bg-black/40 px-2 py-1 rounded flex items-center gap-1">🏆 Conf. Title <span class="text-gold">400</span></span>
+            <span class="bg-black/40 px-2 py-1 rounded flex items-center gap-1">👑 MVP <span class="text-gold">1,000</span></span>
+            <span class="bg-black/40 px-2 py-1 rounded flex items-center gap-1">🔥 OPOTY / DPOTY <span class="text-gold">750</span></span>
+            <span class="bg-black/40 px-2 py-1 rounded flex items-center gap-1">🎖️ Positional POTY <span class="text-gold">500</span></span>
+            <span class="bg-black/40 px-2 py-1 rounded flex items-center gap-1">⭐ 1st All-Pro <span class="text-gold">300</span></span>
+            <span class="bg-black/40 px-2 py-1 rounded flex items-center gap-1">☀️ Star Bowl <span class="text-gold">150</span></span>
         </div>
 
-        <div class="podium-showcase-matrix">
-            <div class="podium-box-card">
-                <span class="placement-ribbon-tag">#2</span>
-                <div class="podium-profile-avatar">CO</div>
-                <div class="podium-profile-username">TheCoopDudeddd</div>
-                <div class="podium-score-output">19,850 <span style="font-size:0.75rem; color:#a29381; font-weight:500;">XP</span></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end pt-4">
+            <div class="legacy-bg-card p-6 rounded-xl border legacy-border text-center relative order-2 md:order-1 h-48 flex flex-col justify-center items-center">
+                <span class="absolute top-3 left-3 text-stone-400 font-bold">#2</span>
+                <div class="w-16 h-16 bg-stone-700 rounded-full mb-2 overflow-hidden border-2 border-stone-500"></div>
+                <div class="font-bold text-sm">TheCoopDudeddd</div>
+                <div class="text-gold font-extrabold text-xl">19,850 <span class="text-xs font-normal text-stone-400">XP</span></div>
             </div>
+            <div class="legacy-bg-card p-6 rounded-xl border-2 border-gold/50 text-center relative order-1 md:order-2 h-56 flex flex-col justify-center items-center bg-gradient-to-t from-[#261c12] to-[#3a2a1b]">
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-black text-xs font-black px-2 py-0.5 rounded-full uppercase">👑 Rank 1</span>
+                <div class="w-20 h-20 bg-stone-700 rounded-full mb-2 overflow-hidden border-2 border-gold"></div>
+                <div class="font-bold text-base">FINLEY4K</div>
+                <div class="text-gold font-extrabold text-2xl">23,800 <span class="text-xs font-normal text-stone-400">XP</span></div>
+            </div>
+            <div class="legacy-bg-card p-6 rounded-xl border legacy-border text-center relative order-3 h-44 flex flex-col justify-center items-center">
+                <span class="absolute top-3 left-3 text-stone-400 font-bold">#3</span>
+                <div class="w-14 h-14 bg-stone-700 rounded-full mb-2 overflow-hidden border-2 border-amber-700"></div>
+                <div class="font-bold text-sm">xDiminq</div>
+                <div class="text-gold font-extrabold text-xl">19,750 <span class="text-xs font-normal text-stone-400">XP</span></div>
+            </div>
+        </div>
+
+        <div class="legacy-bg-dark rounded-xl p-4 border legacy-border relative">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-xs font-bold text-stone-400 uppercase tracking-wider">1,132 Ranked Players</span>
+                <input type="text" placeholder="Filter players..." class="bg-black/30 border legacy-border rounded px-3 py-1 text-xs focus:outline-none focus:border-gold w-48">
+            </div>
+
+            <div class="space-y-2 relative">
+                <div onclick="togglePopover(event, 'popover-finley')" class="legacy-bg-card hover:bg-[#2f2317] p-3 rounded-lg border legacy-border flex items-center justify-between cursor-pointer transition relative">
+                    <div class="flex items-center gap-4">
+                        <span class="font-black text-gold w-4 text-center">1</span>
+                        <div class="w-10 h-10 bg-stone-800 rounded-full"></div>
+                        <div>
+                            <div class="font-bold text-sm">FINLEY4K</div>
+                            <div class="flex flex-wrap gap-1.5 text-[10px] mt-1 text-stone-400">
+                                <span>💍 6×</span> <span>👑 2×</span> <span>🏆 6×</span> <span>⭐ 5×</span> <span>☀️ 12×</span> <span>🏅 8×</span> <span>🎖️ 11×</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-24 bg-black/40 h-2 rounded-full overflow-hidden hidden sm:block">
+                            <div class="bg-gold h-full w-full"></div>
+                        </div>
+                        <span class="font-black text-sm text-gold">23,800 <span class="text-[10px] font-normal text-stone-400">XP</span></span>
+                    </div>
+
+                    <div id="popover-finley" class="hidden absolute right-4 top-full mt-2 w-72 bg-[#18110b] border-2 border-amber-900/60 rounded-xl p-4 shadow-2xl z-50 text-xs text-stone-300 pointer-events-auto">
+                        <div class="font-black text-sm text-white mb-3 tracking-wide border-b border-stone-800 pb-1.5">FINLEY4K</div>
+                        <div class="space-y-2 font-medium">
+                            <div class="flex justify-between"><span>💍 6 Allegiance Bowls</span> <span class="text-white font-bold">9,000</span></div>
+                            <div class="flex justify-between pl-4 text-orange-400 text-[11px]"><span>🔥 3× Bowl MVP</span> <span>(+3,000)</span></div>
+                            <div class="flex justify-between"><span>🏆 6 Conference Championships</span> <span class="text-white font-bold">2,400</span></div>
+                            <div class="flex justify-between"><span>👑 3 Top Honors</span> <span class="text-white font-bold">2,750</span></div>
+                            <div class="flex justify-between"><span>🎖️ 1 Annual Awards</span> <span class="text-white font-bold">500</span></div>
+                            <div class="flex justify-between"><span>⭐ 5 All-Pro Selections</span> <span class="text-white font-bold">1,400</span></div>
+                            <div class="flex justify-between"><span>☀️ 12 Star Bowl Selections</span> <span class="text-white font-bold">1,800</span></div>
+                            <div class="flex justify-between"><span>🏅 8 League-Leader Crowns</span> <span class="text-white font-bold">2,400</span></div>
+                            <div class="flex justify-between"><span>🎖️ 11 Achievement Badges</span> <span class="text-white font-bold">3,550</span></div>
+                        </div>
+                        <div class="border-t border-stone-800 mt-3 pt-2.5 flex justify-between items-center">
+                            <span class="font-bold text-stone-400">Total Legacy XP</span>
+                            <span class="bg-gold text-black px-2 py-0.5 rounded font-black text-sm">⚡ 23,800</span>
+                        </div>
+                        <div class="text-center mt-3 text-[10px] text-gold/80 hover:underline cursor-pointer">View Trophy Room →</div>
+                    </div>
+                </div>
+
+                <div class="legacy-bg-card hover:bg-[#2f2317] p-3 rounded-lg border legacy-border flex items-center justify-between cursor-pointer transition">
+                    <div class="flex items-center gap-4">
+                        <span class="font-black text-stone-400 w-4 text-center">2</span>
+                        <div class="w-10 h-10 bg-stone-800 rounded-full"></div>
+                        <div>
+                            <div class="font-bold text-sm">TheCoopDudeddd</div>
+                            <div class="flex flex-wrap gap-1.5 text-[10px] mt-1 text-stone-400">
+                                <span>💍 1×</span> <span>👑 1×</span> <span>🏆 1×</span> <span>⭐ 7×</span> <span>☀️ 22×</span> <span>🏅 15×</span> <span>🎖️ 7×</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-24 bg-black/40 h-2 rounded-full overflow-hidden hidden sm:block">
+                            <div class="bg-gold h-full w-[83%]"></div>
+                        </div>
+                        <span class="font-black text-sm text-gold">19,850 <span class="text-[10px] font-normal text-stone-400">XP</span></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="view-champions" class="view-section max-w-6xl mx-auto space-y-6 hidden">
+        <div>
+            <h1 class="text-2xl font-black uppercase tracking-tight">Champions & Awards</h1>
+            <p class="text-xs text-stone-400">Every Allegiance Bowl champion roster and individual award winner in league history.</p>
+        </div>
+
+        <div class="flex flex-wrap gap-1.5 bg-black/20 p-2 rounded-lg border legacy-border">
+            <button class="bg-gold text-black text-xs font-black px-3 py-1 rounded">S24</button>
+            <button class="hover:bg-stone-800 text-stone-400 hover:text-white text-xs font-bold px-3 py-1 rounded">S23</button>
+            <button class="hover:bg-stone-800 text-stone-400 hover:text-white text-xs font-bold px-3 py-1 rounded">S22</button>
+            <button class="hover:bg-stone-800 text-stone-400 hover:text-white text-xs font-bold px-3 py-1 rounded">S21</button>
+            <button class="hover:bg-stone-800 text-stone-400 hover:text-white text-xs font-bold px-3 py-1 rounded">S20</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="legacy-bg-card p-4 rounded-xl border-l-4 border-gold border legacy-border">
+                <div class="text-[11px] uppercase tracking-wider font-bold text-gold">Allegiance Bowl XXIV Champions</div>
+                <div class="font-black text-lg mt-0.5">WASHINGTON COMETS</div>
+            </div>
+            <div class="legacy-bg-card p-4 rounded-xl border legacy-border">
+                <div class="text-[11px] uppercase tracking-wider font-bold text-stone-400">Conference Champions</div>
+                <div class="text-sm font-bold mt-1">AFC: Washington Comets | NFC: Dallas Gunslingers</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-gradient-to-b from-[#2d2216] to-[#1c140c] p-4 rounded-xl border legacy-border text-center">
+                <div class="text-xs font-bold text-gold uppercase tracking-wider mb-2">Most Valuable Player</div>
+                <div class="w-12 h-12 bg-stone-700 rounded-full mx-auto mb-2"></div>
+                <div class="font-bold text-sm">brycx</div>
+            </div>
+            <div class="bg-gradient-to-b from-[#2d2216] to-[#1c140c] p-4 rounded-xl border legacy-border text-center">
+                <div class="text-xs font-bold text-gold uppercase tracking-wider mb-2">Offensive Player of the Year</div>
+                <div class="w-12 h-12 bg-stone-700 rounded-full mx-auto mb-2"></div>
+                <div class="font-bold text-sm">daardvark</div>
+            </div>
+            <div class="bg-gradient-to-b from-[#2d2216] to-[#1c140c] p-4 rounded-xl border legacy-border text-center">
+                <div class="text-xs font-bold text-gold uppercase tracking-wider mb-2">Defensive Player of the Year</div>
+                <div class="w-12 h-12 bg-stone-700 rounded-full mx-auto mb-2"></div>
+                <div class="font-bold text-sm">fakel1l</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-tracker" class="view-section max-w-6xl mx-auto space-y-6 hidden">
+        <div>
+            <h1 class="text-2xl font-black uppercase tracking-tight">Award Tracker</h1>
+            <p class="text-xs text-stone-400">The race for the AFL's top honors, ranked live from league stats.</p>
+        </div>
+
+        <div class="flex flex-wrap gap-1 overflow-x-auto pb-1 border-b legacy-border">
+            <button onclick="switchAwardFilter(this)" class="award-filter-btn bg-gold text-black text-xs font-black px-4 py-1.5 rounded-t-lg transition-all">MVP</button>
+            <button onclick="switchAwardFilter(this)" class="award-filter-btn text-stone-400 hover:text-white text-xs font-bold px-4 py-1.5 rounded-t-lg transition-all">OPOTY</button>
+            <button onclick="switchAwardFilter(this)" class="award-filter-btn text-stone-400 hover:text-white text-xs font-bold px-4 py-1.5 rounded-t-lg transition-all">DPOTY</button>
+            <button onclick="switchAwardFilter(this)" class="award-filter-btn text-stone-400 hover:text-white text-xs font-bold px-4 py-1.5 rounded-t-lg transition-all">QBOTY</button>
+            <button onclick="switchAwardFilter(this)" class="award-filter-btn text-stone-400 hover:text-white text-xs font-bold px-4 py-1.5 rounded-t-lg transition-all">RBOTY</button>
+            <button onclick="switchAwardFilter(this)" class="award-filter-btn text-stone-400 hover:text-white text-xs font-bold px-4 py-1.5 rounded-t-lg transition-all">WROTY</button>
+            <button onclick="switchAwardFilter(this)" class="award-filter-btn text-stone-400 hover:text-white text-xs font-bold px-4 py-1.5 rounded-t-lg transition-all">TEOTY</button>
+            <button onclick="switchAwardFilter(this)" class="award-filter-btn text-stone-400 hover:text-white text-xs font-bold px-4 py-1.5 rounded-t-lg transition-all">COTY</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+            <div class="legacy-bg-card p-4 rounded-xl border legacy-border text-center flex flex-col justify-center items-center">
+                <span class="text-xs font-bold text-stone-400 mb-1">#2 Contender</span>
+                <div class="w-14 h-14 bg-stone-700 rounded-full mb-1"></div>
+                <div class="font-bold text-sm">xDiminqSLC</div>
+                <div class="text-xs text-stone-400 font-semibold mb-1">WAS • QB</div>
+                <div class="text-gold font-black text-xl">88.4 <span class="text-xs font-normal text-stone-400">RTG</span></div>
+            </div>
+            <div class="legacy-bg-card p-5 rounded-xl border-2 border-gold text-center flex flex-col justify-center items-center bg-gradient-to-b from-[#2e2318] to-[#1c140c]">
+                <span class="text-xs font-black text-gold uppercase tracking-wider mb-1">🔥 Leader</span>
+                <div class="w-16 h-16 bg-stone-700 rounded-full mb-1 border-2 border-gold"></div>
+                <div class="font-bold text-base">niceonecodyy</div>
+                <div class="text-xs text-stone-400 font-semibold mb-1">SEA • WR</div>
+                <div class="text-gold font-black text-2xl">93.0 <span class="text-xs font-normal text-stone-400">RTG</span></div>
+            </div>
+            <div class="legacy-bg-card p-4 rounded-xl border legacy-border text-center flex flex-col justify-center items-center">
+                <span class="text-xs font-bold text-stone-400 mb-1">#3 Contender</span>
+                <div class="w-14 h-14 bg-stone-700 rounded-full mb-1"></div>
+                <div class="font-bold text-sm">KOISURI</div>
+                <div class="text-xs text-stone-400 font-semibold mb-1">DET • DE</div>
+                <div class="text-gold font-black text-xl">88.2 <span class="text-xs font-normal text-stone-400">RTG</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching controller
+        function switchTab(tabId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('text-gold', 'border-current');
+                el.classList.add('text-stone-400');
+            });
             
-            <div class="podium-box-card first-place-gold">
-                <span class="placement-ribbon-tag" style="background:#f59e0b; font-weight:900;">👑 #1</span>
-                <div class="podium-profile-avatar" style="border-color:#d4af37; background:#54432c;">FI</div>
-                <div class="podium-profile-username">FINLEY4K</div>
-                <div class="podium-score-output">23,800 <span style="font-size:0.75rem; color:#a29381; font-weight:500;">XP</span></div>
-            </div>
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabId}`).classList.add('text-gold', 'border-current');
+        }
 
-            <div class="podium-box-card">
-                <span class="placement-ribbon-tag">#3</span>
-                <div class="podium-profile-avatar">DI</div>
-                <div class="podium-profile-username">xDiminq</div>
-                <div class="podium-score-output">19,750 <span style="font-size:0.75rem; color:#a29381; font-weight:500;">XP</span></div>
-            </div>
-        </div>
+        // Image 4 Popover overlay toggle controller
+        function togglePopover(event, id) {
+            event.stopPropagation();
+            const popover = document.getElementById(id);
+            const isHidden = popover.classList.contains('hidden');
+            
+            // Close all open popovers first
+            document.querySelectorAll('[id^="popover-"]').forEach(el => el.classList.add('hidden'));
+            
+            if (isHidden) {
+                popover.classList.remove('hidden');
+            }
+        }
 
-        <div class="dark-rows-ledger">
-            <div class="ledger-row-strip">
-                <div class="ledger-identity-side">
-                    <span class="ledger-rank-idx">4</span>
-                    <span class="ledger-username-string">fakel1l</span>
-                </div>
-                <div class="ledger-score-bold">19,150 XP</div>
-            </div>
-            <div class="ledger-row-strip">
-                <div class="ledger-identity-side">
-                    <span class="ledger-rank-idx">5</span>
-                    <span class="ledger-username-string">Sinnables</span>
-                </div>
-                <div class="ledger-score-bold">18,800 XP</div>
-            </div>
-        </div>
-    </main>
+        // Award Filter active class toggle controller
+        function switchAwardFilter(buttonElement) {
+            document.querySelectorAll('.award-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-gold', 'text-black', 'font-black');
+                btn.classList.add('text-stone-400', 'font-bold');
+            });
+            buttonElement.classList.add('bg-gold', 'text-black', 'font-black');
+            buttonElement.classList.remove('text-stone-400', 'font-bold');
+        }
 
+        // Global window click to close open popovers automatically
+        window.addEventListener('click', () => {
+            document.querySelectorAll('[id^="popover-"]').forEach(el => el.classList.add('hidden'));
+        });
+    </script>
 </body>
 </html>
