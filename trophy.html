@@ -84,6 +84,81 @@
 </head>
 <body>
 
+  <header>
+        <div class="logo-area">
+            <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
+                <img src="e1abd0576f5f77741b1f5a27399462ff.webp" alt="NBL Logo" style="height: 45px; width: auto; display: block;">
+                 
+                <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px;">National Basketball League</span>
+            </a>
+        </div>
+        <nav>
+            <div class="nav-item"><a href="#">Standings</a></div>
+            <div class="nav-item"><a href="teams.html">Teams</a></div>
+            <div class="nav-item"><a href="matchups.html">Matchups</a></div>
+             
+            <!-- Scores Hover Dropdown -->
+            <div class="nav-item">
+                <a href="scores.html">Scores ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="scores.html?series=1">Series I</a></li>
+                    <li><a href="scores.html?series=2">Series II</a></li>
+                    <li><a href="scores.html?series=3">Series III</a></li>
+                    <li><a href="scores.html?series=4">Series IV</a></li>
+                    <li><a href="scores.html?series=5">Series V</a></li>
+                </ul>
+            </div>
+             
+            <!-- Added Stats Mega Hover Dropdown Split Layout -->
+            <div class="nav-item">
+                <a href="stats.html">Stats ▾</a>
+                <div class="dropdown-menu dropdown-mega">
+                    <!-- Offense Column -->
+                    <div class="mega-col">
+                        <h4>Offense</h4>
+                        <a href="stats.html?cat=passing">Quarterbacks</a>
+                        <a href="stats.html?cat=rushing">Running Backs</a>
+                        <a href="stats.html?cat=receiving">Wide Receivers</a>
+                        <a href="stats.html?cat=tightends">Tight Ends</a>
+                        <a href="stats.html?cat=center">Centers</a>
+                    </div>
+                    <!-- Defense Column -->
+                    <div class="mega-col">
+                        <h4>Defense</h4>
+                        <a href="stats.html?cat=defensiveends">Defensive Ends</a>
+                        <a href="stats.html?cat=linebackers">Linebackers</a>
+                        <a href="stats.html?cat=secondary">Defensive Backs</a>
+                    </div>
+                    <!-- Special Teams Column -->
+                    <div class="mega-col">
+                        <h4>Special Teams</h4>
+                        <a href="stats.html?cat=kicking">Kickers</a>
+                        <h4 style="margin-top: 15px;">Record Book</h4>
+                        <a href="#">All-Time Stats</a>
+                    </div>
+                </div>
+            </div>
+             
+            <div class="nav-item"><a href="rulebook.html">Rulebook</a></div>
+             
+            <!-- Legacy Hover Dropdown -->
+            <div class="nav-item">
+                <a href="legacy.html">Legacy ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="legacy.html#legacy-section">Legacy</a></li>
+                    <li><a href="legacy.html#champions-awards">Champions & Awards</a></li>
+                    <li><a href="legacy.html#award-tracker">Award Tracker</a></li>
+                </ul>
+            </div>
+        </nav>
+         
+        <div class="right-actions">
+            <!-- Functional Light/Dark circle button -->
+            <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Mode">🌙</button>
+            <a href="#" class="join-btn">Join Now</a>
+        </div>
+    </header>
+  
   <div class="container">
     <!-- Link connecting back to your legacy page -->
     <a href="../legacy.html" class="at-back">← Back to Legacy Leaderboard</a>
