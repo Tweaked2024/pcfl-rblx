@@ -463,7 +463,7 @@
             margin-bottom: 40px;
         }
         .champ-banner-card {
-            background-color: #fefefe;
+            background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 20px;
@@ -507,7 +507,7 @@
             margin-bottom: 40px;
         }
         .mvp-showcase-box {
-            background: linear-gradient(to bottom, #fffdf9, #fff);
+            background: linear-gradient(to bottom, #fffdf9, var(--card-bg));
             border: 1px solid #faebcc;
             border-radius: 10px;
             padding: 20px;
@@ -758,15 +758,15 @@
             <span>American Football League</span>
         </div>
         <nav>
-            <div class="nav-item"><a href="#">standings</a></div>
-            <div class="nav-item"><a href="#">teams</a></div>
-            <div class="nav-item"><a href="#">scores</a></div>
-            <div class="nav-item"><a href="#">stats</a></div>
+            <div class="nav-item"><a href="standings.html">standings</a></div>
+            <div class="nav-item"><a href="teams.html">teams</a></div>
+            <div class="nav-item"><a href="scores.html">scores</a></div>
+            <div class="nav-item"><a href="stats.html">stats</a></div>
             <div class="nav-item"><a href="rulebook.html">rulebook</a></div>
             <div class="nav-item"><a href="legacy.html" style="color:var(--accent-red)">legacy</a></div>
         </nav>
         <div class="right-actions">
-            <a href="#" class="join-btn">join now</a>
+            <a href="https://discord.gg/3gCnDQ5knN" class="join-btn">join now</a>
         </div>
     </header>
 
@@ -835,7 +835,7 @@
             <div class="leaderboard-list" id="leaderboardStackList">
                 
                 <!-- Row Item 1 -->
-                <div class="leaderboard-row-item" onclick="openPlayerBreakdown(event, 'FINLEY4K', 6, 3, 6, 2, 5, 12, 8, 11, '23,800')">
+                <div class="leaderboard-row-item" onclick="openPlayerBreakdown(event, 'FINLEY4K', 6, 2, 6, 5, 12, 8, 11, '23,800')">
                     <div class="row-left-group">
                         <div class="row-index">1</div>
                         <img src="image_811a6a.png" class="row-avatar" alt="Avatar">
@@ -859,7 +859,7 @@
                 </div>
 
                 <!-- Row Item 2 -->
-                <div class="leaderboard-row-item" onclick="openPlayerBreakdown(event, 'TheCoopDudeddd', 1, 1, 1, 1, 7, 22, 15, 7, '19,850')">
+                <div class="leaderboard-row-item" onclick="openPlayerBreakdown(event, 'TheCoopDudeddd', 1, 1, 1, 7, 22, 15, 7, '19,850')">
                     <div class="row-left-group">
                         <div class="row-index">2</div>
                         <img src="image_811a6a.png" class="row-avatar" alt="Avatar">
@@ -883,7 +883,7 @@
                 </div>
 
                 <!-- Row Item 3 -->
-                <div class="leaderboard-row-item" onclick="openPlayerBreakdown(event, 'xDiminq', 0, 2, 2, 1, 8, 16, 10, 14, '19,750')">
+                <div class="leaderboard-row-item" onclick="openPlayerBreakdown(event, 'xDiminq', 0, 2, 1, 8, 16, 10, 14, '19,750')">
                     <div class="row-left-group">
                         <div class="row-index">3</div>
                         <img src="image_811a6a.png" class="row-avatar" alt="Avatar">
@@ -909,53 +909,52 @@
                 <div class="player-breakdown-modal" id="playerStatModal">
                     <div class="modal-player-title" id="modalName">Player Profile</div>
                     <div class="modal-stat-line"><div class="modal-stat-label">💍 Allegiance Bowls</div><div class="modal-stat-val" id="statBowls">0</div></div>
-                    <div class="modal-stat-line" style="color:var(--legacy-gold); font-weight:bold; padding-left:10px;"><div class="modal-stat-label">🔥 Bowl MVP Bonus</div><div class="modal-stat-val" id="statBowlMvp">0</div></div>
-                    <div class="modal-stat-line"><div class="modal-stat-label">🏆 Conference Championships</div><div class="modal-stat-val" id="statConf">0</div></div>
-                    <div class="modal-stat-line"><div class="modal-stat-label">👑 Top Honors (MVP)</div><div class="modal-stat-val" id="statHonors">0</div></div>
-                    <div class="modal-stat-line"><div class="modal-stat-label">🎖️ Annual Awards</div><div class="modal-stat-val" id="statAnnual">0</div></div>
-                    <div class="modal-stat-line"><div class="modal-stat-label">⭐ All-Pro Selections</div><div class="modal-stat-val" id="statAllPro">0</div></div>
-                    <div class="modal-stat-line"><div class="modal-stat-label">🌟 Star Bowl Selections</div><div class="modal-stat-val" id="statStarBowl">0</div></div>
+                    <div class="modal-stat-line"><div class="modal-stat-label">🏆 Conference Titles</div><div class="modal-stat-val" id="statConf">0</div></div>
+                    <div class="modal-stat-line"><div class="modal-stat-label">👑 MVPs Scored</div><div class="modal-stat-val" id="statMvp">0</div></div>
+                    <div class="modal-stat-line"><div class="modal-stat-label">⭐ 1st All-Pro</div><div class="modal-stat-val" id="statAllPro">0</div></div>
+                    <div class="modal-stat-line"><div class="modal-stat-label">🌟 Star Bowl Appearances</div><div class="modal-stat-val" id="statStarBowl">0</div></div>
+                    <div class="modal-stat-line"><div class="modal-stat-label">👑 League Crowns</div><div class="modal-stat-val" id="statCrowns">0</div></div>
                     <div class="modal-stat-line"><div class="modal-stat-label">🏅 Achievement Badges</div><div class="modal-stat-val" id="statBadges">0</div></div>
-                    
                     <div class="modal-total-footer">
-                        <div class="modal-grand-label">Grand Total</div>
-                        <div class="modal-grand-val" id="modalTotalXp">0 XP</div>
+                        <div class="modal-grand-label">Total Points</div>
+                        <div class="modal-grand-val" id="statTotalXp">0 XP</div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
 
     <!-- ==========================================================================
-        SECTION 2: CHAMPIONS & AWARDS INDEX
+        SECTION 2: CHAMPIONS & AWARDS INDEX VIEW
         ========================================================================== -->
     <section id="champions-view" class="legacy-view-section">
         <div class="champions-heading-block">
-            <h1>Champions & Individual Honors</h1>
-            <p>Archive history of historical championship organizations and award recipients.</p>
+            <h1>Historical Archives</h1>
+            <p>Review historical rosters, conference titlists, and individual honors across all historical eras.</p>
         </div>
 
         <div class="season-filter-row">
-            <button class="season-pill-btn active">All Seasons</button>
-            <button class="season-pill-btn">Season 5</button>
-            <button class="season-pill-btn">Season 4</button>
+            <button class="season-pill-btn active">Season 4</button>
             <button class="season-pill-btn">Season 3</button>
+            <button class="season-pill-btn">Season 2</button>
+            <button class="season-pill-btn">Season 1</button>
         </div>
 
         <div class="championship-summary-grid">
             <div class="champ-banner-card">
-                <div class="champ-banner-title">💍 Season 5 Allegiance Bowl Champion</div>
+                <div class="champ-banner-title">💍 Allegiance Bowl Champion</div>
                 <div class="champ-roster-inline-list">
                     <div class="roster-member-capsule"><div class="capsule-dot"></div>Player One</div>
                     <div class="roster-member-capsule"><div class="capsule-dot"></div>Player Two</div>
+                    <div class="roster-member-capsule"><div class="capsule-dot"></div>Player Three</div>
+                    <div class="roster-member-capsule"><div class="capsule-dot"></div>Player Four</div>
                 </div>
             </div>
             <div class="champ-banner-card">
-                <div class="champ-banner-title">🏆 Season 5 Conference Runner Up</div>
+                <div class="champ-banner-title">🏆 Conference Champions</div>
                 <div class="champ-roster-inline-list">
-                    <div class="roster-member-capsule"><div class="capsule-dot" style="background-color:var(--text-light)"></div>Player Three</div>
-                    <div class="roster-member-capsule"><div class="capsule-dot" style="background-color:var(--text-light)"></div>Player Four</div>
+                    <div class="roster-member-capsule"><div class="capsule-dot" style="background:#f1c40f"></div>AFC Titlist</div>
+                    <div class="roster-member-capsule"><div class="capsule-dot" style="background:#3498db"></div>NFC Titlist</div>
                 </div>
             </div>
         </div>
@@ -963,167 +962,154 @@
         <div class="major-mvp-row">
             <div class="mvp-showcase-box">
                 <div class="mvp-box-title">👑 League MVP</div>
-                <div class="mvp-box-avatar"></div>
-                <div class="mvp-box-name">Recipient Username</div>
+                <img src="image_811a6a.png" class="mvp-box-avatar" alt="MVP">
+                <div class="mvp-box-name">Candidate Alpha</div>
             </div>
             <div class="mvp-showcase-box">
                 <div class="mvp-box-title">🔥 Offensive POTY</div>
-                <div class="mvp-box-avatar"></div>
-                <div class="mvp-box-name">Recipient Username</div>
+                <img src="image_811a6a.png" class="mvp-box-avatar" alt="OPOTY">
+                <div class="mvp-box-name">Candidate Beta</div>
             </div>
             <div class="mvp-showcase-box">
                 <div class="mvp-box-title">🛡️ Defensive POTY</div>
-                <div class="mvp-box-avatar"></div>
-                <div class="mvp-box-name">Recipient Username</div>
+                <img src="image_811a6a.png" class="mvp-box-avatar" alt="DPOTY">
+                <div class="mvp-box-name">Candidate Gamma</div>
             </div>
         </div>
     </section>
 
     <!-- ==========================================================================
-        SECTION 3: AWARD TRACKER RACE REAL-TIME
+        SECTION 3: AWARD TRACKER RACE VIEW
         ========================================================================== -->
     <section id="tracker-view" class="legacy-view-section">
         <div class="tracker-header-block">
             <h1>Award Race Tracker</h1>
-            <p>Real-time statistical evaluation rankings for current season award races.</p>
+            <p>Real-time analytics, evaluation metrics, and live leaderboards for active regular season titles.</p>
         </div>
 
         <div class="award-pill-container">
-            <button class="award-selector-btn active">Most Valuable Player</button>
+            <button class="award-selector-btn active">Most Valuable Player (MVP)</button>
             <button class="award-selector-btn">Offensive Player of the Year</button>
             <button class="award-selector-btn">Defensive Player of the Year</button>
+            <button class="award-selector-btn">Coach of the Year</button>
         </div>
 
         <div class="candidate-podium-row">
-            <div class="candidate-card rank-2">
-                <div class="candidate-rank-badge">#2 CANDIDATE</div>
-                <div class="candidate-avatar"></div>
-                <div class="candidate-name">Player Name</div>
-                <div class="candidate-team-row">TEAM TAG</div>
-                <div class="candidate-rating-value">94.2</div>
-                <div class="candidate-stats-summary-line">2,100 Yds · 18 TD · 2 INT</div>
+            <div class="candidate-card">
+                <div class="candidate-rank-badge">RANK #2</div>
+                <img src="image_811a6a.png" class="candidate-avatar" alt="Rank 2">
+                <div class="candidate-name">Player X</div>
+                <div class="candidate-team-row">DAL</div>
+                <div class="candidate-rating-value">91.4</div>
+                <div class="candidate-stats-summary-line">32 TD / 4 INT<br>3,100 Yds Pass</div>
             </div>
             <div class="candidate-card rank-1">
-                <div class="candidate-rank-badge">👑 CURRENT LEADER</div>
-                <div class="candidate-avatar" style="width:85px; height:85px; border:2px solid #f1c40f;"></div>
-                <div class="candidate-name">Player Name</div>
-                <div class="candidate-team-row">TEAM TAG</div>
-                <div class="candidate-rating-value">98.5</div>
-                <div class="candidate-stats-summary-line">2,450 Yds · 24 TD · 1 INT</div>
+                <div class="candidate-rank-badge">👑 LEADER #1</div>
+                <img src="image_811a6a.png" class="candidate-avatar" alt="Rank 1">
+                <div class="candidate-name">Player Y</div>
+                <div class="candidate-team-row">KC</div>
+                <div class="candidate-rating-value">96.8</div>
+                <div class="candidate-stats-summary-line">38 TD / 2 INT<br>3,450 Yds Pass</div>
             </div>
-            <div class="candidate-card rank-3">
-                <div class="candidate-rank-badge">#3 CANDIDATE</div>
-                <div class="candidate-avatar"></div>
-                <div class="candidate-name">Player Name</div>
-                <div class="candidate-team-row">TEAM TAG</div>
-                <div class="candidate-rating-value">91.0</div>
-                <div class="candidate-stats-summary-line">1,980 Yds · 15 TD · 4 INT</div>
+            <div class="candidate-card">
+                <div class="candidate-rank-badge">RANK #3</div>
+                <img src="image_811a6a.png" class="candidate-avatar" alt="Rank 3">
+                <div class="candidate-name">Player Z</div>
+                <div class="candidate-team-row">SF</div>
+                <div class="candidate-rating-value">88.5</div>
+                <div class="candidate-stats-summary-line">18 Rush TD<br>1,420 Yds Scrim</div>
             </div>
         </div>
 
         <div class="tracker-list-table">
             <div class="tracker-table-row">
                 <div class="tracker-row-left">
-                    <div class="tracker-row-rank">4</div>
-                    <div class="tracker-row-avatar"></div>
-                    <div class="tracker-row-name">Runner Up Name <span class="tracker-row-team-tag">TAG</span></div>
+                    <div class="tracker-row-rank">#4</div>
+                    <img src="image_811a6a.png" class="tracker-row-avatar" alt="Player">
+                    <div class="tracker-row-name">Contender Four <span class="tracker-row-team-tag">BUF</span></div>
                 </div>
                 <div class="tracker-row-right">
-                    <div class="tracker-row-stats-metrics">1,850 Yds · 14 TD · 3 INT</div>
-                    <div class="tracker-row-rating-bold">88.4</div>
+                    <div class="tracker-row-stats-metrics">28 Pass TD / 8 INT<br>2,900 Yds</div>
+                    <div class="tracker-row-rating-bold">84.2</div>
+                </div>
+            </div>
+            <div class="tracker-table-row">
+                <div class="tracker-row-left">
+                    <div class="tracker-row-rank">#5</div>
+                    <img src="image_811a6a.png" class="tracker-row-avatar" alt="Player">
+                    <div class="tracker-row-name">Contender Five <span class="tracker-row-team-tag">PHI</span></div>
+                </div>
+                <div class="tracker-row-right">
+                    <div class="tracker-row-stats-metrics">22 Total TD / 5 INT<br>1,100 Yds Rush</div>
+                    <div class="tracker-row-rating-bold">81.9</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Global Layout Construction Footer -->
+    <!-- Global Layout Structural Footer -->
     <footer>
         <div class="footer-col">
-            <h4>About NBL</h4>
-            <p style="color:#8b949e; line-height: 1.5;">The ultimate destination for competitive statistics, multi-generational roster legacy indexing, and virtual league award tracking simulation portraits.</p>
+            <img src="e1abd0576f5f77741b1f5a27399462ff.webp" alt="Logo" class="footer-logo">
+            <p style="margin-top:15px; color:#8b949e;">The definitive records engine tracking historical analytics, player achievements, and legacy metrics.</p>
         </div>
         <div class="footer-col">
             <h4>Portals</h4>
             <ul>
-                <li><a href="#">Standings</a></li>
-                <li><a href="#">Team Centers</a></li>
+                <li><a href="#">Standings Hub</a></li>
                 <li><a href="#">Live Scores</a></li>
+                <li><a href="#">League Statistics</a></li>
             </ul>
         </div>
         <div class="footer-col">
-            <h4>Legal</h4>
+            <h4>Documentation</h4>
             <ul>
-                <li><a href="rulebook.html">League Rulebook</a></li>
-                <li><a href="#">Terms of Use</a></li>
+                <li><a href="rulebook.html">Official Rulebook</a></li>
+                <li><a href="#">XP Architecture Glossary</a></li>
             </ul>
         </div>
     </footer>
 
-    <!-- Interactive Logic Application Engine Scripts -->
+    <!-- Interactive Navigation Tab Views Controller Engine Logic Script -->
     <script>
-        // Tab switching utility logic
         function switchLegacyView(viewId) {
-            // Remove active tags from all layouts
             document.querySelectorAll('.legacy-view-section').forEach(section => {
                 section.classList.remove('active');
             });
             document.querySelectorAll('.legacy-tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-
-            // Grant focus variables to selected panels
-            document.getElementById(viewId).classList.add('active');
             
-            // Dynamic button highlighting filter target logic
-            const activeBtn = Array.from(document.querySelectorAll('.legacy-tab-btn')).find(btn => 
-                btn.getAttribute('onclick').includes(viewId)
-            );
-            if(activeBtn) activeBtn.classList.add('active');
-
-            // Automatically close the flyout profile modal upon switching tabs to prevent overlay glitches
+            document.getElementById(viewId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            // Hide open modals when switching tabs
             document.getElementById('playerStatModal').style.display = 'none';
         }
 
-        // Functional Dynamic Flyout Modal processing architecture
-        function openPlayerBreakdown(event, name, bowls, mvp, conf, honors, annual, allpro, starbowl, badges, totalXp) {
-            event.stopPropagation(); // Stop bubbling up into window listener context
-            
+        function openPlayerBreakdown(event, name, bowls, conf, mvp, allpro, starbowl, crowns, badges, totalXp) {
+            event.stopPropagation();
             const modal = document.getElementById('playerStatModal');
             
-            // Assign parsed context values directly to DOM nodes
-            document.getElementById('modalName').innerText = name + " | Metrics";
-            document.getElementById('statBowls').innerText = bowls + "x";
-            document.getElementById('statBowlMvp').innerText = mvp + "x";
-            document.getElementById('statConf').innerText = conf + "x";
-            document.getElementById('statHonors').innerText = honors + "x";
-            document.getElementById('statAnnual').innerText = annual + "x";
-            document.getElementById('statAllPro').innerText = allpro + "x";
-            document.getElementById('statStarBowl').innerText = starbowl + "x";
-            document.getElementById('statBadges').innerText = badges + "x";
-            document.getElementById('modalTotalXp').innerText = totalXp + " XP";
-
-            // Position calculation math relative to the container block row clicked
-            const rowItem = event.currentTarget;
-            const containerRect = rowItem.parentElement.getBoundingClientRect();
-            const rowRect = rowItem.getBoundingClientRect();
+            document.getElementById('modalName').innerText = name;
+            document.getElementById('statBowls').innerText = bowls;
+            document.getElementById('statConf').innerText = conf;
+            document.getElementById('statMvp').innerText = mvp;
+            document.getElementById('statAllPro').innerText = allpro;
+            document.getElementById('statStarBowl').innerText = starbowl;
+            document.getElementById('statCrowns').innerText = crowns;
+            document.getElementById('statBadges').innerText = badges;
+            document.getElementById('statTotalXp').innerText = totalXp + " XP";
             
-            // Calculate top placement relative to parent container stack spacing offset
-            const calculatedTopOffset = rowRect.top - containerRect.top + rowItem.offsetHeight + 5;
-            
-            modal.style.top = calculatedTopOffset + "px";
             modal.style.display = 'block';
         }
 
-        // Global dismiss framework event mapping for interactive modular elements
-        window.addEventListener('click', function(e) {
-            const modal = document.getElementById('playerStatModal');
-            if (modal && modal.style.display === 'block') {
-                // If clicking entirely outside the active modal container frame bounds, close it
-                if (!modal.contains(e.target)) {
-                    modal.style.display = 'none';
-                }
+        // Close dropdown modals when clicking outside structural rows boundaries
+        window.onclick = function(event) {
+            if (!event.target.closest('.leaderboard-row-item') && !event.target.closest('#playerStatModal')) {
+                document.getElementById('playerStatModal').style.display = 'none';
             }
-        });
+        }
     </script>
 </body>
 </html>
