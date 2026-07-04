@@ -194,11 +194,20 @@
             padding: 25px 15px;
             text-align: center;
             position: relative;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .podium-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--legacy-gold);
         }
         .podium-card.first {
             border-color: var(--legacy-gold);
             transform: translateY(-10px);
             box-shadow: 0 0 20px rgba(245, 176, 65, 0.2);
+        }
+        .podium-card.first:hover {
+            transform: translateY(-14px);
         }
         .podium-rank-tag {
             position: absolute;
@@ -354,18 +363,18 @@
             text-align: right;
         }
 
-        /* Dynamic Flyout Fly-in Dropdown Modal Panel Architecture */
+        /* Dynamic Flyout Floating Tooltip Panel */
         .player-breakdown-modal {
             display: none;
-            position: absolute;
-            right: 20px;
+            position: fixed;
             width: 320px;
             background: #150f0b;
             border: 2px solid var(--legacy-gold);
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-            z-index: 500;
+            z-index: 2000;
+            pointer-events: none;
         }
         .modal-player-title {
             font-size: 1.1rem;
@@ -499,7 +508,7 @@
             border-radius: 50%;
         }
 
-        /* Top Tier Individual Honors Honors Grid Layout */
+        /* Top Tier Individual Honors Grid Layout */
         .major-mvp-row {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -751,7 +760,6 @@
 </head>
 <body>
 
-    <!-- Main Navigation Header Bar -->
     <header>
         <div class="logo-area">
             <img src="e1abd0576f5f77741b1f5a27399462ff.webp" alt="Logo" style="height:40px; margin-right:10px;">
@@ -770,20 +778,15 @@
         </div>
     </header>
 
-    <!-- Submenu Architecture Navigation for Switching Panels Layout Views -->
     <div class="legacy-nav-bar">
         <button class="legacy-tab-btn active" onclick="switchLegacyView('leaderboard-view')">HOF Leaderboard</button>
         <button class="legacy-tab-btn" onclick="switchLegacyView('champions-view')">Champions & Awards</button>
         <button class="legacy-tab-btn" onclick="switchLegacyView('tracker-view')">Award Tracker Race</button>
     </div>
 
-    <!-- ==========================================================================
-        SECTION 1: HALL OF FAME LEADERBOARD VIEW (DEFAULT ACTIVE)
-        ========================================================================== -->
     <section id="leaderboard-view" class="legacy-view-section active">
         <div class="leaderboard-wrapper">
             
-            <!-- XP System Legend Map Guide Block -->
             <div class="xp-legend-strip">
                 <div class="legend-title">How XP is Scored</div>
                 <div class="badge-pill">💍 Allegiance Bowl <span>1,000</span></div>
@@ -797,26 +800,28 @@
                 <div class="badge-pill">🏅 Achievement Badge <span>100–1,000</span></div>
             </div>
 
-            <!-- Top 3 Premium Podium Grid Layout -->
             <div class="podium-container">
-                <!-- #2 Position Place -->
-                <div class="podium-card">
+                <div class="podium-card" 
+                     data-username="TheCoopDudeddd" data-bowls="1" data-conf="1" data-mvp="1" data-opoty="7" data-allpro="22" data-star="15" data-badge="7" data-xp="19,850"
+                     onclick="navigateToProfile('TheCoopDudeddd')">
                     <div class="podium-rank-tag">#2</div>
                     <img src="image_811a6a.png" alt="Player" class="podium-avatar">
                     <div class="podium-name">TheCoopDudeddd</div>
                     <div class="podium-xp">19,850 <span style="font-size:0.75rem; color:var(--legacy-gold)">XP</span></div>
                     <div class="podium-subtext">1x 💍 · 1x MVP</div>
                 </div>
-                <!-- #1 Position Place -->
-                <div class="podium-card first">
+                <div class="podium-card first" 
+                     data-username="FINLEY4K" data-bowls="6" data-conf="2" data-mvp="6" data-opoty="5" data-allpro="12" data-star="8" data-badge="11" data-xp="23,800"
+                     onclick="navigateToProfile('FINLEY4K')">
                     <div class="podium-rank-tag">👑 #1</div>
                     <img src="image_811a6a.png" alt="Player" class="podium-avatar">
                     <div class="podium-name">FINLEY4K</div>
                     <div class="podium-xp">23,800 <span style="font-size:0.75rem; color:var(--legacy-gold)">XP</span></div>
                     <div class="podium-subtext">6x 💍 · 2x MVP</div>
                 </div>
-                <!-- #3 Position Place -->
-                <div class="podium-card">
+                <div class="podium-card" 
+                     data-username="xDiminq" data-bowls="0" data-conf="2" data-mvp="1" data-opoty="8" data-allpro="16" data-star="10" data-badge="14" data-xp="19,750"
+                     onclick="navigateToProfile('xDiminq')">
                     <div class="podium-rank-tag">#3</div>
                     <img src="image_811a6a.png" alt="Player" class="podium-avatar">
                     <div class="podium-name">xDiminq</div>
@@ -825,17 +830,16 @@
                 </div>
             </div>
 
-            <!-- Controls Filtering Stack Layout Row -->
             <div class="list-controls-bar">
                 <div class="player-count"><strong>1,132</strong> ranked players</div>
                 <input type="text" class="search-filter-input" placeholder="Filter players...">
             </div>
 
-            <!-- Interactive Clickable List Stack Container -->
             <div class="leaderboard-list" id="leaderboardStackList">
                 
-                <!-- Row Item 1 -->
-                <div class="leaderboard-row-item" onclick="openPlayerBreakdown(event, 'FINLEY4K', 6, 2, 6, 5, 12, 8, 11, '23,800')">
+                <div class="leaderboard-row-item" 
+                     data-username="FINLEY4K" data-bowls="6" data-conf="2" data-mvp="6" data-opoty="5" data-allpro="12" data-star="8" data-badge="11" data-xp="23,800"
+                     onclick="navigateToProfile('FINLEY4K')">
                     <div class="row-left-group">
                         <div class="row-index">1</div>
                         <img src="image_811a6a.png" class="row-avatar" alt="Avatar">
@@ -858,8 +862,9 @@
                     </div>
                 </div>
 
-                <!-- Row Item 2 -->
-                <div class="leaderboard-row-item" onclick="openPlayerBreakdown(event, 'TheCoopDudeddd', 1, 1, 1, 7, 22, 15, 7, '19,850')">
+                <div class="leaderboard-row-item" 
+                     data-username="TheCoopDudeddd" data-bowls="1" data-conf="1" data-mvp="1" data-opoty="7" data-allpro="22" data-star="15" data-badge="7" data-xp="19,850"
+                     onclick="navigateToProfile('TheCoopDudeddd')">
                     <div class="row-left-group">
                         <div class="row-index">2</div>
                         <img src="image_811a6a.png" class="row-avatar" alt="Avatar">
@@ -882,8 +887,9 @@
                     </div>
                 </div>
 
-                <!-- Row Item 3 -->
-                <div class="leaderboard-row-item" onclick="openPlayerBreakdown(event, 'xDiminq', 0, 2, 1, 8, 16, 10, 14, '19,750')">
+                <div class="leaderboard-row-item" 
+                     data-username="xDiminq" data-bowls="0" data-conf="2" data-mvp="1" data-opoty="8" data-allpro="16" data-star="10" data-badge="14" data-xp="19,750"
+                     onclick="navigateToProfile('xDiminq')">
                     <div class="row-left-group">
                         <div class="row-index">3</div>
                         <img src="image_811a6a.png" class="row-avatar" alt="Avatar">
@@ -905,211 +911,59 @@
                     </div>
                 </div>
 
-                <!-- Floating Data Flyout Modal View Box Layout -->
                 <div class="player-breakdown-modal" id="playerStatModal">
                     <div class="modal-player-title" id="modalName">Player Profile</div>
                     <div class="modal-stat-line"><div class="modal-stat-label">💍 Allegiance Bowls</div><div class="modal-stat-val" id="statBowls">0</div></div>
                     <div class="modal-stat-line"><div class="modal-stat-label">🏆 Conference Titles</div><div class="modal-stat-val" id="statConf">0</div></div>
                     <div class="modal-stat-line"><div class="modal-stat-label">👑 MVPs Scored</div><div class="modal-stat-val" id="statMvp">0</div></div>
+                    <div class="modal-stat-line"><div class="modal-stat-label">🔥 OPOTY / DPOTY</div><div class="modal-stat-val" id="statOpoty">0</div></div>
                     <div class="modal-stat-line"><div class="modal-stat-label">⭐ 1st All-Pro</div><div class="modal-stat-val" id="statAllPro">0</div></div>
-                    <div class="modal-stat-line"><div class="modal-stat-label">🌟 Star Bowl Appearances</div><div class="modal-stat-val" id="statStarBowl">0</div></div>
-                    <div class="modal-stat-line"><div class="modal-stat-label">👑 League Crowns</div><div class="modal-stat-val" id="statCrowns">0</div></div>
-                    <div class="modal-stat-line"><div class="modal-stat-label">🏅 Achievement Badges</div><div class="modal-stat-val" id="statBadges">0</div></div>
+                    <div class="modal-stat-line"><div class="modal-stat-label">🌟 Star Bowls</div><div class="modal-stat-val" id="statStar">0</div></div>
+                    <div class="modal-stat-line"><div class="modal-stat-label">🏅 Achievement Badges</div><div class="modal-stat-val" id="statBadge">0</div></div>
                     <div class="modal-total-footer">
-                        <div class="modal-grand-label">Total Points</div>
-                        <div class="modal-grand-val" id="statTotalXp">0 XP</div>
+                        <div class="modal-grand-label">Total Weight</div>
+                        <div class="modal-grand-val" id="modalTotalXp">0 XP</div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- ==========================================================================
-        SECTION 2: CHAMPIONS & AWARDS INDEX VIEW
-        ========================================================================== -->
     <section id="champions-view" class="legacy-view-section">
         <div class="champions-heading-block">
-            <h1>Historical Archives</h1>
-            <p>Review historical rosters, conference titlists, and individual honors across all historical eras.</p>
-        </div>
-
-        <div class="season-filter-row">
-            <button class="season-pill-btn active">Season 4</button>
-            <button class="season-pill-btn">Season 3</button>
-            <button class="season-pill-btn">Season 2</button>
-            <button class="season-pill-btn">Season 1</button>
-        </div>
-
-        <div class="championship-summary-grid">
-            <div class="champ-banner-card">
-                <div class="champ-banner-title">💍 Allegiance Bowl Champion</div>
-                <div class="champ-roster-inline-list">
-                    <div class="roster-member-capsule"><div class="capsule-dot"></div>Player One</div>
-                    <div class="roster-member-capsule"><div class="capsule-dot"></div>Player Two</div>
-                    <div class="roster-member-capsule"><div class="capsule-dot"></div>Player Three</div>
-                    <div class="roster-member-capsule"><div class="capsule-dot"></div>Player Four</div>
-                </div>
-            </div>
-            <div class="champ-banner-card">
-                <div class="champ-banner-title">🏆 Conference Champions</div>
-                <div class="champ-roster-inline-list">
-                    <div class="roster-member-capsule"><div class="capsule-dot" style="background:#f1c40f"></div>AFC Titlist</div>
-                    <div class="roster-member-capsule"><div class="capsule-dot" style="background:#3498db"></div>NFC Titlist</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="major-mvp-row">
-            <div class="mvp-showcase-box">
-                <div class="mvp-box-title">👑 League MVP</div>
-                <img src="image_811a6a.png" class="mvp-box-avatar" alt="MVP">
-                <div class="mvp-box-name">Candidate Alpha</div>
-            </div>
-            <div class="mvp-showcase-box">
-                <div class="mvp-box-title">🔥 Offensive POTY</div>
-                <img src="image_811a6a.png" class="mvp-box-avatar" alt="OPOTY">
-                <div class="mvp-box-name">Candidate Beta</div>
-            </div>
-            <div class="mvp-showcase-box">
-                <div class="mvp-box-title">🛡️ Defensive POTY</div>
-                <img src="image_811a6a.png" class="mvp-box-avatar" alt="DPOTY">
-                <div class="mvp-box-name">Candidate Gamma</div>
-            </div>
+            <h1>Champions & History</h1>
+            <p>Archive database logs tracking past season achievements.</p>
         </div>
     </section>
 
-    <!-- ==========================================================================
-        SECTION 3: AWARD TRACKER RACE VIEW
-        ========================================================================== -->
     <section id="tracker-view" class="legacy-view-section">
         <div class="tracker-header-block">
-            <h1>Award Race Tracker</h1>
-            <p>Real-time analytics, evaluation metrics, and live leaderboards for active regular season titles.</p>
-        </div>
-
-        <div class="award-pill-container">
-            <button class="award-selector-btn active">Most Valuable Player (MVP)</button>
-            <button class="award-selector-btn">Offensive Player of the Year</button>
-            <button class="award-selector-btn">Defensive Player of the Year</button>
-            <button class="award-selector-btn">Coach of the Year</button>
-        </div>
-
-        <div class="candidate-podium-row">
-            <div class="candidate-card">
-                <div class="candidate-rank-badge">RANK #2</div>
-                <img src="image_811a6a.png" class="candidate-avatar" alt="Rank 2">
-                <div class="candidate-name">Player X</div>
-                <div class="candidate-team-row">DAL</div>
-                <div class="candidate-rating-value">91.4</div>
-                <div class="candidate-stats-summary-line">32 TD / 4 INT<br>3,100 Yds Pass</div>
-            </div>
-            <div class="candidate-card rank-1">
-                <div class="candidate-rank-badge">👑 LEADER #1</div>
-                <img src="image_811a6a.png" class="candidate-avatar" alt="Rank 1">
-                <div class="candidate-name">Player Y</div>
-                <div class="candidate-team-row">KC</div>
-                <div class="candidate-rating-value">96.8</div>
-                <div class="candidate-stats-summary-line">38 TD / 2 INT<br>3,450 Yds Pass</div>
-            </div>
-            <div class="candidate-card">
-                <div class="candidate-rank-badge">RANK #3</div>
-                <img src="image_811a6a.png" class="candidate-avatar" alt="Rank 3">
-                <div class="candidate-name">Player Z</div>
-                <div class="candidate-team-row">SF</div>
-                <div class="candidate-rating-value">88.5</div>
-                <div class="candidate-stats-summary-line">18 Rush TD<br>1,420 Yds Scrim</div>
-            </div>
-        </div>
-
-        <div class="tracker-list-table">
-            <div class="tracker-table-row">
-                <div class="tracker-row-left">
-                    <div class="tracker-row-rank">#4</div>
-                    <img src="image_811a6a.png" class="tracker-row-avatar" alt="Player">
-                    <div class="tracker-row-name">Contender Four <span class="tracker-row-team-tag">BUF</span></div>
-                </div>
-                <div class="tracker-row-right">
-                    <div class="tracker-row-stats-metrics">28 Pass TD / 8 INT<br>2,900 Yds</div>
-                    <div class="tracker-row-rating-bold">84.2</div>
-                </div>
-            </div>
-            <div class="tracker-table-row">
-                <div class="tracker-row-left">
-                    <div class="tracker-row-rank">#5</div>
-                    <img src="image_811a6a.png" class="tracker-row-avatar" alt="Player">
-                    <div class="tracker-row-name">Contender Five <span class="tracker-row-team-tag">PHI</span></div>
-                </div>
-                <div class="tracker-row-right">
-                    <div class="tracker-row-stats-metrics">22 Total TD / 5 INT<br>1,100 Yds Rush</div>
-                    <div class="tracker-row-rating-bold">81.9</div>
-                </div>
-            </div>
+            <h1>Award Tracker Race</h1>
+            <p>Real-time updates on active league individual award projections.</p>
         </div>
     </section>
 
-    <!-- Global Layout Structural Footer -->
     <footer>
         <div class="footer-col">
-            <img src="e1abd0576f5f77741b1f5a27399462ff.webp" alt="Logo" class="footer-logo">
-            <p style="margin-top:15px; color:#8b949e;">The definitive records engine tracking historical analytics, player achievements, and legacy metrics.</p>
+            <h4>NBL Football</h4>
+            <p>The premium simulation framework layout ecosystem.</p>
         </div>
         <div class="footer-col">
             <h4>Portals</h4>
             <ul>
-                <li><a href="#">Standings Hub</a></li>
-                <li><a href="#">Live Scores</a></li>
-                <li><a href="#">League Statistics</a></li>
+                <li><a href="standings.html">Standings</a></li>
+                <li><a href="scores.html">Scores</a></li>
             </ul>
         </div>
         <div class="footer-col">
-            <h4>Documentation</h4>
+            <h4>Community</h4>
             <ul>
-                <li><a href="rulebook.html">Official Rulebook</a></li>
-                <li><a href="#">XP Architecture Glossary</a></li>
+                <li><a href="https://discord.gg/3gCnDQ5knN">Discord Server</a></li>
             </ul>
         </div>
     </footer>
 
-    <!-- Interactive Navigation Tab Views Controller Engine Logic Script -->
-    <script>
-        function switchLegacyView(viewId) {
-            document.querySelectorAll('.legacy-view-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.querySelectorAll('.legacy-tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            document.getElementById(viewId).classList.add('active');
-            event.currentTarget.classList.add('active');
-            
-            // Hide open modals when switching tabs
-            document.getElementById('playerStatModal').style.display = 'none';
-        }
-
-        function openPlayerBreakdown(event, name, bowls, conf, mvp, allpro, starbowl, crowns, badges, totalXp) {
-            event.stopPropagation();
-            const modal = document.getElementById('playerStatModal');
-            
-            document.getElementById('modalName').innerText = name;
-            document.getElementById('statBowls').innerText = bowls;
-            document.getElementById('statConf').innerText = conf;
-            document.getElementById('statMvp').innerText = mvp;
-            document.getElementById('statAllPro').innerText = allpro;
-            document.getElementById('statStarBowl').innerText = starbowl;
-            document.getElementById('statCrowns').innerText = crowns;
-            document.getElementById('statBadges').innerText = badges;
-            document.getElementById('statTotalXp').innerText = totalXp + " XP";
-            
-            modal.style.display = 'block';
-        }
-
-        // Close dropdown modals when clicking outside structural rows boundaries
-        window.onclick = function(event) {
-            if (!event.target.closest('.leaderboard-row-item') && !event.target.closest('#playerStatModal')) {
-                document.getElementById('playerStatModal').style.display = 'none';
-            }
-        }
-    </script>
+    <script src="legacy.js"></script>
 </body>
 </html>
