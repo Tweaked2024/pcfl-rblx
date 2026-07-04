@@ -3,119 +3,654 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFL - Statistics Leaders</title>
+    <title>National Basketball League - Stats</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #fcfcfc; color: #111827; }
-        
-        header { background: #ffffff; border-bottom: 1px solid #efefef; position: sticky; top: 0; z-index: 1000; }
-        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 2rem; }
-        .logo-area { font-weight: 900; font-size: 1.25rem; letter-spacing: -0.05em; text-transform: uppercase; color: #111827; text-decoration: none; }
-        .main-nav { display: flex; gap: 1.75rem; }
-        .nav-item { text-decoration: none; color: #4b5563; font-size: 0.85rem; font-weight: 700; text-transform: lowercase; }
-        .nav-item.active { color: #e61e2b; }
+        /* CSS Variables for Dynamic Theme Switching */
+        :root {
+            --bg-color: #fcfcfc;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-light: #777777;
+            --border-color: #e0e0e0;
+            --nav-bg: #ffffff;
+            --accent-red: #e61e2b;
+            --filter-bg: #fdfdfd;
+            --th-bg: #1a1e24;
+            --th-text: #f0f6fc;
+        }
 
-        main { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
-        
-        /* Positioning Context For Mega Menu Dropdown Selection Box */
-        .interactive-trigger-housing { position: relative; display: inline-block; margin-bottom: 1.5rem; }
-        .picker-dropdown-btn { background: #ffffff; border: 1px solid #d1d5db; border-radius: 6px; padding: 0.65rem 1.25rem; font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; color: #111827; }
-        .picker-dropdown-btn:hover { background: #f9fafb; }
+        [data-theme="dark"] {
+            --bg-color: #0b0e14;
+            --card-bg: #161b22;
+            --text-color: #f0f6fc;
+            --text-light: #8b949e;
+            --border-color: #30363d;
+            --nav-bg: #161b22;
+            --filter-bg: #21262d;
+            --th-bg: #21262d;
+            --th-text: #f0f6fc;
+        }
 
-        /* Exact 3-Column Width Mega Panel Alignment Layout from image_763520.png */
-        .mega-matrix-panel { position: absolute; top: 115%; left: 0; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 12px 30px rgba(0,0,0,0.09); padding: 1.5rem; display: grid; grid-template-columns: repeat(3, 210px); gap: 2rem; z-index: 999; }
-        
-        .panel-column h5 { font-size: 0.7rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.8rem; border-bottom: 1px solid #f3f4f6; padding-bottom: 0.3rem; font-weight: 800; }
-        .panel-selection-link { display: block; text-decoration: none; color: #374151; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.65rem; transition: color 0.1s; }
-        .panel-selection-link:hover { color: #e61e2b; }
-        .panel-selection-link.current-active { color: #e61e2b; font-weight: 800; }
+        /* Base Styling & Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-        /* Statistical Grid Logs Table */
-        .stats-data-sheet { width: 100%; border-collapse: collapse; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.01); }
-        .stats-data-sheet th { background: #f9fafb; padding: 0.85rem 1.25rem; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #6b7280; text-align: left; border-bottom: 1px solid #e5e7eb; }
-        .stats-data-sheet td { padding: 0.95rem 1.25rem; border-bottom: 1px solid #f3f4f6; font-size: 0.85rem; color: #374151; }
-        .stats-data-sheet tr:last-child td { border-bottom: none; }
-        .player-name-cell { font-weight: 700; color: #e61e2b; text-decoration: none; }
-        .player-name-cell:hover { text-decoration: underline; }
+        /* Top Navigation Bar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: var(--nav-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            z-index: 1000;
+        }
+        .logo-area {
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+
+        /* Hover Navigation Menu with Mega Dropdown */
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        .nav-item {
+            position: relative;
+            display: inline-block;
+            margin: 0 15px;
+        }
+        .nav-item > a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--card-bg);
+            min-width: 150px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            list-style: none;
+            padding: 5px 0;
+        }
+        .dropdown-menu a {
+            color: var(--text-color);
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .dropdown-menu a:hover {
+            background-color: var(--bg-color);
+        }
+        .nav-item:hover .dropdown-menu {
+            display: block;
+        }
+
+        /* Mega Dropdown for Stats Columns */
+        .nav-item:hover .dropdown-mega {
+            display: flex !important;
+        }
+        .dropdown-mega {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--card-bg);
+            min-width: 550px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            gap: 30px;
+            list-style: none;
+        }
+        .mega-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .mega-col h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        .mega-col a {
+            color: var(--text-color);
+            padding: 6px 0;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .mega-col a:hover {
+            color: var(--accent-red);
+        }
+
+        /* Right Header Elements */
+        .right-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .theme-toggle-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .join-btn {
+            background-color: var(--accent-red);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Layout Controls Row (Heading + Search) */
+        .title-controls-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 15px auto;
+        }
+
+        .page-title {
+            text-transform: uppercase;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        /* Search input styling */
+        .search-wrapper input {
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            outline: none;
+            font-size: 0.9rem;
+            width: 240px;
+        }
+
+        /* Horizontal Category Switcher Row */
+        .stat-nav {
+            display: flex;
+            gap: 10px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto 10px auto;
+            flex-wrap: wrap;
+        }
+        .stat-btn {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        .stat-btn.active {
+            background-color: var(--accent-red);
+            color: white;
+            border-color: var(--accent-red);
+        }
+
+        /* Stat Table Panels */
+        .table-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto 50px auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        th, td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            background-color: var(--th-bg);
+            color: var(--th-text);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            user-select: none;
+        }
+        th:hover {
+            opacity: 0.9;
+        }
+        .sort-icon {
+            margin-left: 6px;
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background-color: rgba(var(--text-color), 0.02);
+        }
+
+        /* Highlight styling for specific high priority data columns like PTS */
+        .highlight-column {
+            font-weight: 700;
+        }
+
+        /* Footer styling */
+        footer {
+            background-color: #1a1e24;
+            color: #8a94a6;
+            padding: 40px 5%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            header, footer { flex-direction: column; text-align: center; gap: 15px; }
+            .stat-nav, .title-controls-container { justify-content: center; flex-direction: column; gap: 15px; }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="nav-container">
-            <a href="index.html" class="logo-area">AFL ECOSYSTEM</a>
-            <nav class="main-nav">
-                <a href="index.html" class="nav-item">standings</a>
-                <a href="teams.html" class="nav-item">teams</a>
-                <a href="scores.html" class="nav-item">scores</a>
-                <a href="stats.html" class="nav-item active">stats</a>
-                <a href="rulebook.html" class="nav-item">rulebook</a>
-                <a href="legacy.html" class="nav-item">legacy</a>
-            </nav>
+        <div class="logo-area">
+            <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
+                <img src="e1abd0576f5f77741b1f5a27399462ff.webp" alt="NBL Logo" style="height: 45px; width: auto; display: block;">
+                <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px;">National Basketball League</span>
+            </a>
+        </div>
+        <nav>
+            <div class="nav-item"><a href="#">Standings</a></div>
+            <div class="nav-item"><a href="teams.html">Teams</a></div>
+            <div class="nav-item"><a href="matchups.html">Matchups</a></div>
+            <div class="nav-item">
+                <a href="scores.html">Scores ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="scores.html?series=1">Series I</a></li>
+                    <li><a href="scores.html?series=2">Series II</a></li>
+                    <li><a href="scores.html?series=3">Series III</a></li>
+                    <li><a href="scores.html?series=4">Series IV</a></li>
+                    <li><a href="scores.html?series=5">Series V</a></li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <a href="stats.html">Stats ▾</a>
+                <div class="dropdown-menu dropdown-mega">
+                    <div class="mega-col">
+                        <h4>Offense</h4>
+                        <a href="#" onclick="showStatTable('passing'); return false;">Quarterbacks (Passing)</a>
+                        <a href="#" onclick="showStatTable('rushing'); return false;">Running Backs (Rushing)</a>
+                        <a href="#" onclick="showStatTable('receiving'); return false;">Wide Receivers (Receiving)</a>
+                    </div>
+                    <div class="mega-col">
+                        <h4>Defense</h4>
+                        <a href="#" onclick="showStatTable('defensiveends'); return false;">Defensive Ends</a>
+                        <a href="#" onclick="showStatTable('linebackers'); return false;">Linebackers</a>
+                    </div>
+                    <div class="mega-col">
+                        <h4>Special Teams</h4>
+                        <a href="#" onclick="showStatTable('kicking'); return false;">Kickers</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-item"><a href="#">Rulebook</a></div>
+            
+            <!-- Legacy Hover Dropdown -->
+            <div class="nav-item">
+                <a href="#">Legacy ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Hall of Fame</a></li>
+                    <li><a href="#">Archives</a></li>
+                </ul>
+            </div>
+        </nav>
+        
+        <div class="right-actions">
+            <button class="theme-toggle-btn" id="themeToggleBtn">🌙</button>
+            <a href="#" class="join-btn">Join Now</a>
         </div>
     </header>
 
-    <main>
-        <div class="interactive-trigger-housing">
-            <button class="picker-dropdown-btn" onclick="const panel = document.getElementById('megaMatrix'); panel.style.display = panel.style.display === 'none' ? 'grid' : 'none';">
-                Quarterbacks <span style="font-size: 0.65rem; color: #6b7280;">▼</span>
-            </button>
-            
-            <div class="mega-matrix-panel" id="megaMatrix" style="display: none;">
-                <div class="panel-column">
-                    <h5>OFFENSE</h5>
-                    <a href="#" class="panel-selection-link current-active">Quarterbacks</a>
-                    <a href="#" class="panel-selection-link">Running Backs</a>
-                    <a href="#" class="panel-selection-link">Wide Receivers</a>
-                    <a href="#" class="panel-selection-link">Tight Ends</a>
-                    <a href="#" class="panel-selection-link">Centers</a>
-                </div>
-                <div class="panel-column">
-                    <h5>DEFENSE</h5>
-                    <a href="#" class="panel-selection-link">Defensive Ends</a>
-                    <a href="#" class="panel-selection-link">Linebackers</a>
-                    <a href="#" class="panel-selection-link">Defensive Backs</a>
-                </div>
-                <div class="panel-column">
-                    <h5>SPECIAL TEAMS</h5>
-                    <a href="#" class="panel-selection-link">Kickers</a>
-                    <h5 style="margin-top: 1.25rem;">RECORD BOOK</h5>
-                    <a href="#" class="panel-selection-link" style="color:#1e3a8a;">All-Time Stats</a>
-                </div>
-            </div>
+    <div class="stat-nav">
+        <button class="stat-btn active" onclick="showStatTable('passing')">Passing</button>
+        <button class="stat-btn" onclick="showStatTable('rushing')">Rushing</button>
+        <button class="stat-btn" onclick="showStatTable('receiving')">Receiving</button>
+        <button class="stat-btn" onclick="showStatTable('defensiveends')">Defensive Ends</button>
+        <button class="stat-btn" onclick="showStatTable('linebackers')">Linebackers</button>
+        <button class="stat-btn" onclick="showStatTable('kicking')">Kicking</button>
+    </div>
+
+    <div class="title-controls-container">
+        <h2 class="page-title" id="statViewTitle">Passing Stats</h2>
+        <div class="search-wrapper">
+            <input type="text" id="playerSearch" oninput="searchTable()" placeholder="Search players or teams...">
         </div>
+    </div>
 
-        <table class="stats-data-sheet">
-            <thead>
-                <tr>
-                    <th style="width: 10%;">Rank</th>
-                    <th style="width: 40%;">Player</th>
-                    <th style="width: 15%;">Team</th>
-                    <th style="width: 15%;">Yards</th>
-                    <th style="width: 10%;">TD</th>
-                    <th style="width: 10%;">INT</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td><a href="#" class="player-name-cell">niceonecodyy</a></td>
-                    <td style="font-weight: 600;">SEA</td>
-                    <td>2930</td>
-                    <td style="font-weight: 700;">35</td>
-                    <td>12</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td><a href="#" class="player-name-cell">DimingSLC</a></td>
-                    <td style="font-weight: 600;">WAS</td>
-                    <td>7131</td>
-                    <td style="font-weight: 700;">68</td>
-                    <td>24</td>
-                </tr>
-            </tbody>
+    <div class="table-container">
+        <table id="dynamicStatsTable">
+            <thead id="tableHead">
+                </thead>
+            <tbody id="tableBody">
+                </tbody>
         </table>
-    </main>
+    </div>
 
+    <footer>
+        <div>
+            <h3>NATIONAL BASKETBALL LEAGUE</h3>
+            <p style="margin-top: 10px;">© 2026 Roblox Operations.</p>
+        </div>
+        <div>
+            <a href="#">Terms of Service</a>
+            <a href="#">League Rules</a>
+        </div>
+    </footer>
+
+    <script>
+        // Centralized Master Database matching your required configurations
+        const dataset = {
+            passing: {
+                headers: [
+                    { label: "#", key: "rank", type: "number" },
+                    { label: "TM", key: "team", type: "string" },
+                    { label: "Player", key: "player", type: "string" },
+                    { label: "PTS", key: "pts", type: "number", highlight: true },
+                    { label: "YDS", key: "yds", type: "number" },
+                    { label: "TD", key: "td", type: "number" },
+                    { label: "INT", key: "int", type: "number" }
+                ],
+                rows: [
+                    { rank: 1, team: "WSH", player: "DimingSLC", pts: 450, yds: 7131, td: 68, int: 24 },
+                    { rank: 2, team: "DAL", player: "PlayerTwo", pts: 380, yds: 6420, td: 52, int: 12 },
+                    { rank: 3, team: "MIA", player: "AlphaQuarter", pts: 290, yds: 5110, td: 41, int: 18 }
+                ]
+            },
+            rushing: {
+                headers: [
+                    { label: "#", key: "rank", type: "number" },
+                    { label: "TM", key: "team", type: "string" },
+                    { label: "Player", key: "player", type: "string" },
+                    { label: "PTS", key: "pts", type: "number", highlight: true },
+                    { label: "YDS", key: "yds", type: "number" },
+                    { label: "AVG", key: "avg", type: "number" },
+                    { label: "TD", key: "td", type: "number" }
+                ],
+                rows: [
+                    { rank: 1, team: "NYG", player: "RushMaster", pts: 120, yds: 1840, avg: 5.4, td: 16 },
+                    { rank: 2, team: "SF", player: "BulletTrain", pts: 96, yds: 1420, avg: 6.1, td: 12 }
+                ]
+            },
+            receiving: {
+                headers: [
+                    { label: "#", key: "rank", type: "number" },
+                    { label: "TM", key: "team", type: "string" },
+                    { label: "Player", key: "player", type: "string" },
+                    { label: "PTS", key: "pts", type: "number", highlight: true },
+                    { label: "REC", key: "rec", type: "number" },
+                    { label: "YDS", key: "yds", type: "number" },
+                    { label: "TD", key: "td", type: "number" }
+                ],
+                rows: [
+                    { rank: 1, team: "SF", player: "WideOutPro", pts: 88, rec: 98, yds: 1420, td: 11 }
+                ]
+            },
+            defensiveends: {
+                headers: [
+                    { label: "#", key: "rank", type: "number" },
+                    { label: "TM", key: "team", type: "string" },
+                    { label: "Player", key: "player", type: "string" },
+                    { label: "PTS", key: "pts", type: "number", highlight: true },
+                    { label: "SCK", key: "sacks", type: "number" },
+                    { label: "TKL", key: "tackles", type: "number" }
+                ],
+                rows: [
+                    { rank: 1, team: "PHI", player: "BlitzKing", pts: 40, sacks: 14, tackles: 45 }
+                ]
+            },
+            linebackers: {
+                headers: [
+                    { label: "#", key: "rank", type: "number" },
+                    { label: "TM", key: "team", type: "string" },
+                    { label: "Player", key: "player", type: "string" },
+                    { label: "PTS", key: "pts", type: "number", highlight: true },
+                    { label: "TKL", key: "tackles", type: "number" },
+                    { label: "INT", key: "int", type: "number" }
+                ],
+                rows: [
+                    { rank: 1, team: "CHI", player: "LineBackerOne", pts: 55, tackles: 88, int: 3 }
+                ]
+            },
+            kicking: {
+                headers: [
+                    { label: "#", key: "rank", type: "number" },
+                    { label: "TM", key: "team", type: "string" },
+                    { label: "Player", key: "player", type: "string" },
+                    { label: "PTS", key: "pts", type: "number", highlight: true },
+                    { label: "FGM", key: "fgm", type: "number" },
+                    { label: "FGA", key: "fga", type: "number" }
+                ],
+                rows: [
+                    { rank: 1, team: "BAL", player: "LegGod", pts: 110, fgm: 28, fga: 30 }
+                ]
+            }
+        };
+
+        // State Tracking variables
+        let currentCategory = 'passing';
+        let currentSortKey = '';
+        let currentSortDirection = 'none'; // 'none', 'asc', 'desc'
+        let currentSearchQuery = '';
+
+        // Master function to render headers and rows combined
+        function renderTable() {
+            const dataConfig = dataset[currentCategory];
+            if (!dataConfig) return;
+
+            // 1. Build Headers
+            const thead = document.getElementById('tableHead');
+            thead.innerHTML = '';
+            const trHead = document.createElement('tr');
+
+            dataConfig.headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header.label;
+                
+                // Append custom tracking visual arrow indicator 
+                const iconSpan = document.createElement('span');
+                iconSpan.className = 'sort-icon';
+                
+                if (currentSortKey === header.key) {
+                    iconSpan.textContent = currentSortDirection === 'asc' ? ' ▴' : ' ▾';
+                } else {
+                    iconSpan.textContent = ' ⇅';
+                }
+                
+                th.appendChild(iconSpan);
+                th.addEventListener('click', () => sortDataBy(header.key, header.type));
+                trHead.appendChild(th);
+            });
+            thead.appendChild(trHead);
+
+            // 2. Filter & Sort rows for mapping implementation
+            let filteredRows = [...dataConfig.rows];
+
+            // Apply searching rules safely
+            if (currentSearchQuery.trim() !== '') {
+                filteredRows = filteredRows.filter(row => 
+                    row.player.toLowerCase().includes(currentSearchQuery) || 
+                    row.team.toLowerCase().includes(currentSearchQuery)
+                );
+            }
+
+            // Apply structural sorting values context
+            if (currentSortKey && currentSortDirection !== 'none') {
+                const type = dataConfig.headers.find(h => h.key === currentSortKey)?.type;
+                
+                filteredRows.sort((a, b) => {
+                    let valA = a[currentSortKey];
+                    let valB = b[currentSortKey];
+
+                    if (type === 'number') {
+                        return currentSortDirection === 'asc' ? valA - valB : valB - valA;
+                    } else {
+                        return currentSortDirection === 'asc' 
+                            ? String(valA).localeCompare(String(valB))
+                            : String(valB).localeCompare(String(valA));
+                    }
+                });
+            }
+
+            // 3. Output to DOM body content block
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            filteredRows.forEach(rowData => {
+                const tr = document.createElement('tr');
+                dataConfig.headers.forEach(header => {
+                    const td = document.createElement('td');
+                    td.textContent = rowData[header.key];
+                    if (header.highlight) {
+                        td.className = 'highlight-column';
+                    }
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Sorting toggle handler algorithm (Most -> Least -> Default loop)
+        function sortDataBy(key, type) {
+            if (currentSortKey !== key) {
+                currentSortKey = key;
+                // Numbers sorting starts high-to-low (desc), strings start A-Z (asc)
+                currentSortDirection = (type === 'number') ? 'desc' : 'asc';
+            } else {
+                if (currentSortDirection === 'asc') {
+                    currentSortDirection = 'desc';
+                } else if (currentSortDirection === 'desc') {
+                    currentSortDirection = 'none';
+                    currentSortKey = '';
+                } else {
+                    currentSortDirection = 'asc';
+                }
+            }
+            renderTable();
+        }
+
+        // Handle text querying filters
+        function searchTable() {
+            currentSearchQuery = document.getElementById('playerSearch').value.toLowerCase();
+            renderTable();
+        }
+
+        // Main controller method for switcher layout logic switching
+        function showStatTable(categoryKey) {
+            currentCategory = categoryKey;
+            currentSortKey = '';
+            currentSortDirection = 'none';
+            
+            // Clean inputs query string
+            document.getElementById('playerSearch').value = '';
+            currentSearchQuery = '';
+
+            // Update tab styling visual state indicators
+            document.querySelectorAll('.stat-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('onclick').includes(categoryKey)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Update title label text
+            document.getElementById('statViewTitle').textContent = categoryKey + " stats";
+            
+            renderTable();
+        }
+
+        // Handles linking directly into subsections from URL structure parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlCategory = urlParams.get('cat');
+        if (urlCategory && dataset[urlCategory]) {
+            showStatTable(urlCategory);
+        } else {
+            renderTable(); // Fallback initializer
+        }
+
+        // Dark / Light Theme Toggle Script Handler
+        const toggleBtn = document.getElementById('themeToggleBtn');
+        toggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                toggleBtn.textContent = '🌙'; 
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                toggleBtn.textContent = '☀️'; 
+            }
+        });
+    </script>
 </body>
 </html>
