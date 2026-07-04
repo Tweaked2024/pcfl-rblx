@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFL - Statistics Hub</title>
+    <style>
+        :root { --primary-red: #e61e2b; --border-color: #e2e8f0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background: #f8fafc; }
+        header { background: white; border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; display: flex; justify-content: space-between; }
+        .main-nav a { text-decoration: none; color: #64748b; margin-left: 1.5rem; font-weight: 600; }
+        .main-nav a.active { color: var(--primary-red); }
+
+        main { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
+        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        
+        select { padding: 0.6rem 1rem; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 6px; background: white; font-weight: 600; }
+        input { padding: 0.6rem 1rem; border: 1px solid var(--border-color); border-radius: 6px; width: 280px; }
+
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
+        th { background: var(--primary-red); color: white; padding: 1rem; text-align: left; font-size: 0.8rem; text-transform: uppercase; }
+        td { padding: 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <strong>★ AFL</strong>
+        <nav class="main-nav">
+            <a href="index.html">Standings</a>
+            <a href="teams.html">Teams</a>
+            <a href="scores.html">Scores</a>
+            <a href="stats.html" class="active">Stats</a>
+            <a href="rulebook.html">Rulebook</a>
+            <a href="legacy.html">Legacy</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="controls">
+            <select id="catSelect" onchange="loadStats()">
+                <option value="Passing">Passing</option>
+                <option value="Rushing">Rushing</option>
+                <option value="Receiving">Receiving</option>
+                <option value="Tight Ends">Tight Ends</option>
+                <option value="Center">Center</option>
+                <option value="Defensive Ends">Defensive Ends</option>
+                <option value="Linebackers">Linebackers</option>
+                <option value="Secondary">Secondary</option>
+                <option value="Kicking">Kicking</option>
+            </select>
+            <input type="text" id="searchBox" placeholder="Search players..." oninput="loadStats()">
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Team</th>
+                    <th>Player</th>
+                    <th>Points</th>
+                    <th>Yards</th>
+                    <th>TDs</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </main>
+
+    <script>
+        const statsDb = {
+            Passing: [
+                { rank: 1, team: 'WAS', player: 'DimingSLC', pts: 509.2, yds: 7131, td: 68 },
+                { rank: 2, team: 'IND', player: 'IrxnIV', pts: 426.6, yds: 6014, td: 65 }
+            ],
+            Rushing: [
+                { rank: 1, team: 'CLE', player: 'ChubbForce', pts: 310.5, yds: 2150, td: 22 }
+            ]
+        };
+
+        function loadStats() {
+            const cat = document.getElementById('catSelect').value;
+            const query = document.getElementById('searchBox').value.toLowerCase();
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            let list = statsDb[cat] || [
+                { rank: 1, team: 'GEN', player: 'Sample Athlete', pts: 120.0, yds: 850, td: 8 }
+            ];
+
+            if(query) {
+                list = list.filter(p => p.player.toLowerCase().includes(query) || p.team.toLowerCase().includes(query));
+            }
+
+            list.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>#${p.rank}</td><td><strong>${p.team}</strong></td><td style="color:var(--primary-red); font-weight:bold;">${p.player}</td><td>${p.pts}</td><td>${p.yds}</td><td>${p.td}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+        loadStats();
+    </script>
+</body>
+</html>
