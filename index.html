@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFL - Standings Hub</title>
+    <style>
+        :root {
+            --primary-red: #e61e2b;
+            --primary-dark: #11141a;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background-color: var(--bg-light); color: var(--text-dark); }
+        
+        header { background: var(--bg-card); border-bottom: 1px solid var(--border-color); sticky: top; position: sticky; top: 0; z-index: 100; }
+        .nav-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; padding: 1rem 2rem; align-items: center; }
+        .logo { font-weight: 800; text-transform: uppercase; color: var(--text-dark); text-decoration: none; }
+        .main-nav { display: flex; gap: 1.5rem; }
+        .nav-item { text-decoration: none; color: var(--text-muted); font-weight: 600; cursor: pointer; }
+        .nav-item:hover, .nav-item.active { color: var(--primary-red); }
+
+        main { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
+        .filter-row { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .filter-btn { background: #e2e8f0; border: none; padding: 0.6rem 1.2rem; font-weight: 600; border-radius: 6px; cursor: pointer; }
+        .filter-btn.active { background: var(--primary-red); color: white; }
+
+        .standings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; }
+        .conf-card { background: white; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .conf-header { background: var(--primary-dark); color: white; padding: 1rem; font-weight: 700; text-transform: uppercase; }
+        .tier-header { padding: 0.5rem 1rem; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: white; }
+        .tier-top8 { background: #059669; }
+        .tier-round1 { background: #d97706; }
+        .tier-hunt { background: #64748b; }
+
+        .table-row { display: grid; grid-template-columns: 2rem 4fr 1fr 1fr 1fr 1fr; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; align-items: center; }
+        .table-row.header { font-weight: 700; background: var(--bg-light); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
+        .team-cell { font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">★ American Football League</a>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-item active">Standings</a>
+                <a href="teams.html" class="nav-item">Teams</a>
+                <a href="scores.html" class="nav-item">Scores</a>
+                <a href="stats.html" class="nav-item">Stats</a>
+                <a href="rulebook.html" class="nav-item">Rulebook</a>
+                <a href="legacy.html" class="nav-item">Legacy</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="filter-row">
+            <button class="filter-btn active" onclick="filterConf('All', this)">All</button>
+            <button class="filter-btn" onclick="filterConf('AFC', this)">AFC</button>
+            <button class="filter-btn" onclick="filterConf('NFC', this)">NFC</button>
+            <button class="filter-btn" onclick="filterConf('SEC', this)">SEC</button>
+            <button class="filter-btn" onclick="filterConf('BIG10', this)">BIG10</button>
+            <button class="filter-btn" onclick="filterConf('BIG12', this)">BIG12</button>
+        </div>
+
+        <div class="standings-grid" id="standings-box"></div>
+    </main>
+
+    <script>
+        const teamsData = [
+            { name: 'Browns', conf: 'AFC', tier: 'Top 8', w: 10, l: 3, tp: 26, pd: 110 },
+            { name: 'Bills', conf: 'AFC', tier: 'Top 8', w: 8, l: 5, tp: 20, pd: 104 },
+            { name: 'Ravens', conf: 'AFC', tier: 'First Round', w: 8, l: 4, tp: 17, pd: 30 },
+            { name: 'Bengals', conf: 'AFC', tier: 'In The Hunt', w: 5, l: 8, tp: 8, pd: 4 },
+            
+            { name: 'Commanders', conf: 'NFC', tier: 'Top 8', w: 11, l: 2, tp: 33, pd: 235 },
+            { name: 'Saints', conf: 'NFC', tier: 'Top 8', w: 10, l: 3, tp: 25, pd: 17 },
+            { name: 'Lions', conf: 'NFC', tier: 'First Round', w: 9, l: 4, tp: 23, pd: 139 },
+            { name: 'Vikings', conf: 'NFC', tier: 'In The Hunt', w: 6, l: 7, tp: 6, pd: -12 },
+
+            { name: 'Alabama Crimson Tide', conf: 'SEC', tier: 'Top 8', w: 11, l: 1, tp: 44, pd: 210 },
+            { name: 'Georgia Bulldogs', conf: 'SEC', tier: 'Top 8', w: 10, l: 2, tp: 38, pd: 180 },
+            { name: 'Texas Longhorns', conf: 'SEC', tier: 'First Round', w: 9, l: 3, tp: 30, pd: 120 },
+            { name: 'LSU Tigers', conf: 'SEC', tier: 'In The Hunt', w: 8, l: 4, tp: 24, pd: 45 },
+
+            { name: 'Ohio State Buckeyes', conf: 'BIG10', tier: 'Top 8', w: 12, l: 0, tp: 48, pd: 310 },
+            { name: 'Michigan Wolverines', conf: 'BIG10', tier: 'Top 8', w: 10, l: 2, tp: 35, pd: 140 },
+            { name: 'Oregon Ducks', conf: 'BIG10', tier: 'First Round', w: 9, l: 3, tp: 28, pd: 95 },
+            { name: 'Penn State Nittany Lions', conf: 'BIG10', tier: 'In The Hunt', w: 8, l: 4, tp: 22, pd: 60 },
+
+            { name: 'Utah Utes', conf: 'BIG12', tier: 'Top 8', w: 10, l: 2, tp: 32, pd: 115 },
+            { name: 'Kansas State Wildcats', conf: 'BIG12', tier: 'Top 8', w: 9, l: 3, tp: 27, pd: 85 },
+            { name: 'Oklahoma State Cowboys', conf: 'BIG12', tier: 'First Round', w: 8, l: 4, tp: 21, pd: 40 },
+            { name: 'TCU Horned Frogs', conf: 'BIG12', tier: 'In The Hunt', w: 7, l: 5, tp: 18, pd: 10 }
+        ];
+
+        function buildTables(selectedConf) {
+            const container = document.getElementById('standings-box');
+            container.innerHTML = '';
+            
+            const confs = selectedConf === 'All' ? ['AFC', 'NFC', 'SEC', 'BIG10', 'BIG12'] : [selectedConf];
+            const tiers = ['Top 8', 'First Round', 'In The Hunt'];
+
+            confs.forEach(c => {
+                const confCard = document.createElement('div');
+                confCard.className = 'conf-card';
+                confCard.innerHTML = `<div class="conf-header">${c} Division</div>`;
+
+                tiers.forEach(t => {
+                    const list = teamsData.filter(team => team.conf === c && team.tier === t);
+                    if(list.length === 0) return;
+
+                    const tierLabel = document.createElement('div');
+                    tierLabel.className = `tier-header ${t === 'Top 8' ? 'tier-top8' : t === 'First Round' ? 'tier-round1' : 'tier-hunt'}`;
+                    tierLabel.innerText = t;
+                    confCard.appendChild(tierLabel);
+
+                    const head = document.createElement('div');
+                    head.className = 'table-row header';
+                    head.innerHTML = `<div>#</div><div>Team</div><div>W</div><div>L</div><div>TP</div><div>PD</div>`;
+                    confCard.appendChild(head);
+
+                    list.forEach((team, i) => {
+                        const r = document.createElement('div');
+                        r.className = 'table-row';
+                        r.innerHTML = `<div>${i+1}</div><div class="team-cell">${team.name}</div><div>${team.w}</div><div>${team.l}</div><div>${team.tp}</div><div>${team.pd}</div>`;
+                        confCard.appendChild(r);
+                    });
+                });
+                container.appendChild(confCard);
+            });
+        }
+
+        function filterConf(c, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            buildTables(c);
+        }
+
+        buildTables('All');
+    </script>
+</body>
+</html>
