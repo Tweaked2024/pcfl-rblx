@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>AFL</title>
+    <link rel="icon" type="image/x-icon" href="/images/afllogo.png" />
+    <link href="/style.css" rel="stylesheet" type="text/css" />
+    <script>(function(){try{if(localStorage.getItem("afl-theme")==="dark"){document.documentElement.className+=" dark-mode";}}catch(e){}})();</script>
+    <link href="/darkmode.css?v=2" rel="stylesheet" type="text/css" />
+    <link href="/home.css?v=7" rel="stylesheet" type="text/css" />
+    <link href="/mainpages/awards/awards.css?v=3" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gabarito:wght@400..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div id="site-header"></div>
+    <script src="/header.js?v=6"></script>
+
+    <main class="home-main">
+      <div class="container">
+        <a class="live-banner" id="live-banner" href="/multiview/" hidden>
+          <span class="lb-dot" aria-hidden="true"></span>
+          <div class="lb-text">
+            <span class="lb-kicker">live now</span>
+            <strong class="lb-title">AFL is LIVE on Twitch</strong>
+            <span class="lb-sub" id="lb-sub">Watch every stream at once in the multiview.</span>
+          </div>
+          <span class="lb-cta">watch multiview →</span>
+        </a>
+
+        <div class="banner-wrapper">
+          
+        </div>
+
+        <a class="bracket-banner" href="/bracket/">
+          <img class="bb-logo" src="/images/abs/ab19.png" alt="AB19">
+          <div class="bb-text">
+            <span class="bb-kicker">playoff predictor</span>
+            <strong class="bb-title">Make your AB19 bracket!</strong>
+            <span class="bb-sub">Pick every game from wildcard weekend to the Allegiance Bowl champion.</span>
+          </div>
+          <span class="bb-cta">fill out your bracket →</span>
+        </a>
+
+        <section class="video-carousel" aria-label="Latest videos">
+          <div class="vc-head">
+            <h2 class="vc-title">latest videos</h2>
+            <div class="vc-arrows">
+              <button class="vc-arrow" id="vc-prev" type="button" aria-label="Previous videos">&#8249;</button>
+              <button class="vc-arrow" id="vc-next" type="button" aria-label="Next videos">&#8250;</button>
+            </div>
+          </div>
+          <div class="vc-viewport" id="vc-viewport">
+            <div class="vc-track" id="vc-track">
+              <p class="home-loading">Loading videos…</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="home-grid">
+          <!-- Left column: award watch (above) + matchups -->
+          <div class="home-main-col">
+          <section class="home-card home-awards-card" aria-labelledby="awards-heading">
+            <div class="home-card-head">
+              <div class="home-card-title">
+                <h2 id="awards-heading">award watch</h2>
+                <span class="home-pill">live race</span>
+              </div>
+              <div class="home-head-tools">
+                <select class="home-select" id="awards-select" aria-label="Choose award"></select>
+                <a href="/mainpages/awards/" class="home-select home-select-link">full tracker →</a>
+              </div>
+            </div>
+            <div class="lead-list" id="home-awards">
+              <p class="home-loading">Loading…</p>
+            </div>
+          </section>
+
+          <!-- Matchups (main) -->
+          <section class="home-card" aria-labelledby="matchups-heading">
+            <div class="home-card-head">
+              <div class="home-card-title">
+                <h2 id="matchups-heading">matchups</h2>
+                <span class="home-pill" id="matchups-week">Week —</span>
+                <span class="home-pill" id="matchups-status">Loading</span>
+              </div>
+              <div class="home-head-tools">
+                <select class="home-select" id="matchups-week-select" aria-label="Select week"></select>
+                <a href="/scores/scores12/" class="home-select home-select-link">all scores →</a>
+              </div>
+            </div>
+            <div class="mu-list" id="home-matchups">
+              <p class="home-loading">Loading matchups…</p>
+            </div>
+          </section>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="home-sidebar">
+            <section class="home-card" aria-labelledby="leaders-heading">
+              <div class="home-card-head">
+                <div class="home-card-title">
+                  <h2 id="leaders-heading">stat leaders</h2>
+                </div>
+                <select class="home-select" id="leaders-select" aria-label="Choose stat category"></select>
+              </div>
+              <div class="lead-list" id="home-leaders">
+                <p class="home-loading">Loading…</p>
+              </div>
+            </section>
+
+            <section class="home-card" aria-labelledby="standings-heading">
+              <div class="home-card-head">
+                <div class="home-card-title">
+                  <h2 id="standings-heading">standings</h2>
+                </div>
+                <select class="home-select" id="standings-select" aria-label="Choose conference">
+                  <option value="0">AFC</option>
+                  <option value="1">NFC</option>
+                </select>
+              </div>
+              <div class="stand-list" id="home-standings">
+                <p class="home-loading">Loading…</p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <section class="cta | padding-block-900 bg-primary-400 text-neutral-100">
+        <div class="container">
+          <div class="even-columns vertical-align-center">
+            <div>
+              <p class="fs-primary-heading fw-bold">come join in on the fun.</p>
+            </div>
+            <div class="justify-self-end-md">
+              <a
+                href="https://discord.gg/afl"
+                class="button"
+                data-type="inverted"
+                >get started</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer
+      class="primary-footer | padding-block-700 bg-neutral-900 text-neutral-100"
+    >
+      <div class="container">
+        <div class="primary-footer-wrapper">
+          <div class="primary-footer-logo-social">
+            <a href="#">
+              <svg class="logo">
+                <use xlink:href="/images/social-icons.svg#afltype"></use>
+              </svg>
+            </a>
+            <ul class="social-list" role="list" aria-label="social links">
+              <li>
+                <a aria-label="discord" href="#">
+                  <svg class="social-icon">
+                    <use
+                      xlink:href="/images/social-icons.svg#discord"
+                    ></use></svg
+                ></a>
+              </li>
+              <li>
+                <a aria-label="youtube" href="#">
+                  <svg class="social-icon">
+                    <use
+                      xlink:href="/images/social-icons.svg#youtube"
+                    ></use></svg
+                ></a>
+              </li>
+            </ul>
+          </div>
+          <div class="primary-footer-nav">
+            <nav class="footer-nav">
+              <ul
+                class="flow"
+                style="--flow-spacer: 1em"
+                aria-label=""
+                role="list"
+              >
+                <li><a href="/">home</a></li>
+                <li><a href="/mainpages/standings/">standings</a></li>
+                <li><a href="/stats/qb/">stats</a></li>
+                <li><a href="/scores/scores12/">scores</a></li>
+                <li><a href="/mainpages/rulebook/">rulebook</a></li>
+                <li><a href="/mainpages/legacy/legacyscores/">legacy</a></li>
+                <li><a href="/docs/docnav/">documentation</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="/script.js?v=5"></script>
+    <script src="/datascripts/home.js?v=3"></script>
+    <script src="/datascripts/awards.js?v=2"></script>
+    <script src="/livebanner.js?v=2"></script>
+  </body>
+</html>
