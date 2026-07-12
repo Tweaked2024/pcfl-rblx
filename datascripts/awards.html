@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFL Award Tracker</title>
+    <!-- Links to your separate stylesheets as requested -->
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="awards.css">
+</head>
+<body>
+
+    <!-- 
+      ============================================================
+      AFL AWARD TRACKER INTERFACE
+      Contains containers for both the full page view and 
+      the compact home page dashpanel widget.
+      ============================================================ 
+    -->
+    <div class="awards-container">
+        <!-- Full Page Award Elements -->
+        <nav id="awards-nav" class="awards-nav-chips"></nav>
+        
+        <div class="award-header">
+            <h1 id="award-name">Loading Award...</h1>
+            <p id="award-desc"></p>
+        </div>
+
+        <!-- Podium Layout for Top 3 candidates -->
+        <div id="award-podium" class="podium-wrapper"></div>
+
+        <!-- Leaderboard list for ranks 4 through 15 -->
+        <div id="award-board" class="leaderboard-board"></div>
+
+        <hr />
+
+        <!-- Home Page Dashpanel Elements (Optional fallback rendering) -->
+        <div class="home-dashpanel-preview">
+            <h3>Home Dashboard Preview</h3>
+            <select id="awards-select" class="dashpanel-dropdown"></select>
+            <div id="home-awards" class="dashpanel-list"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         CORE ENGINE SCRIPT
+         ============================================================ -->
+    <script>
+    (function () {
+      'use strict';
+
+      var API_KEY = 'AIzaSyAgF9Wt_SggVbdAnX94ClCcB8J5Ob8ath4';
+      var SPREADSHEET_ID = '1T8wkxrS6UTi3u5szJVtgV2FWNLjqKDst-5yCGr0tkqk';
+      var BASE = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values:batchGet?key=' + API_KEY;
+
+      var ABBR_TO_NICK = {
+        ARI: 'cardinals', ARZ: 'cardinals', ATL: 'falcons', BAL: 'ravens', BUF: 'bills',
+        CAR: 'panthers', CHI: 'bears', CIN: 'bengals', CLE: 'browns', DAL: 'cowboys',
+        DEN: 'broncos', DET: 'lions', GB: 'packers', HOU: 'texans', IND: 'colts',
+        JAX: 'jaguars', KC: 'chiefs', LV: 'raiders', LAC: 'chargers', LAR: 'rams',
+        MIA: 'dolphins', MIN: 'vikings', NE: 'patriots', NO: 'saints', NYG: 'giants',
+        NYJ: 'jets', PHI: 'eagles', PIT: 'steelers', SF: '49ers', SEA: 'seahawks',
+        TB: 'buccaneers', TEN: 'titans', WAS: 'commanders'
+      };
+
+      /* ---- Per-position column map (indices within each slice) ---- */
+      var POS = ['qb', 'rb', 'wr', 'te', 'c', 'de', 'lb', 'db', 'k'];
+      var CFG = {
+        qb: { r: 'QB!A1:M60',  s: { PTS: 3, YDS: 4, CPCT: 5, TD: 6, INT: 7, SCK: 8 }, snap: 11 },
+        rb: { r: 'QB!N1:AA60', s: { PTS: 3, YDS: 4, YPA: 5, ATT: 6, TD: 7, FUM: 8 }, snap: 13 },
+        wr: { r: 'QB!AC1:AP60', s: { PTS: 3, YDS: 4, REC: 5, TRGT: 6, TD: 7, YAC: 8 }, snap: 13 },
+        te: { r: 'QB!AR1:BF60', s: { YDS: 3, REC: 4, TRGT: 5, TD: 6, YAC: 7, FIRST: 11 }, snap: 14 },
+        c:  { r: 'QB!DA1:DI60', s: { PTS: 3, SCKA: 4, SPS: 5, PRS: 6, QBH: 7 }, snap: 8 },
+        de: { r: 'QB!CL1:CY60', s: { PTS: 3, SCK: 4, SCKY: 5, TCK: 6, TFL: 7, QBH: 8, PRS: 9, TD: 11 }, snap: 13 },
+        lb: { r: 'QB!BW1:CJ60', s: { PTS: 3, INT: 4, TCK: 5, TU: 6, PK6: 7, CAPCT: 10, TDA: 12 }, snap: 13 },
+        db: { r: 'QB!BH1:BU60', s: { PTS: 3, INT: 4, TCK: 5, TU: 6, PK6: 7, CAPCT: 10, TDA: 12 }, snap: 13 },
+        k:  { r: 'QB!DJ1:DP60', s: { FGPCT: 3, M: 4, A: 5, LONG: 6 }, snap: -1 }
+      };
+
+      /* ---- Scoring weights ---- */
+      var FORMULAS = {
+        qb: [['PTS', 0.62], ['YDS', 0.12], ['INT', 0.16, true], ['TD', 0.05], ['CPCT', 0.05]],
+        rb: [['PTS', 0.68], ['YPA', 0.12], ['TD', 0.12], ['FUM', 0.08, true]],
+        wr: [['PTS', 0.65], ['YDS', 0.15], ['TD', 0.12], ['YAC', 0.08]],
+        te: [['YDS', 0.42], ['TD', 0.28], ['REC', 0.20], ['YAC', 0.10]],
+        c:  [['PTS', 0.85], ['SCKA', 0.15, true]],
+        de: [['PTS', 0.72], ['SCK', 0.16], ['TCK', 0.12]],
+        lb: [['PTS', 0.72], ['TCK', 0.16], ['INT', 0.12]],
+        db: [['PTS', 0.72], ['INT', 0.16], ['TCK', 0.12]],
+        k:  [['FGPCT', 0.45], ['M', 0.40], ['LONG', 0.15]]
+      };
+
+      /* ---- Key stats to surface on candidates ---- */
+      var DISP = {
+        qb: [['YDS', 'YDS'], ['TD', 'TD'], ['INT', 'INT']],
+        rb: [['YDS', 'YDS'], ['TD', 'TD'], ['ATT', 'ATT']],
+        wr: [['YDS', 'YDS'], ['REC', 'REC'], ['TD', 'TD']],
+        te: [['YDS', 'YDS'], ['REC', 'REC'], ['TD', 'TD']],
+        c:  [['SCKA', 'SK ALLOWED'], ['PRS', 'PRESSURES'], ['SNAP', 'SNAPS']],
+        de: [['SCK', 'SACKS'], ['QBH', 'QB HITS'], ['TCK', 'TACKLES']],
+        lb: [['TCK', 'TACKLES'], ['INT', 'INT'], ['PK6', 'PICK 6']],
+        db: [['INT', 'INT'], ['TDA', 'TDs ALLOWED'], ['PK6', 'PICK 6']],
+        k:  [['FGPCT', 'FG%'], ['M', 'MADE'], ['LONG', 'LONG']]
+      };
+
+      var POS_LABEL = { qb: 'QB', rb: 'RB', wr: 'WR', te: 'TE', c: 'C', de: 'DE', lb: 'LB', db: 'DB', k: 'K' };
+
+      var MVP_W = { qb: 1.00, wr: 0.97, rb: 0.95, te: 0.88, de: 0.92, db: 0.88, lb: 0.88, c: 0.62, k: 0.55 };
+      var OP_W = { qb: 1.00, wr: 0.98, rb: 0.96, te: 0.90, c: 0.70 };
+      var DP_W = { de: 1.00, db: 0.96, lb: 0.96 };
+
+      var AWARDS = [
+        { id: 'MVP', name: 'Most Valuable Player', desc: 'The league\u2019s best player overall, each contender\u2019s positional rating, weighted by the impact of their role.', type: 'cross', pool: POS.slice(), weight: MVP_W },
+        { id: 'OPOTY', name: 'Offensive Player of the Year', desc: 'The premier offensive weapon across passing, rushing, receiving and the trenches.', type: 'cross', pool: ['qb', 'rb', 'wr', 'te', 'c'], weight: OP_W },
+        { id: 'DPOTY', name: 'Defensive Player of the Year', desc: 'The most disruptive defender across the line, linebacker and secondary.', type: 'cross', pool: ['de', 'lb', 'db'], weight: DP_W },
+        { id: 'QBOTY', name: 'Quarterback of the Year', desc: 'Top quarterback by passing production, efficiency and ball security.', type: 'pos', pos: 'qb' },
+        { id: 'RBOTY', name: 'Running Back of the Year', desc: 'Top running back by yardage, scoring and explosiveness.', type: 'pos', pos: 'rb' },
+        { id: 'WROTY', name: 'Wide Receiver of the Year', desc: 'Top receiver by yardage, volume and scoring.', type: 'pos', pos: 'wr' },
+        { id: 'TEOTY', name: 'Tight End of the Year', desc: 'Top tight end by receiving production and chain-moving.', type: 'pos', pos: 'te' },
+        { id: 'COTY', name: 'Center of the Year', desc: 'Top center by pass protection, limiting sacks, pressures and QB hits.', type: 'pos', pos: 'c' },
+        { id: 'DEOTY', name: 'Defensive End of the Year', desc: 'Top defensive end by sacks, pressures and run-stopping.', type: 'pos', pos: 'de' },
+        { id: 'DBOTY', name: 'Defensive Back of the Year', desc: 'Top defensive back by takeaways and lockdown coverage.', type: 'pos', pos: 'db' },
+        { id: 'LBOTY', name: 'Linebacker of the Year', desc: 'Top linebacker by tackles, takeaways and coverage.', type: 'pos', pos: 'lb' },
+        { id: 'KOTY', name: 'Kicker of the Year', desc: 'Top kicker by field-goal accuracy, volume and range.', type: 'pos', pos: 'k' }
+      ];
+
+      /* ---------------- helpers ---------------- */
+      function el(tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text != null) n.textContent = text;
+        return n;
+      }
+      function num(v) {
+        if (v == null) return NaN;
+        var n = parseFloat(String(v).replace(/[^0-9.\-]/g, ''));
+        return isNaN(n) ? NaN : n;
+      }
+      function fmtRtg(v) { return (Math.round(v * 10) / 10).toFixed(1); }
+      function nick(abbr) { return ABBR_TO_NICK[(abbr || '').trim().toUpperCase()] || ''; }
+      
+      function logoImg(abbr, cls) {
+        var n = nick(abbr);
+        var img = el('img', cls || 'award-team-logo');
+        img.src = '/images/cutouts/' + n + '.jpg';
+        img.alt = abbr || '';
+        img.loading = 'lazy';
+        img.onerror = function () { this.style.visibility = 'hidden'; };
+        return img;
+      }
+      
+      function statVal(p, key) {
+        var cfg = CFG[p.pos];
+        var idx = key === 'SNAP' ? cfg.snap : cfg.s[key];
+        if (idx == null || idx < 0) return '';
+        var raw = p.row[idx];
+        return raw == null ? '' : String(raw).trim();
+      }
+
+      function fetchRanges(ranges) {
+        var q = ranges.map(function (r) { return 'ranges=' + encodeURIComponent(r); }).join('&');
+        return fetch(BASE + '&' + q).then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        }).then(function (data) {
+          if (data && data.error) throw new Error(data.error.message || 'Sheets API error');
+          return data;
+        });
+      }
+
+      /* ---------------- scoring ---------------- */
+      function buildPos(values, pos) {
+        var cfg = CFG[pos];
+        var rows = (values || []).slice(1).filter(function (r) {
+          return r && r[2] != null && String(r[2]).trim() !== '';
+        });
+        if (!rows.length) return [];
+
+        var qual = rows;
+        if (pos === 'k') {
+          var aIdx = cfg.s.A, maxA = 0;
+          rows.forEach(function (r) { var v = num(r[aIdx]); if (!isNaN(v) && v > maxA) maxA = v; });
+          qual = rows.filter(function (r) { var v = num(r[aIdx]); return !isNaN(v) && maxA > 0 && v >= 0.33 * maxA; });
+          if (qual.length < 3) qual = rows;
+        }
+
+        var formula = FORMULAS[pos];
+        var maxes = {};
+        formula.forEach(function (f) {
+          var key = f[0], mx = 0;
+          qual.forEach(function (r) { var v = num(r[cfg.s[key]]); if (!isNaN(v) && v > mx) mx = v; });
+          maxes[key] = mx;
+        });
+
+        var players = qual.map(function (r) {
+          var score = 0;
+          formula.forEach(function (f) {
+            var key = f[0], w = f[1], neg = f[2];
+            var v = num(r[cfg.s[key]]); if (isNaN(v)) v = 0;
+            var mx = maxes[key];
+            var n = mx > 0 ? v / mx : 0;
+            if (neg) n = mx > 0 ? 1 - v / mx : 1;
+            if (n < 0) n = 0; if (n > 1) n = 1;
+            score += w * n;
+          });
+          return {
+            pos: pos,
+            name: String(r[2]).trim(),
+            team: String(r[1] == null ? '' : r[1]).trim().toUpperCase(),
+            row: r,
+            rtg: score * 100
+          };
+        });
+
+        players.sort(function (a, b) { return b.rtg - a.rtg; });
+        return players;
+      }
+
+      function rankAward(award, byPos) {
+        if (award.type === 'pos') {
+          var pl = (byPos[award.pos] || []).slice();
+          pl.forEach(function (p) { p.awardScore = p.rtg; });
+          return pl;
+        }
+        var list = [];
+        award.pool.forEach(function (pos) {
+          (byPos[pos] || []).forEach(function (p) {
+            var w = award.weight[pos] != null ? award.weight[pos] : 0.8;
+            p.awardScore = p.rtg * w;
+            list.push(p);
+          });
+        });
+        list.sort(function (a, b) { return b.awardScore - a.awardScore; });
+        return list;
+      }
+
+      /* ---------------- Roblox avatars ---------------- */
+      var CACHE_PREFIX = 'rbxAvatar:';
+      var CACHE_TTL = 7 * 24 * 60 * 60 * 1000;
+      function getCached(u) {
+        try {
+          var raw = localStorage.getItem(CACHE_PREFIX + u.toLowerCase());
+          if (!raw) return null;
+          var o = JSON.parse(raw);
+          if (Date.now() - o.t > CACHE_TTL) return null;
+          return o;
+        } catch (e) { return null; }
+      }
+      function setCached(u, url) {
+        try { localStorage.setItem(CACHE_PREFIX + u.toLowerCase(), JSON.stringify({ url: url || '', t: Date.now() })); } catch (e) {}
+      }
+      function cssEscape(s) { return s.replace(/["\\]/g, '\\$&'); }
+      
+      function applyAvatar(u, url) {
+        var nodes = document.querySelectorAll('.award-avatar[data-username="' + cssEscape(u) + '"]');
+        nodes.forEach(function (img) {
+          if (url) { img.src = url; img.style.visibility = ''; }
+          else { img.style.visibility = 'hidden'; }
+        });
+      }
+
+      function fetchRetry(url, opts, tries, delay) {
+        tries = tries == null ? 4 : tries;
+        delay = delay || 700;
+        return fetch(url, opts).then(function (r) {
+          if ((r.status === 429 || r.status >= 500) && tries > 0) {
+            var wait = delay + Math.floor(Math.random() * 300);
+            return new Promise(function (res) { setTimeout(res, wait); })
+              .then(function () { return fetchRetry(url, opts, tries - 1, delay * 2); });
+          }
+          return r;
+        }).catch(function (e) {
+          if (tries > 0) {
+            return new Promise(function (res) { setTimeout(res, delay); })
+              .then(function () { return fetchRetry(url, opts, tries - 1, delay * 2); });
+          }
+          throw e;
+        });
+      }
+
+      function fetchAvatars(usernames) {
+        var uniq = [], seen = {};
+        usernames.forEach(function (u) { var k = u.toLowerCase(); if (!seen[k]) { seen[k] = true; uniq.push(u); } });
+        if (!uniq.length) return;
+        fetchRetry('https://users.roproxy.com/v1/usernames/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+          body: JSON.stringify({ usernames: uniq, excludeBannedUsers: false })
+        }).then(function (r) { if (!r.ok) throw new Error('users ' + r.status); return r.json(); })
+          .then(function (j) {
+            var data = j.data || [], nameToId = {}, ids = [];
+            data.forEach(function (u) { var k = (u.requestedUsername || u.name || '').toLowerCase(); if (k) { nameToId[k] = u.id; ids.push(u.id); } });
+            uniq.forEach(function (n) { if (!nameToId[n.toLowerCase()]) { setCached(n, ''); applyAvatar(n, ''); } });
+            if (!ids.length) return null;
+            return fetchRetry('https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=' + ids.join(',') + '&size=150x150&format=Png&isCircular=true')
+              .then(function (r) { if (!r.ok) throw new Error('thumb ' + r.status); return r.json(); })
+              .then(function (tj) {
+                var idToUrl = {};
+                (tj.data || []).forEach(function (t) { if (t.imageUrl) idToUrl[t.targetId] = t.imageUrl; });
+                uniq.forEach(function (n) {
+                  var id = nameToId[n.toLowerCase()];
+                  var url = id ? idToUrl[id] : null;
+                  if (url) { setCached(n, url); applyAvatar(n, url); }
+                });
+              });
+          }).catch(function (e) { console.warn('Award avatar lookup failed:', e.message); });
+      }
+
+      function makeAvatar(username) {
+        var img = el('img', 'award-avatar');
+        img.alt = '';
+        img.loading = 'lazy';
+        img.setAttribute('data-username', username);
+        img.onerror = function () { this.style.visibility = 'hidden'; };
+        var cached = getCached(username);
+        if (cached) { if (cached.url) img.src = cached.url; else img.style.visibility = 'hidden'; }
+        return img;
+      }
+
+      function playerLink(cls, name) {
+        var a = el('a', cls);
+        a.href = '/player/?u=' + encodeURIComponent(name);
+        return a;
+      }
+      function posTag(pos) { return el('span', 'award-postag', POS_LABEL[pos] || pos.toUpperCase()); }
+
+      function statLine(p) {
+        var wrap = el('div', 'award-statline');
+        (DISP[p.pos] || []).forEach(function (d) {
+          var item = el('span', 'award-stat');
+          item.appendChild(el('span', 'award-stat-val', statVal(p, d[0]) || '\u2014'));
+          item.appendChild(el('span', 'award-stat-lbl', d[1]));
+          wrap.appendChild(item);
+        });
+        return wrap;
+      }
+
+      /* ---------------- FULL PAGE ---------------- */
+      function renderFullPage(byPos) {
+        var navEl = document.getElementById('awards-nav');
+        var nameEl = document.getElementById('award-name');
+        var descEl = document.getElementById('award-desc');
+        var podiumEl = document.getElementById('award-podium');
+        var boardEl = document.getElementById('award-board');
+        if (!navEl) return;
+
+        var buttons = [];
+        AWARDS.forEach(function (award, i) {
+          var b = el('button', 'award-chip', award.id);
+          b.type = 'button';
+          b.addEventListener('click', function () { select(i); });
+          navEl.appendChild(b);
+          buttons.push(b);
+        });
+
+        function select(idx) {
+          buttons.forEach(function (b, i) { b.classList.toggle('is-active', i === idx); });
+          var award = AWARDS[idx];
+          nameEl.textContent = award.name;
+          descEl.textContent = award.desc;
+          var candidates = rankAward(award, byPos);
+          var showPos = award.type === 'cross';
+
+          /* Podium (top 3) */
+          podiumEl.innerHTML = '';
+          var top3 = candidates.slice(0, 3);
+          var order = [1, 0, 2]; // 2nd, 1st, 3rd visually
+          order.forEach(function (pi) {
+            var p = top3[pi];
+            if (!p) return;
+            var card = el('div', 'podium-card rank-' + (pi + 1));
+            card.appendChild(el('span', 'podium-rank', '#' + (pi + 1)));
+            var av = makeAvatar(p.name);
+            card.appendChild(av);
+            var nm = playerLink('podium-name', p.name);
+            nm.textContent = p.name;
+            card.appendChild(nm);
+            var meta = el('div', 'podium-meta');
+            meta.appendChild(logoImg(p.team, 'podium-logo'));
+            meta.appendChild(el('span', 'podium-team', p.team));
+            if (showPos) meta.appendChild(posTag(p.pos));
+            card.appendChild(meta);
+            var rtg = el('div', 'podium-rtg');
+            rtg.appendChild(el('span', 'podium-rtg-val', fmtRtg(p.awardScore)));
+            rtg.appendChild(el('span', 'podium-rtg-lbl', 'RTG'));
+            card.appendChild(rtg);
+            card.appendChild(statLine(p));
+            podiumEl.appendChild(card);
+          });
+
+          /* Board (4th onward) */
+          boardEl.innerHTML = '';
+          var rest = candidates.slice(3, 15);
+          if (!candidates.length) {
+            boardEl.appendChild(el('p', 'award-empty', 'No qualifying players yet.'));
+          }
+          rest.forEach(function (p, i) {
+            var row = el('div', 'award-row');
+            row.appendChild(el('span', 'award-row-rank', String(i + 4)));
+            row.appendChild(makeAvatar(p.name));
+            var nm = playerLink('award-row-name', p.name);
+            nm.textContent = p.name;
+            row.appendChild(nm);
+            var team = el('div', 'award-row-team');
+            team.appendChild(logoImg(p.team, 'award-row-logo'));
+            team.appendChild(el('span', 'award-row-abbr', p.team));
+            if (showPos) team.appendChild(posTag(p.pos));
+            row.appendChild(team);
+            row.appendChild(statLine(p));
+            var rtg = el('span', 'award-row-rtg', fmtRtg(p.awardScore));
+            row.appendChild(rtg);
+            boardEl.appendChild(row);
+          });
+
+          var need = candidates.slice(0, 15).map(function (p) { return p.name; });
+          fetchAvatars(need);
+        }
+
+        select(0);
+      }
+
+      /* ---------------- HOME DASHPANEL ---------------- */
+      function renderHomePanel(byPos) {
+        var sel = document.getElementById('awards-select');
+        var listEl = document.getElementById('home-awards');
+        if (!sel || !listEl) return;
+
+        AWARDS.forEach(function (a, i) {
+          var o = el('option', null, a.id === a.name ? a.id : a.id + ' \u2014 ' + a.name);
+          o.value = String(i);
+          sel.appendChild(o);
+        });
+
+        function render(idx) {
+          var award = AWARDS[idx];
+          var candidates = rankAward(award, byPos).slice(0, 5);
+          var showPos = award.type === 'cross';
+          listEl.innerHTML = '';
+          if (!candidates.length) { listEl.appendChild(el('p', 'home-empty', 'No data.')); return; }
+          candidates.forEach(function (p, i) {
+            var row = playerLink('lead-row arow', p.name);
+            row.appendChild(el('span', 'lead-rank', String(i + 1)));
+            row.appendChild(logoImg(p.team, 'lead-logo'));
+            row.appendChild(el('span', 'lead-name', p.name));
+            row.appendChild(showPos ? posTag(p.pos) : el('span', 'award-postag is-ghost', POS_LABEL[p.pos]));
+            row.appendChild(el('span', 'lead-val', fmtRtg(p.awardScore)));
+            listEl.appendChild(row);
+          });
+        }
+
+        sel.onchange = function () { render(parseInt(sel.value, 10)); };
+        render(0);
+      }
+
+      /* ---------------- init ---------------- */
+      function init() {
+        var onFull = !!document.getElementById('awards-nav');
+        var onHome = !!document.getElementById('home-awards');
+        if (!onFull && !onHome) return;
+
+        var ranges = POS.map(function (p) { return CFG[p].r; });
+        fetchRanges(ranges).then(function (data) {
+          var vrs = (data && data.valueRanges) || [];
+          var byPos = {};
+          POS.forEach(function (p, i) { byPos[p] = buildPos((vrs[i] && vrs[i].values) || [], p); });
+          if (onFull) renderFullPage(byPos);
+          if (onHome) renderHomePanel(byPos);
+        }).catch(function (e) {
+          console.error('Award tracker error:', e);
+          var board = document.getElementById('award-board');
+          if (board) { board.innerHTML = ''; board.appendChild(el('p', 'award-empty', 'Could not load award data right now.')); }
+          var home = document.getElementById('home-awards');
+          if (home) { home.innerHTML = ''; home.appendChild(el('p', 'home-empty', 'Could not load awards.')); }
+        });
+      }
+
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+      else init();
+    })();
+    </script>
+</body>
+</html>
