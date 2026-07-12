@@ -3,10 +3,6 @@
      -------------------------------------------------------------------------
      This is the single source of the header/navigation for the whole site.
      Edit the HTML below and it updates on every page.
-     (Logo, nav links, dropdowns, "join now" button, etc.)
-
-     Navigation styles live in /nav.css. Behaviour (dropdowns, mobile
-     accordion, scroll shadow) lives in /script.js.
      ========================================================================= -->
 
 <!-- External Navigation Styles & Livebar Assets -->
@@ -18,11 +14,13 @@
   <div class="container">
     <div class="nav-wrapper">
       <a href="/" class="logo-black"><img src="/images/afltypeblack.png" alt="logo"></a>
+      
       <button class="mobile-nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
         <img class="hamburger" src="/images/hamburger.png" alt="" aria-hidden="true">
         <img class="close" src="/images/close.png" alt="" aria-hidden="true">
         <span class="visually-hidden">menu</span>
       </button>
+
       <nav class="primary-navigation" id="primary-navigation" aria-label="Primary">
         <ul role="list" class="nav-list">
           <li class="nav-item">
@@ -104,15 +102,21 @@
             </div>
           </li>
         </ul>
+        
+        <!-- Script uses this dedicated frame layout block container to render the toggle button smoothly -->
+        <div id="theme-toggle-container" style="display: flex; align-items: center;">
+          <div id="theme-toggle-placeholder"></div>
+          <a href="https://discord.gg/afl" class="button | display-sm-none display-md-inline-flex">join now</a>
+        </div>
       </nav>
-      <a href="https://discord.gg/afl" class="button | display-sm-none display-md-inline-flex">join now</a>
     </div>
   </div>
 </header>
 
-<!-- Highlight the current section / page -->
+<!-- Active Section Identifier & Dark Mode Setup Initialization Logic -->
 <script>
-  (function markActive() {
+  (function initHeader() {
+    // 1. Highlight current navigation sections
     var path = window.location.pathname;
     var sections = [
       { name: 'standings', test: /^\/mainpages\/standings/ },
@@ -133,7 +137,6 @@
         parent.setAttribute('aria-current', 'page');
       }
     }
-    /* Exact-match a dropdown sub-link for the current page. */
     var subs = document.querySelectorAll('.nav-dropdown-list a');
     subs.forEach(function (a) {
       var href = a.getAttribute('href');
@@ -142,5 +145,57 @@
         a.setAttribute('aria-current', 'page');
       }
     });
+
+    // 2. Build and hook up Dark Mode Toggle system smoothly
+    var placeholder = document.getElementById('theme-toggle-placeholder');
+    if (placeholder) {
+      var btn = document.createElement('button');
+      btn.className = 'theme-toggle';
+      btn.setAttribute('aria-label', 'Toggle theme color dark/light mode');
+      btn.style.background = 'none';
+      btn.style.border = 'none';
+      btn.style.cursor = 'pointer';
+      btn.style.padding = '8px';
+      btn.style.marginRight = '12px';
+      btn.style.display = 'flex';
+      btn.style.alignItems = 'center';
+      btn.style.color = 'inherit';
+
+      // Inline lightweight paths for Moon and Sun icon vectors
+      btn.innerHTML = `
+        <svg class="icon-theme" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display: block;">
+          <path class="path-moon" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          <path class="path-sun" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z" />
+        </svg>
+      `;
+      
+      placeholder.parentNode.replaceChild(btn, placeholder);
+
+      // Simple internal visual presentation renderer
+      function updateToggleVisibility() {
+        var isDark = document.documentElement.classList.contains('dark-mode');
+        var sunPath = btn.querySelector('.path-sun');
+        var moonPath = btn.querySelector('.path-moon');
+        if (sunPath && moonPath) {
+          if (isDark) {
+            sunPath.style.display = 'block';
+            moonPath.style.display = 'none';
+          } else {
+            sunPath.style.display = 'none';
+            moonPath.style.display = 'block';
+          }
+        }
+      }
+
+      updateToggleVisibility();
+
+      btn.addEventListener('click', function() {
+        var root = document.documentElement;
+        root.classList.toggle('dark-mode');
+        var activeDark = root.classList.contains('dark-mode');
+        localStorage.setItem('afl-theme', activeDark ? 'dark' : 'light');
+        updateToggleVisibility();
+      });
+    }
   })();
 </script>
