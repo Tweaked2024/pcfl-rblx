@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Streams Banner</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        /* The banner starts hidden because the JS will unhide it if streams are live */
+        #live-banner {
+            background-color: #9146ff; /* Twitch-style purple */
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+        }
+
+        #live-banner a {
+            color: #fff;
+            text-decoration: underline;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- The Live Banner Container (hidden by default until JS checks the API) -->
+    <div id="live-banner" hidden>
+        <span id="lb-sub">Checking for live streams...</span>
+        <a href="/streams" target="_blank">Watch Live</a>
+    </div>
+
+    <h1>Welcome to the League Home Page</h1>
+    <p>Content for your website goes here...</p>
+
+    <!-- Your JavaScript code packaged for HTML -->
+    <script>
+        (function () {
+            var banner = document.getElementById('live-banner');
+            if (!banner) return;
+            
+            function check() {
+                fetch('/api/live')
+                    .then(function (r) { return r.json(); })
+                    .then(function (d) {
+                        var live = (d && d.ok && d.live) || [];
+                        if (live.length) {
+                            var sub = document.getElementById('lb-sub');
+                            if (sub) {
+                                sub.textContent = live.length === 1
+                                    ? live[0] + ' is streaming right now — tune in.'
+                                    : live.length + ' streams are live — watch them all at once.';
+                            }
+                            banner.hidden = false;
+                        } else {
+                            banner.hidden = true;
+                        }
+                    })
+                    .catch(function () {});
+            }
+            
+            // Run the check immediately on load
+            check();
+            
+            // Re-check every 60 seconds
+            setInterval(check, 60 * 1000);
+            
+            // Re-check instantly if the user tabs away and comes back
+            document.addEventListener('visibilitychange', function () {
+                if (!document.hidden) check();
+            });
+        })();
+    </script>
+</body>
+</html>
