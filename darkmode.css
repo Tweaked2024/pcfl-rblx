@@ -1,0 +1,133 @@
+/* ===== Dark mode theme ===== */
+html.dark-mode {
+  --color-neutral-100: #1b1e24;
+  --color-neutral-200: #20242c;
+  --color-neutral-250: #262b34;
+  --color-neutral-300: #3a4049;
+  --color-neutral-600: #9aa1ac;
+  --color-neutral-800: #d9dce1;
+  --color-neutral-900: #f0f2f5;
+  --color-primary-100: #3a161c;
+  --color-accent-400: #c9d3f5;
+}
+
+html.dark-mode body {
+  background-color: #131519;
+  color: var(--color-neutral-900);
+}
+
+/* The footer/utility classes use the neutral ramp as fixed light/dark tokens,
+   so pin them to keep the footer dark with light text after the ramp flips. */
+html.dark-mode .bg-neutral-900 {
+  background-color: #0e1014;
+}
+
+html.dark-mode .text-neutral-100 {
+  color: #f4f5f7;
+}
+
+/* ===== General rule: white text on a colored background stays white =====
+   Dark mode flips the neutral ramp, which would otherwise turn white text
+   (var(--color-neutral-100)) dark. For any element that intentionally puts
+   white text on a colored (brand/team) background, keep the text white.
+   Add new colored-background components to this list. */
+html.dark-mode .button:not([data-type="inverted"]),
+html.dark-mode .button-selected,
+html.dark-mode .button-stats-selected,
+html.dark-mode .button-stats:hover,
+html.dark-mode .button-stats:focus-visible,
+html.dark-mode .numbered-items div::before,
+html.dark-mode .caption-stats,
+html.dark-mode .table-header-stats,
+html.dark-mode .table-header-stats th,
+html.dark-mode .column-highlight,
+html.dark-mode .stat-th,
+html.dark-mode .stat-th.th-key,
+html.dark-mode .nfc-header,
+html.dark-mode .afc-header,
+html.dark-mode .pfc-caption,
+html.dark-mode .afc-caption,
+html.dark-mode .sb-tab.is-active,
+html.dark-mode .sb-chip.is-active,
+html.dark-mode .sc-head,
+html.dark-mode .sb-group td,
+html.dark-mode .seed-badge,
+html.dark-mode .bracket-conf-title,
+html.dark-mode .round-head--final .round-icon,
+html.dark-mode .team-table thead th,
+html.dark-mode .player-card-title,
+html.dark-mode .footer-nav a,
+html.dark-mode p[text-color="white"],
+html.dark-mode h1[text-color="white"] {
+  color: #f4f5f7;
+}
+
+/* The wordmark in the header is a black PNG; invert it so it reads on dark. */
+html.dark-mode .logo-black img {
+  filter: invert(1) brightness(1.7);
+}
+
+/* Avatar placeholder circles */
+html.dark-mode .stat-avatar,
+html.dark-mode .player-hero-avatar {
+  background-color: #2a2f38;
+}
+
+/* Plain text links */
+html.dark-mode a:not([class]) {
+  color: var(--color-primary-300);
+}
+
+/* ===== Theme toggle button ===== */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 50%;
+  cursor: pointer;
+  background-color: var(--color-neutral-200);
+  color: var(--color-neutral-900);
+  flex-shrink: 0;
+  margin-left: 1rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.theme-toggle:hover {
+  background-color: var(--color-neutral-300);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-primary-400);
+  outline-offset: 2px;
+}
+
+.theme-toggle svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.theme-toggle .icon-sun {
+  display: none;
+}
+
+html.dark-mode .theme-toggle .icon-moon {
+  display: none;
+}
+
+html.dark-mode .theme-toggle .icon-sun {
+  display: block;
+}
+
+@media (max-width: 50em) {
+  .theme-toggle {
+    position: fixed;
+    top: 0.5rem;
+    right: 3.75rem;
+    z-index: 1020;
+    margin-left: 0;
+  }
+}
