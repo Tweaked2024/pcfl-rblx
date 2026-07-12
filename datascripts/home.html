@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFL Home Dashboard</title>
+    <style>
+        /* Basic layout styling to match your dashboard elements */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #121212; color: #fff; margin: 0; padding: 20px; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .card { background: #1e1e1e; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        h2 { margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        select { background: #333; color: #fff; border: 1px solid #444; padding: 6px 12px; border-radius: 4px; width: 100%; margin-bottom: 15px; }
+        .home-empty { color: #888; font-style: italic; }
+        
+        /* Matchup Styles */
+        .mu { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #2a2a2a; text-decoration: none; color: inherit; }
+        .mu-preview { background: rgba(255,255,255,0.02); }
+        .mu-team { display: flex; align-items: center; gap: 10px; width: 40%; text-decoration: none; color: inherit; }
+        .mu-right { justify-content: flex-end; text-align: right; }
+        .mu-logo, .lead-logo, .stand-logo { width: 32px; height: 32px; border-radius: 50%; background: #333; object-fit: cover; }
+        .mu-center { width: 20%; text-align: center; font-weight: bold; display: flex; flex-direction: column; align-items: center; }
+        .mu-preview-hint { font-size: 10px; color: #888; font-weight: normal; }
+        .mu-win { font-weight: bold; color: #4caf50; }
+        
+        /* Leaders & Standings Styles */
+        .lead-row, .stand-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2a2a2a; text-decoration: none; color: inherit; }
+        .lead-val, .stand-rec { margin-left: auto; font-weight: bold; }
+        .lead-name { text-decoration: none; color: #3498db; }
+        .lead-name:hover { text-decoration: underline; }
+        .stand-divider { background: #2c3e50; padding: 4px 8px; font-size: 12px; font-weight: bold; margin-top: 10px; border-radius: 4px; }
+        .stand-seed { width: 20px; color: #888; }
+
+        /* Video Carousel Styles */
+        .vc-container { grid-column: 1 / -1; background: #1e1e1e; padding: 20px; border-radius: 8px; position: relative; }
+        .vc-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .vc-btn { background: #333; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .vc-btn:hover { background: #444; }
+        .vc-viewport { overflow-hidden: hidden; width: 100%; overflow-x: auto; scroll-behavior: smooth; }
+        .vc-track { display: flex; gap: 16px; }
+        .vc-card { flex: 0 0 220px; text-decoration: none; color: inherit; background: #252525; border-radius: 6px; overflow: hidden; }
+        .vc-thumb { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; }
+        .vc-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .vc-card-title { padding: 10px; font-size: 13px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-grid">
+        <!-- Video Carousel Component -->
+        <div class="vc-container">
+            <div class="vc-controls">
+                <h2 style="margin:0;">Latest Media</h2>
+                <div>
+                    <button id="vc-prev" class="vc-btn">◀ Prev</button>
+                    <button id="vc-next" class="vc-btn">Next ▶</button>
+                </div>
+            </div>
+            <div id="vc-viewport" class="vc-viewport">
+                <div id="vc-track" class="vc-track">
+                    <p class="home-empty">Loading videos...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Matchups Card -->
+        <div class="card">
+            <h2 id="matchups-week">Matchups</h2>
+            <select id="matchups-week-select"></select>
+            <div style="margin-bottom:10px; font-size:14px; color:#aa60ff;" id="matchups-status">Loading status...</div>
+            <div id="home-matchups">
+                <p class="home-empty">Loading matchups...</p>
+            </div>
+        </div>
+
+        <!-- Stat Leaders Card -->
+        <div class="card">
+            <h2>Stat Leaders</h2>
+            <select id="leaders-select"></select>
+            <div id="home-leaders">
+                <p class="home-empty">Loading leaders...</p>
+            </div>
+        </div>
+
+        <!-- Standings Card -->
+        <div class="card">
+            <h2>Standings</h2>
+            <select id="standings-select">
+                <option value="0">AFC</option>
+                <option value="1">NFC</option>
+            </select>
+            <div id="home-standings">
+                <p class="home-empty">Loading standings...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script execution environment -->
+    <script>
+    /* ============================================================
+       AFL HOME DASHBOARD RUNTIME LOGIC
+       ============================================================ */
+    (function () {
+      var API_KEY = 'AIzaSyAgF9Wt_SggVbdAnX94ClCcB8J5Ob8ath4';
+      var SPREADSHEET_ID = '1T8wkxrS6UTi3u5szJVtgV2FWNLjqKDst-5yCGr0tkqk';
+      var BASE = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values:batchGet?key=' + API_KEY;
+
+      var NAME_TO_ABBR = {
+        cardinals: 'ARZ', falcons: 'ATL', ravens: 'BAL', bills: 'BUF', panthers: 'CAR',
+        bears: 'CHI', bengals: 'CIN', browns: 'CLE', cowboys: 'DAL', broncos: 'DEN',
+        lions: 'DET', packers: 'GB', texans: 'HOU', colts: 'IND', jaguars: 'JAX',
+        chiefs: 'KC', raiders: 'LV', chargers: 'LAC', rams: 'LAR', dolphins: 'MIA',
+        vikings: 'MIN', patriots: 'NE', saints: 'NO', giants: 'NYG', jets: 'NYJ',
+        eagles: 'PHI', steelers: 'PIT', '49ers': 'SF', seahawks: 'SEA', buccaneers: 'TB',
+        titans: 'TEN', commanders: 'WAS'
+      };
+      var ABBR_TO_NICK = {};
+      Object.keys(NAME_TO_ABBR).forEach(function (nick) { ABBR_TO_NICK[NAME_TO_ABBR[nick]] = nick; });
+
+      function el(tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text != null) n.textContent = text;
+        return n;
+      }
+      function logoImg(nick, cls) {
+        var img = el('img', cls || 'team-logo');
+        img.src = '/images/cutouts/' + String(nick).trim().toLowerCase() + '.jpg';
+        img.alt = nick;
+        img.loading = 'lazy';
+        img.onerror = function () { this.style.visibility = 'hidden'; };
+        return img;
+      }
+      function fetchRanges(ranges) {
+        var q = ranges.map(function (r) { return 'ranges=' + encodeURIComponent(r); }).join('&');
+        return fetch(BASE + '&' + q).then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        }).then(function (data) {
+          if (data && data.error) throw new Error(data.error.message || 'Sheets API error');
+          return data;
+        });
+      }
+      function num(v) {
+        if (v == null) return NaN;
+        var n = parseFloat(String(v).replace(/[^0-9.\-]/g, ''));
+        return isNaN(n) ? NaN : n;
+      }
+      function teamName(v) {
+        var s = String(v == null ? '' : v).trim();
+        if (!s) return s;
+        return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+      }
+
+      /* ---------------- MATCHUPS ---------------- */
+      var WEEK_RANGES = [
+        'AFLSCORES!C:G', 'AFLSCORES!M:Q', 'AFLSCORES!W:AA', 'AFLSCORES!AG:AK',
+        'AFLSCORES!AQ:AU', 'AFLSCORES!BA:BE', 'AFLSCORES!BK:BO', 'AFLSCORES!BU:BY',
+        'AFLSCORES!CE:CI', 'AFLSCORES!CO:CS', 'AFLSCORES!CY:DC', 'AFLSCORES!DI:DM',
+        'AFLSCORES!DS:DW'
+      ];
+
+      var weekRowsByIdx = [];
+
+      function renderWeek(idx) {
+        var listEl = document.getElementById('home-matchups');
+        var weekEl = document.getElementById('matchups-week');
+        var statusEl = document.getElementById('matchups-status');
+        if (!listEl) return;
+        var rows = weekRowsByIdx[idx] || [];
+
+        if (weekEl) weekEl.textContent = 'Week ' + (idx + 1);
+        var anyScores = rows.some(function (r) { return !isNaN(num(r[1])) && !isNaN(num(r[3])); });
+        var allScored = rows.length > 0 && rows.every(function (r) { return !isNaN(num(r[1])) && !isNaN(num(r[3])); });
+        if (statusEl) statusEl.textContent = allScored ? 'Final' : (anyScores ? 'In Progress' : 'Upcoming');
+
+        listEl.innerHTML = '';
+        if (!rows.length) { listEl.appendChild(el('p', 'home-empty', 'No matchups for this week.')); return; }
+
+        rows.forEach(function (r) {
+          var t1 = (r[0] || '').trim(), t2 = (r[4] || '').trim();
+          var s1 = num(r[1]), s2 = num(r[3]);
+          var played = !isNaN(s1) && !isNaN(s2);
+          var k1 = t1.toLowerCase(), k2 = t2.toLowerCase();
+          var a1 = NAME_TO_ABBR[k1], a2 = NAME_TO_ABBR[k2];
+
+          var row, left, right;
+          if (!played && a1 && a2) {
+            row = el('a', 'mu mu-preview');
+            row.href = '/matchup/?a=' + encodeURIComponent(a1) + '&b=' + encodeURIComponent(a2);
+            left = el('div', 'mu-team mu-left');
+            right = el('div', 'mu-team mu-right');
+          } else {
+            row = el('div', 'mu');
+            left = a1 ? el('a', 'mu-team mu-left') : el('div', 'mu-team mu-left');
+            if (a1) { left.href = '/team/?t=' + encodeURIComponent(a1); }
+            right = a2 ? el('a', 'mu-team mu-right') : el('div', 'mu-team mu-right');
+            if (a2) { right.href = '/team/?t=' + encodeURIComponent(a2); }
+          }
+
+          if (played) { if (s1 > s2) left.classList.add('mu-win'); else if (s1 < s2) left.classList.add('mu-lose'); }
+          left.appendChild(logoImg(k1, 'mu-logo'));
+          left.appendChild(el('span', 'mu-abbr', teamName(t1)));
+
+          var center = el('div', 'mu-center');
+          if (played) {
+            center.appendChild(el('span', 'mu-score', String(r[1]).trim()));
+            center.appendChild(el('span', 'mu-dash', '–'));
+            center.appendChild(el('span', 'mu-score', String(r[3]).trim()));
+          } else {
+            center.appendChild(el('span', 'mu-vs', 'VS'));
+            if (!played && a1 && a2) center.appendChild(el('span', 'mu-preview-hint', 'compare \u21C4'));
+          }
+
+          if (played) { if (s2 > s1) right.classList.add('mu-win'); else if (s2 < s1) right.classList.add('mu-lose'); }
+          right.appendChild(el('span', 'mu-abbr', teamName(t2)));
+          right.appendChild(logoImg(k2, 'mu-logo'));
+
+          row.appendChild(left);
+          row.appendChild(center);
+          row.appendChild(right);
+          listEl.appendChild(row);
+        });
+      }
+
+      function renderMatchups() {
+        var listEl = document.getElementById('home-matchups');
+        var sel = document.getElementById('matchups-week-select');
+        if (!listEl) return;
+
+        fetchRanges(WEEK_RANGES).then(function (data) {
+          var vrs = (data && data.valueRanges) || [];
+          var available = [], latestIdx = -1;
+          for (var i = 0; i < WEEK_RANGES.length; i++) {
+            var rows = ((vrs[i] && vrs[i].values) || []).slice(1).filter(function (r) {
+              return r && r[0] && r[0].trim() && r[4] && r[4].trim();
+            });
+            weekRowsByIdx[i] = rows;
+            if (rows.length) { available.push(i); latestIdx = i; }
+          }
+
+          if (latestIdx === -1) {
+            listEl.innerHTML = '';
+            listEl.appendChild(el('p', 'home-empty', 'No matchups available yet.'));
+            return;
+          }
+
+          if (sel) {
+            sel.innerHTML = '';
+            available.forEach(function (idx) {
+              var o = el('option', null, 'Week ' + (idx + 1));
+              o.value = String(idx);
+              sel.appendChild(o);
+            });
+            sel.value = String(latestIdx);
+            sel.onchange = function () { renderWeek(parseInt(sel.value, 10)); };
+          }
+
+          renderWeek(latestIdx);
+        }).catch(function (e) {
+          console.error('Matchups error:', e);
+          listEl.innerHTML = '';
+          listEl.appendChild(el('p', 'home-empty', 'Could not load matchups.'));
+        });
+      }
+
+      /* ---------------- STAT LEADERS ---------------- */
+      var STAT_RANGES = ['QB!A1:L60', 'QB!N1:AA60', 'QB!AC1:AP60'];
+      var CATEGORIES = [
+        { label: 'Passing Yards', src: 0, col: 4 },
+        { label: 'Passing TDs', src: 0, col: 6 },
+        { label: 'Rushing Yards', src: 1, col: 4 },
+        { label: 'Rushing TDs', src: 1, col: 7 },
+        { label: 'Receiving Yards', src: 2, col: 4 },
+        { label: 'Receiving TDs', src: 2, col: 7 }
+      ];
+      var statData = null;
+
+      function renderLeaders(catIndex) {
+        var listEl = document.getElementById('home-leaders');
+        if (!listEl || !statData) return;
+        var cat = CATEGORIES[catIndex];
+        var rows = (statData[cat.src] || []).slice(1).filter(function (r) {
+          return r && r[2] && r[2].trim() && !isNaN(num(r[cat.col]));
+        });
+        rows.sort(function (a, b) { return num(b[cat.col]) - num(a[cat.col]); });
+        var top = rows.slice(0, 5);
+
+        listEl.innerHTML = '';
+        if (!top.length) { listEl.appendChild(el('p', 'home-empty', 'No data.')); return; }
+
+        top.forEach(function (r, i) {
+          var abbr = (r[1] || '').trim().toUpperCase();
+          var nick = ABBR_TO_NICK[abbr] || abbr;
+          var player = (r[2] || '').trim();
+
+          var row = el('div', 'lead-row');
+          row.appendChild(el('span', 'lead-rank', String(i + 1)));
+          row.appendChild(logoImg(nick, 'lead-logo'));
+
+          var name = el('a', 'lead-name', player);
+          name.href = '/player/?u=' + encodeURIComponent(player);
+          row.appendChild(name);
+
+          row.appendChild(el('span', 'lead-val', String(r[cat.col]).trim()));
+          listEl.appendChild(row);
+        });
+      }
+
+      function initLeaders() {
+        var sel = document.getElementById('leaders-select');
+        var listEl = document.getElementById('home-leaders');
+        if (!sel || !listEl) return;
+        CATEGORIES.forEach(function (c, i) {
+          var o = el('option', null, c.label); o.value = String(i); sel.appendChild(o);
+        });
+        sel.onchange = function () { renderLeaders(parseInt(sel.value, 10)); };
+
+        fetchRanges(STAT_RANGES).then(function (data) {
+          statData = (data.valueRanges || []).map(function (v) { return v.values || []; });
+          renderLeaders(0);
+        }).catch(function (e) {
+          console.error('Leaders error:', e);
+          listEl.innerHTML = '';
+          listEl.appendChild(el('p', 'home-empty', 'Could not load stat leaders.'));
+        });
+      }
+
+      /* ---------------- STANDINGS ---------------- */
+      var STAND_RANGES = ['AFLSTANDINGS!A55:G74', 'AFLSTANDINGS!A78:G97'];
+      var standData = null;
+
+      function renderStandings(confIndex) {
+        var listEl = document.getElementById('home-standings');
+        if (!listEl || !standData) return;
+        var rows = (standData[confIndex] || []).slice(1);
+        listEl.innerHTML = '';
+        if (!rows.length) { listEl.appendChild(el('p', 'home-empty', 'No data.')); return; }
+
+        rows.forEach(function (r) {
+          if (!r || !r.length) return;
+          var hasTeam = r[1] && r[1].trim();
+          var isDivider = !hasTeam && r[0] && r[0].trim();
+          if (isDivider) {
+            listEl.appendChild(el('div', 'stand-divider', r[0].trim()));
+            return;
+          }
+          if (!hasTeam) return;
+          var seed = (r[0] || '').trim();
+          var nick = (r[1] || '').trim().toLowerCase();
+          var abbr = NAME_TO_ABBR[nick];
+          var wins = (r[2] || '0').trim(), losses = (r[3] || '0').trim();
+
+          var row = abbr ? el('a', 'stand-row') : el('div', 'stand-row');
+          if (abbr) row.href = '/team/?t=' + encodeURIComponent(abbr);
+          row.appendChild(el('span', 'stand-seed', seed));
+          row.appendChild(logoImg(nick, 'stand-logo'));
+          row.appendChild(el('span', 'stand-team', teamName(nick)));
+          row.appendChild(el('span', 'stand-rec', wins + '-' + losses));
+          listEl.appendChild(row);
+        });
+      }
+
+      function initStandings() {
+        var sel = document.getElementById('standings-select');
+        var listEl = document.getElementById('home-standings');
+        if (!sel || !listEl) return;
+        sel.onchange = function () { renderStandings(parseInt(sel.value, 10)); };
+
+        fetchRanges(STAND_RANGES).then(function (data) {
+          standData = (data.valueRanges || []).map(function (v) { return v.values || []; });
+          renderStandings(0);
+        }).catch(function (e) {
+          console.error('Standings error:', e);
+          listEl.innerHTML = '';
+          listEl.appendChild(el('p', 'home-empty', 'Could not load standings.'));
+        });
+      }
+
+      /* ---------------- VIDEO CAROUSEL ---------------- */
+      var VIDEO_RANGE = 'sitetest!A:A';
+
+      function ytId(url) {
+        var m = String(url).match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{11})/);
+        return m ? m[1] : '';
+      }
+      function fetchTitle(url) {
+        return fetch('https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent(url))
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (d) { return d && d.title ? d.title : ''; })
+          .catch(function () { return ''; });
+      }
+
+      function setupCarousel(viewport, track) {
+        var prev = document.getElementById('vc-prev');
+        var next = document.getElementById('vc-next');
+        function step() {
+          var card = track.querySelector('.vc-card');
+          if (!card) return viewport.clientWidth * 0.8;
+          var gap = parseInt(getComputedStyle(track).columnGap || getComputedStyle(track).gap || '16', 10) || 16;
+          return card.getBoundingClientRect().width + gap;
+        }
+        function atEnd() { return viewport.scrollLeft + viewport.clientWidth >= viewport.scrollWidth - 2; }
+        function scrollNext() {
+          if (atEnd()) viewport.scrollTo({ left: 0, behavior: 'smooth' });
+          else viewport.scrollBy({ left: step(), behavior: 'smooth' });
+        }
+        function scrollPrev() {
+          if (viewport.scrollLeft <= 2) viewport.scrollTo({ left: viewport.scrollWidth, behavior: 'smooth' });
+          else viewport.scrollBy({ left: -step(), behavior: 'smooth' });
+        }
+        if (next) next.onclick = scrollNext;
+        if (prev) prev.onclick = scrollPrev;
+
+        var timer = null;
+        function start() { if (!timer) timer = setInterval(scrollNext, 4000); }
+        function stop() { if (timer) { clearInterval(timer); timer = null; } }
+        viewport.addEventListener('mouseenter', stop);
+        viewport.addEventListener('mouseleave', start);
+        start();
+      }
+
+      function initVideos() {
+        var track = document.getElementById('vc-track');
+        var viewport = document.getElementById('vc-viewport');
+        if (!track || !viewport) return;
+
+        fetchRanges([VIDEO_RANGE]).then(function (data) {
+          var vals = ((data.valueRanges || [])[0] || {}).values || [];
+          var urls = vals.map(function (r) { return (r && r[0] ? String(r[0]) : '').trim(); })
+            .filter(function (u) { return u; });
+          var recent = urls.slice(-10).reverse();
+
+          track.innerHTML = '';
+          if (!recent.length) { track.appendChild(el('p', 'home-empty', 'No videos yet.')); return; }
+
+          recent.forEach(function (url) {
+            var id = ytId(url);
+            var card = el('a', 'vc-card');
+            card.href = url;
+            card.target = '_blank';
+            card.rel = 'noopener noreferrer';
+
+            var thumb = el('div', 'vc-thumb');
+            var img = el('img');
+            img.src = id ? ('https://i.ytimg.com/vi/' + id + '/hqdefault.jpg') : '';
+            img.alt = '';
+            img.loading = 'lazy';
+            img.onerror = function () {
+              if (id && this.src.indexOf('hqdefault') > -1) this.src = 'https://i.ytimg.com/vi/' + id + '/mqdefault.jpg';
+              else this.style.visibility = 'hidden';
+            };
+            thumb.appendChild(img);
+            thumb.appendChild(el('span', 'vc-play'));
+            card.appendChild(thumb);
+
+            var title = el('div', 'vc-card-title', 'Watch on YouTube');
+            card.appendChild(title);
+            track.appendChild(card);
+
+            fetchTitle(url).then(function (t) { if (t) title.textContent = t; });
+          });
+
+          setupCarousel(viewport, track);
+        }).catch(function (e) {
+          console.error('Videos error:', e);
+          track.innerHTML = '';
+          track.appendChild(el('p', 'home-empty', 'Could not load videos.'));
+        });
+      }
+
+      function init() { initVideos(); renderMatchups(); initLeaders(); initStandings(); }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+      else init();
+    })();
+    </script>
+</body>
+</html>
